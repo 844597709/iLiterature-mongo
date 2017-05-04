@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tempCrawlWebsite">
+	<!-- 配置映射字段 -->
+	<resultMap type="com.swust.kelab.mongo.domain.TempCrawlWebsite" id="tab_crawlwebsite">
+		<id property="crwsId" column="crws_id"/>
+		<result property="crwsSiteName" column="crws_siteName"/>
+		<result property="crwsEncode" column="crws_encode"/>
+		<result property="crwsDomainLimit" column="crws_domainLimit"/>
+		<result property="crwsSeedUrl" column="crws_seedUrl"/>
+		<result property="crwsCrawlStyle" column="crws_crawlStyle"/>
+		<result property="crwsUpdateStyle" column="crws_updateStyle"/>
+		<result property="crwsMaxThread" column="crws_maxThread"/>
+		<result property="crwsCurrencyUnit" column="crws_currencyUnit"/>
+		<result property="crwsAuthorUpdate" column="crws_authorUpdate"/>
+		<result property="crwsWorksUpdate" column="crws_worksUpdate"/>
+		<result property="crwsExtraWorksInfo" column="crws_extraWorksInfo"/>
+		<result property="crwsInnerFilter" column="crws_innerFilter"/>
+		<result property="crwsAuthorFilter" column="crws_authorFilter"/>
+		<result property="crwsWorksFilter" column="crws_worksFilter"/>
+		<result property="crwsCommentFilter" column="crws_commentFilter"/>
+		<result property="crwsAuthorExtractRule" column="crws_authorExtractRule"/>
+		<result property="crwsWorksExtractRule" column="crws_worksExtractRule"/>
+		<result property="crwsCommentExtractRule" column="crws_commentExtractRule"/>
+		<result property="crwsAuthorJsHandler" column="crws_authorJsHandle"/>
+		<result property="crwsWorksJsHandler" column="crws_worksJsHandle"/>
+		<result property="crwsCommentJsHandler" column="crws_commentJsHandle"/>
+		<result property="crwsEnable" column="crws_enable"/>
+		<result property="crwsParamFilter" column="crws_paramFilter"/>
+	</resultMap>
+	<select id="selectAllCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+		SELECT
+		COUNT(crws.crws_id)
+		FROM
+		crawlwebsite crws;
+	</select>
+	<select id="selectAllData" parameterType="java.util.HashMap" resultMap="tab_crawlwebsite">
+		SELECT * from crawlwebsite
+		<if test="startIndex!=null and pageSize!=null">
+			limit #{startIndex}, #{pageSize};
+		</if>
+	</select>
+</mapper>

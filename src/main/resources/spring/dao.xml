@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo-1.1.xsd">
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<!--<value>classpath:jdbc.properties</value>-->
+			<value>classpath:settings.properties</value>
+		</property>
+	</bean>
+
+	<!-- ========================= MONGODB配置 ========================== -->
+	<!--<mongo:mongo host="${mongo.hosts}" port="${mongo.port}" />
+	<mongo:db-factory dbname="${mongo.db.name}" mongo-ref="mongo" />
+
+	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+		<constructor-arg name="mongoDbFactory" ref="mongoDbFactory" />
+		&lt;!&ndash; <constructor-arg name="mongoConverter" ref="mappingConverter" /> &ndash;&gt;
+	</bean>-->
+
+	<!-- ========================= DBCP数据源 ========================== -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="initialSize" value="${jdbc.initialPoolSize}" />
+		<property name="maxActive" value="${jdbc.maxActive}" />
+		<property name="maxIdle" value="${jdbc.maxIdle}" />
+		<property name="minIdle" value="${jdbc.minIdle}" />
+		<property name="logAbandoned" value="${jdbc.logAbandoned}" />
+		<!--removeAbandoned: 是否自动回收超时连接 -->
+		<property name="removeAbandoned" value="${jdbc.removeAbandoned}" />
+		<!--removeAbandonedTimeout: 超时时间(以秒数为单位) -->
+		<property name="removeAbandonedTimeout" value="${jdbc.removeAbandonedTimeout}" />
+		<!--maxWait: 超时等待时间以毫秒为单位 1000等于60秒 -->
+		<property name="validationQuery">
+			<value>SELECT 1</value>
+		</property>
+		<property name="testOnBorrow">
+			<value>true</value>
+		</property>
+	</bean>
+	<!-- DAO配置 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:mybatis/mybatis-config.xml" />
+		<!--<property name="mapperLocations" value="classpath:mapper/*.xml" />-->
+		<property name="mapperLocations" value="classpath:mapper/temp/*.xml" />
+		<property name="typeAliasesPackage" value="com.swust.kelab.mongo.domain" />
+		<!--<property name="typeAliasesPackage" value="com.swust.kelab.domain" />-->
+	</bean>
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+	<!--<bean id="queryDAO" class="com.qunar.base.meerkat.orm.mybatis.QueryDAOMyBatisImpl">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	<bean id="updateDAO" class="com.qunar.base.meerkat.orm.mybatis.UpdateDAOMyBatisImpl">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>-->
+	<bean id="columnDao" class="com.swust.kelab.repos.GenericModelDao">
+		<constructor-arg value="column"></constructor-arg>
+	</bean>
+	<bean id="userDao" class="com.swust.kelab.repos.GenericModelDao">
+		<constructor-arg value="user"></constructor-arg>
+	</bean>
+	<context:component-scan base-package="com.swust.kelab.repos" />
+</beans>

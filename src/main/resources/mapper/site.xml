@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="site">
+	<!--zd -->
+	<select id="selectSite" resultType="com.swust.kelab.domain.Site">
+		SELECT
+			cw.crws_id AS siteId,
+			cw.crws_siteName AS siteName,
+			count(au.auth_id) AS totalAuthors,
+			w._totalWorks AS totalWorks
+		FROM
+			crawlwebsite cw
+		LEFT OUTER JOIN author au ON au.auth_wesiId = cw.crws_id
+		LEFT OUTER JOIN (
+		SELECT
+			cw.crws_id AS crwsId,
+			count(wo.work_id) AS _totalWorks
+		FROM
+			works wo,
+			crawlwebsite cw
+		WHERE
+			wo.work_wesiId = cw.crws_id
+		GROUP BY
+			cw.crws_id
+		) w ON w.crwsId = cw.crws_id
+		GROUP BY
+			cw.crws_id
+	</select>
+	<!--至此 -->
+	<!-- lj -->
+	<!-- <select id="selectSiteById" parameterType="java.lang.Integer"
+		resultType="com.swust.kelab.domain.Site">
+		SELECT
+		cw.crws_id as siteId,
+		cw.crws_siteName as siteName
+		FROM
+		crawlwebsite cw
+		WHERE cw.crws_id=#{siteId}
+	</select> -->
+
+	<select id="select" parameterType="java.util.HashMap"
+		resultType="com.swust.kelab.domain.Site">
+		SELECT
+		cw.crws_id as siteId,
+		cw.crws_siteName as siteName,
+		cw.crws_encode as encode,
+		cw.crws_domainLimit as domainLimit,
+		cw.crws_seedUrl as seedUrl,
+		cw.crws_crawlStyle as crawlStyle,
+		cw.crws_updateStyle as updateStyle,
+		cw.crws_maxThread as maxThread,
+		cw.crws_currencyUnit as currencyUnit,
+		cw.crws_authorUpdate as
+		authorUpdate,
+		cw.crws_worksUpdate as worksUpdate,
+		cw.crws_extraWorksInfo as extraWorksInfo,
+		cw.crws_innerFilter as
+		innerFilter,
+		cw.crws_authorFilter as authorFilter,
+		cw.crws_worksFilter
+		as worksFilter,
+		cw.crws_commentFilter as commentFilter,
+		cw.crws_authorExtractRule as authorExtractRule,
+		cw.crws_worksExtractRule as worksExtractRule,
+		cw.crws_commentExtractRule as commentExtractRule,
+		cw.crws_authorJsHandle as authorJsHandle,
+		cw.crws_worksJsHandle as
+		worksJsHandle,
+		cw.crws_commentJsHandle as commentJsHandle,
+		cw.crws_enable as enable
+		FROM
+		crawlwebsite cw
+		<where>
+			<if test="searchWord != null">
+				cw.crws_siteName like CONCAT('%','${searchWord}','%' )
+			</if>
+		</where>
+		<where>
+			<if test="siteId>0">
+				cw.crws_id=#{siteId}
+			</if>
+		</where>
+		<if test="maxCount!=null">
+			limit
+			<if test="startIndex!=null">
+				#{startIndex},
+			</if>
+			#{maxCount}
+		</if>
+	</select>
+
+	<select id="selectCount" parameterType="java.util.HashMap"
+		resultType="java.lang.Integer">
+		SELECT
+		COUNT(cw.crws_id)
+		FROM
+		crawlwebsite cw
+		<where>
+			<if test="searchWord != null">
+				cw.crws_siteNamelike CONCAT('%','${searchWord}','%' )
+			</if>
+		</where>
+	</select>
+
+	<insert id="insert" parameterType="com.swust.kelab.domain.Site"
+		useGeneratedKeys="true" keyProperty="siteId">
+		INSERT INTO crawwebsite (
+		cw.crws_siteName ,
+		cw.crws_encode ,
+		cw.crws_domainLimit ,
+		cw.crws_seedUrl ,
+		cw.crws_crawlStyle ,
+		cw.crws_updateStyle ,
+		cw.crws_maxThread ,
+		cw.crws_currencyUnit ,
+		cw.crws_authorUpdate ,
+		cw.crws_worksUpdate ,
+		cw.crws_extraWorksInfo ,
+		cw.crws_innerFilter ,
+		cw.crws_authorFilter ,
+		cw.crws_worksFilter ,
+		cw.crws_commentFilter ,
+		cw.crws_authorExtractRule ,
+		cw.crws_worksExtractRule ,
+		cw.crws_commentExtractRule ,
+		cw.crws_authorJsHandle,
+		cw.crws_worksJsHandle ,
+		cw.crws_commentJsHandle ,
+		cw.crws_enable
+		)
+		VALUES
+		(
+		#{siteName},
+		#{encode},
+		#{domainLimit},
+		#{seedUrl},
+		#{crawlStyle},
+		#{updateStyle},
+		#{maxThread},
+		#{currencyUnit},
+		#{authorUpdate},
+		#{worksUpdate},
+		#{extraWorksInfo},
+		#{innerFilter},
+		#{authorFilter},
+		#{worksFilter},
+		#{commentFilter},
+		#{authorExtractRule},
+		#{worksExtractRule},
+		#{commentExtractRule},
+		#{authorJsHandle},
+		#{worksJsHandle},
+		#{commentJsHandle},
+		#{enable}
+		)
+	</insert>
+
+	<update id="update" parameterType="com.swust.kelab.domain.Site">
+		UPDATE
+		crawwebsite
+		<set>
+			<if test="siteName !=null">
+				crws_siteName=#{siteName},
+			</if>
+			<if test="encode !=null">
+				crws_encode=#{encode},
+			</if>
+			<if test="domainLimit !=null">
+				crws_domainLimit=#{domainLimit},
+			</if>
+			<if test="seedUrl !=null">
+				crws_seedUrl=#{seedUrl},
+			</if>
+			<if test="crawlStyle !=null">
+				crws_crawlStyle=#{crawlStyle},
+			</if>
+			<if test="updateStyle !=null">
+				crws_updateStyle=#{updateStyle},
+			</if>
+			<if test="maxThread !=null">
+				crws_maxThread=#{maxThread},
+			</if>
+			<if test="currencyUnit !=null">
+				crws_currencyUnit=#{currencyUnit},
+			</if>
+			<if test="authorUpdate !=null">
+				crws_authorUpdate=#{authorUpdate},
+			</if>
+			<if test="worksUpdate !=null">
+				crws_worksUpdate=#{worksUpdate},
+			</if>
+			<if test="extraWorksInfo !=null">
+				crws_extraWorksInfo=#{extraWorksInfo},
+			</if>
+			<if test="innerFilter !=null">
+				crws_innerFilter=#{innerFilter},
+			</if>
+			<if test="authorFilter !=null">
+				crws_authorFilter=#{authorFilter},
+			</if>
+			<if test="worksFilter !=null">
+				crws_worksFilter=#{worksFilter},
+			</if>
+			<if test="commentFilter !=null">
+				crws_commentFilter=#{commentFilter},
+			</if>
+			<if test="authorExtractRule !=null">
+				crws_authorExtractRule=#{authorExtractRule},
+			</if>
+			<if test="worksExtractRule !=null">
+				crws_worksExtractRule=#{worksExtractRule},
+			</if>
+			<if test="commentExtractRule !=null">
+				crws_commentExtractRule=#{commentExtractRule},
+			</if>
+			<if test="authorJsHandle !=null AND authorJsHandle>0">
+				crws_authorJsHandle=#{authorJsHandle},
+			</if>
+			<if test="worksJsHandle !=null AND worksJsHandle>0">
+				crws_worksJsHandle=#{worksJsHandle},
+			</if>
+			<if test="commentJsHandle !=null AND commentJsHandle>0">
+				crws_commentJsHandle=#{commentJsHandle},
+			</if>
+			<if test="enable !=null">
+				crws_enable=#{enable}
+			</if>
+		</set>
+		where
+		crws_id=#{siteId}
+	</update>
+
+	<delete id="delete" parameterType="java.lang.Integer">
+		DELETE FROM
+		crawwebsite
+		WHERE
+		crws_id=#{siteId}
+	</delete>
+	<select id="countSite" resultType="java.lang.Long">
+		SELECT
+		COUNT(cw.crws_id)
+		FROM
+		crawlwebsite cw
+	</select>
+
+	<!-- zd -->
+	<select id="selectAuthorWorkNum" parameterType="java.util.HashMap"
+		resultType="com.swust.kelab.domain.Site">
+		SELECT
+			cw.crws_id AS siteId,
+			cw.crws_siteName AS siteName,
+			cw.crws_seedUrl AS seedUrl,
+			count(au.auth_id) AS totalAuthors,
+			w._totalWorks AS totalWorks
+		FROM
+			crawlwebsite cw
+		LEFT OUTER JOIN author au ON au.auth_wesiId = cw.crws_id
+		LEFT OUTER JOIN (
+		SELECT
+			cw.crws_id AS crwsId,
+			count(wo.work_id) AS _totalWorks
+		FROM
+			works wo,
+		crawlwebsite cw
+		WHERE
+			wo.work_wesiId = cw.crws_id
+		GROUP BY
+			cw.crws_id
+		) w ON w.crwsId = cw.crws_id
+		<where>
+			<if test="searchWord != null">
+				cw.crws_siteName like CONCAT('%',#{searchWord},'%' )
+			</if>
+		</where>
+		GROUP BY
+		cw.crws_id
+		<if test="maxCount!=null">
+			limit
+			<if test="startIndex!=null">
+				#{startIndex},
+			</if>
+			#{maxCount}
+		</if>
+	</select>
+
+	<select id="selectLastestUpdateTime" resultType="com.swust.kelab.domain.Site">
+		SELECT
+			auth_wesiId AS siteId,
+			max(auup_time) AS authorUpdate
+		FROM
+			authorupdate,
+			author,
+			crawlwebsite
+		WHERE
+			auup_authId = auth_id
+		AND auth_wesiId = crws_id
+		GROUP BY
+			auth_wesiId
+	</select>
+	
+	<select id="selectLastestUpdate" parameterType="java.lang.Integer"
+		resultType="java.lang.String">
+		SELECT
+		max(time) as authorUpdate
+		FROM
+		(select auup_authId as
+		authId,max(auup_time) as time from authorupdate GROUP BY auup_authId)
+		as timetable,
+		crawlwebsite cw,
+		author au
+		<where>
+			timetable.authId = au.auth_id and au.auth_wesiId = #{crwsId}
+		</where>
+	</select>
+	<!-- 至此 -->
+</mapper>

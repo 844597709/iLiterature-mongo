@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>iLiterature网络文学监测系统</title>
+<link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="../css/isearch4-resp.css">
+<link rel="stylesheet" type="text/css" href="../css/jqcloud.css" />
+</head>
+<body>
+<div id="homepage" >
+	<div class="container" >
+		<div id="login-header" class="row">
+			<div id="login-logo" class="span6">
+				<h3 id="login-title">网络文学监测系统
+				</h3>
+			</div>
+			<div class="login-title" class="span6">
+				<a id="iLogin">&nbsp; 登陆&nbsp;</a>|<a id="iRegister">&nbsp;注册 </a>
+				</div>
+				<!-- <div class="login-title" class="span3">
+			 <strong>推荐使用IE9及以上、Chrome、FireFox等浏览器</strong>
+			</div> -->
+		</div>
+		<div id="information" style="margin-top:20px;"></div>
+		<div class="row" id="iLogin1" style="height:550px;">
+			<div class="span7 homepage-intro">
+				<img src="../img/books.png">
+			</div>
+			
+			<div class="span5">
+				<form class="form-login" >
+				 <fieldset>
+							<legend>登录系统</legend>
+                              <label class="sr-only" for="username">用户名</label>
+                            <input type="text" class="input-xlarge" name="user_name" id="user_name" placeholder="您的用户名">
+                        
+                            <label class="sr-only" for="password">登录密码</label>
+                            <input type="password" class="input-xlarge" name="user_password" id="user_password" placeholder="您的登陆密码">
+
+							<div class="control-group">
+								<label class="control-label" for="user_password">验证码</label>
+								<div class="controls">
+		                            <input type="text" class="input-large" name="authcode" id="authcode" placeholder="右边的验证码">
+		                            <span class="help-inline  label label-info"><img
+									id="imgcode" src="checkcode.jsp" onclick="reloadcode()" alt="验证码">
+								</span>
+							</div>
+						</div>
+                        <div class="control-group">
+							<div class="controls">
+								<button id="loginbut" class="btn  btn-success span2">
+									<i class="icon-lock icon-white"></i> 登录
+								</button>
+								<button id="loginrest" type="reset" class="btn span2">
+									<i class=" icon-remove-circle "></i> 重置
+								</button>
+							</div>
+						</div>
+						<div id="alertmsg"></div>
+                        </fieldset>
+                    </form>
+			</div>
+		<!-- </div>//row
+		<div class="row"> -->
+           <!--  <div class="span3">
+                 <a href="#">
+                 <img src='../img/website.png' />
+             <p>文学网站：<span id="websites"></span>个 </p>
+             </a> 
+               </div>
+              <div class="span3">
+                <a href="#">
+                  <img src='../img/author.png' />
+                    <p>作者：<span id="authors"></span>人
+                </p></a>
+              </div>
+              <div class="span3">
+                <a href="#">
+                  <img src='../img/work.png' />
+                 <p>作品：<span id="works"></span>部 
+                </p></a>
+              </div>
+              <div class="span3">
+                <a href="#" >
+                  <img src='../img/comment.png'  />
+                  <p>评论：<span id="comments"></span>条
+                </p></a>
+              </div>  -->
+           
+            <div class="span3">
+              <span class="badge badge-warning" ><h3 class="websites" style="margin-left:20px;margin-right:20px;"></h3></span>
+             <!--  <h5>文学网站（个）</h5> -->
+              <label style="margin-left:5px;"><strong>文学网站</strong>(个)</label>
+              </div> 
+              <div class="span3">
+              <span class="badge badge-success" ><h3 class="authors"></h3></span>
+            <!--   <h5>作者(人)</h5> -->
+              <label><strong>作者</strong>(人)</label>
+              </div>  
+              <div class="span3">
+              <span class="badge badge-important"><h3 class="works"></h3></span>
+              <label><strong>作品</strong>(部)</label>
+              </div>  
+              <div class="span3">
+              <span class="badge badge-info" ><h3 class="comments"></h3></span>
+              <label><strong>评论</strong>(条)</label>
+              </div>  
+     
+              
+              
+              
+		</div>
+		
+		<div id="iRegister1" class="row" style="display:none;">
+		<div style="max-height:700px;">
+			<form class="form-horizontal">
+			 <legend style="margin-bottom:10px;">用户注册</legend>
+				<div class="control-group">
+					<label class="control-label " for="userName ">用户名</label>
+					<div class="control">
+						<input id="userName" class="input-big valid" name="userName" type="text"><span
+							class="help-inline">请输入用户的登录名称（必填）</span>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="password ">用户密码</label>
+					<div class="control">
+						<input id="password" class="input-big valid span3" name="password"
+							type="password"> <span class="help-inline">请输入用户的密码（必填）</span>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="password2">确认密码</label>
+					<div class="control">
+						<input id="password2" class="input-big valid span3" name="password2"
+							type="password"> <span class="help-inline">请再次确认用户的密码（必填）</span>
+					</div>
+				</div>	
+				<div class="control-group">
+					<label class="control-label" for="userTrueName">真实姓名</label>
+					<div class="control">
+						<input id="userTrueName" class="input-big valid"
+							data-provide="typeahead" name="userTrueName" type="text">
+						<span class="help-inline">请输入用户的真实名称（必填）</span>
+					</div>
+				</div>
+				<div class="control-group">
+							<label class="control-label" for="position">工作单位</label>
+							<div class="control">
+								<input id="department" class="input-big valid span3" type="text"
+									data-provide="typeahead" name="department"> 
+									<span class="help-inline">请输入用户的工作单位</span>
+							</div>
+						</div>
+				<div class="control-group">
+							<label class="control-label" for="position">职&nbsp;&nbsp;&nbsp;位</label>
+							<div class="control">
+								<input id="position" class="input-big valid" type="text"
+									data-provide="typeahead" name="position"> 
+									<span class="help-inline">请输入用户的职位</span>
+							</div>
+						</div>
+				<div class="control-group">
+					<label class="control-label" for="contactNum">联系电话</label>
+					<div class="control">
+						<input id="contactNum" class="input-big valid span3"
+							data-provide="typeahead" name="contactNum" type="text" maxlength="11"> <span
+							class="help-inline">请输入用户的联系电话式</span>
+					</div>
+				</div>
+				 <div class="control-group">
+					<label class="control-label" for="email">邮&nbsp;&nbsp;&nbsp;箱</label>
+					<div class="control">
+						<input id="email" class="input-big valid span3" data-provide="typeahead"
+							name="email" type="text"> <span class="help-inline">请输入用户的邮箱</span>
+					</div>
+				</div> 
+				<div class="control-group">
+					<label class="control-label" for="rejectReason">申请理由</label>
+					<div class="control">
+						<textarea id="Reason" name="Reason"  cols="60" ></textarea>
+						<span class="help-inline">请输入用户的申请理由</span>
+					</div>
+				</div>
+			</form>
+			<div id="operateButton" class="modal-footer">
+			<button id="save" class="btn btn-primary">保存</button>
+				<button id="cancle" class="btn btn-warning" >重置</button>
+				</div>	
+		</div>
+	</div><!-- register1 -->
+		<!-- 信息提示 start -->
+	<div id="delModal" class="modal hide fade">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal"
+				aria-hidden="true">&times;</button>
+			<h4 id="infoHtml">登录失败提示</h4><!-- 错误信息 -->
+		</div>
+		<div class="modal-body">
+			<table border="0">
+				<tr>
+					<td id='delLabel'></td>
+				</tr>
+			</table>
+		</div>
+		<div class="modal-footer">
+			<button  class="btn btn-primary" data-dismiss="modal" aria-hidden="true"  id="confirm">确认</button>
+		</div>
+	</div>
+	<div class="row-fluid well">
+	<div class="reCommand">
+			 <a>推荐使用IE9及以上、Chrome、FireFox等浏览器</a>&nbsp;|&nbsp;<span id="footer"></span>
+		</div>
+	</div>
+</div><!--end of homepage  -->
+	<script src="../js/ext/jquery-1.8.3.js"></script>
+	<script src="../js/ext/bootstrap.js"></script>
+	<script type="text/javascript" src="../js/md5.js"></script>
+	<script type="text/javascript" src="../js/login.js"></script>
+	 <!-- <script type="text/javascript" src="../js/common.js"></script>  -->
+</body>

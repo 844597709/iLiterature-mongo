@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tempWorks">
+	<!-- 配置映射字段 -->
+	<resultMap type="com.swust.kelab.mongo.domain.TempWorks" id="tab_works">
+		<id property="workId" column="work_id"/>
+		<result property="workWebsiteId" column="work_wesiId"/>
+		<result property="workUrl" column="work_url"/>
+		<result property="workTitle" column="work_title"/>
+		<result property="workAuthor" column="work_author"/>
+		<result property="workAuthId" column="work_authId"/>
+		<result property="workDesc" column="work_description"/>
+		<result property="workNum" column="work_num"/>
+		<result property="workType" column="work_type"/>
+		<result property="workMark" column="work_mark"/>
+		<result property="workNature" column="work_nature"/>
+		<result property="workAuthorization" column="work_authorization"/>
+		<result property="workWriteProcess" column="work_writeProcess"/>
+		<result property="workIntime" column="work_inTime"/>
+		<result property="workOtherInfo" column="work_otherInfo"/>
+		<result property="workTotalHits" column="work_totalHits"/>
+		<result property="workTotalRecoms" column="work_totalRecoms"/>
+		<result property="workCommentsNum" column="work_commentsNum"/>
+	</resultMap>
+	<select id="selectAllCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+		SELECT
+		COUNT(wo.work_id)
+		FROM
+		works wo;
+	</select>
+	<select id="selectAllData" parameterType="java.util.HashMap" resultMap="tab_works">
+		select * from works
+		<if test="startIndex!=null and pageSize!=null">
+			limit #{startIndex}, #{pageSize};
+		</if>
+	</select>
+</mapper>

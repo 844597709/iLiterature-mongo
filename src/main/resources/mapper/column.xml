@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="column">
+	<select id="select" parameterType="java.util.HashMap"
+		resultType="com.swust.kelab.domain.Column">
+		select
+		colu_id as id,
+		colu_name as name,
+		colu_type as type,
+		colu_url as url,
+		colu_order as sequence,
+		colu_parent as parent,
+		colu_icon as icon
+		FROM `column`
+		<where>
+			<if test="type!=null">
+            <![CDATA[
+            	  colu_type=#{type} order by colu_order asc 
+               ]]>
+			</if>
+			<if test="parent!=null">
+			<![CDATA[
+					colu_parent=#{parent} and colu_id!=#{parent} order by colu_order asc 
+			]]>
+			</if>
+		</where>
+	</select>
+</mapper>

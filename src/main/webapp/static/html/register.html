@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>用户注册</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="../css/isearch4-resp.css">
+<!-- <link rel="stylesheet" type="text/css" href="../css/bootstrap-datetimepicker.css"> -->
+</head>
+<body class="layout-wrap">
+
+	<header id="overview" class="jumbotron subhead">
+		<div id="logo" class="container"></div>
+	</header>
+	<div class="container">
+		<div class="modal-header">
+			<h3 id="myModalLabel">用户注册</h3>
+		</div>
+		<div class="modal-body" style="max-height:450px;">
+			<div id="information"></div>
+			<form class="form-horizontal">
+				<div class="control-group">
+					<label class="control-label " for="userName ">用户名</label>
+					<div class="controls">
+						<input id="userName" class="input-big valid span3" name="userName" type="text"><span
+							class="help-inline">请输入用户的登录名称（必填）</span>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="userTrueName">真实姓名</label>
+					<div class="controls">
+						<input id="userTrueName" class="input-big valid span3"
+							data-provide="typeahead" name="userTrueName" type="text">
+						<span class="help-inline">请输入用户的真实名称（必填）</span>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="contactNum">联系方式</label>
+					<div class="controls">
+						<input id="contactNum" class="input-big valid span3"
+							data-provide="typeahead" name="contactNum" type="text"> <span
+							class="help-inline">请输入用户的联系方式</span>
+					</div>
+				</div>
+				<!-- <div class="control-group">
+					<label class="control-label" for="email">邮箱</label>
+					<div class="controls">
+						<input id="email" class="input-big valid span3" data-provide="typeahead"
+							name="email" type="text"> <span class="help-inline">请输入用户的邮箱</span>
+					</div>
+				</div> -->
+				<div class="control-group">
+					<label class="control-label" for="rejectReason">申请理由</label>
+					<div class="controls">
+						<input id="rejectReason" class="input-big valid span3"
+							data-provide="typeahead" name="rejectReason" type="text">
+						<span class="help-inline">请输入用户的申请理由（必填）</span>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="password ">用户密码</label>
+					<div class="controls">
+						<input id="password" class="input-big valid span3" name="password"
+							type="password"> <span class="help-inline">请输入用户的密码（必填）</span>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="password2">确认密码</label>
+					<div class="controls">
+						<input id="password2" class="input-big valid span3" name="password2"
+							type="password"> <span class="help-inline">请再次确认用户的密码（必填）</span>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="role">用户角色</label>
+					<div class="controls">
+						<select id="role" class="span3"><option value="0">一般用户</option>
+							<option value="1">管理员</option></select> <span class="help-inline">请选择用户角色</span>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="role">有效日期</label>
+					<div class="controls">
+						<select id="time" class="span3"><option value="3">3天</option>
+							<option value="15">15天</option>
+							<option value="30">30天</option>
+							<option value="60">60天</option></select><span class="help-inline">请选择有效日期</span>
+					</div>
+				</div>
+			
+			</form>
+		</div>
+			<div id="operateButton" class="modal-footer">
+			<button id="save" class="btn btn-primary">保存</button>
+				<button id="cancle" class="btn btn-warning" >重置</button>
+				</div>
+				
+		<div class="row-fluid well">
+			<div id="footer"></div>
+		</div>
+	</div>
+
+	<!-- 删除弹出层 end -->
+	<script src="../js/ext/jquery-1.8.3.js"></script>
+	<script src="../js/ext/bootstrap.js"></script>
+	<script type="text/javascript" src="../js/md5.js"></script>
+	<script type="text/javascript" src="../js/cachepage.js"></script>
+	<script type="text/javascript" src="../js/register.js"></script>
+	<!-- <script type="text/javascript" src="../js/common.js"></script> -->
+</body>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+	<!-- 开启注解配置 -->
+	<context:annotation-config />
+	<!-- Handler输入和输出的处理器 -->
+	<bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<!-- 处理返回值为Json格式的数据 -->
+		<property name="customReturnValueHandlers">
+			<list>
+				<bean
+					class="com.swust.kelab.web.adapter.JsonAndViewMethodReturnValueHandler" />
+			</list>
+		</property>
+		<property name="customArgumentResolvers">
+			<list>
+				<bean class="com.swust.kelab.web.adapter.EPOQueryMethodArgumentResolver" />
+				<bean
+					class="com.swust.kelab.web.adapter.EPOTimeQueryMethodArgumentResolver" />
+				<bean
+					class="com.swust.kelab.web.adapter.FullTextQueryMethodArgumentResolver" />
+			</list>
+		</property>
+	</bean>
+	<!-- 异常处理器 -->
+	<bean id="jsonExceptionResolver" class="com.swust.kelab.web.json.JsonExceptionResolver">
+		<property name="order" value="0" />
+	</bean>
+	<!-- 配置view视图处理器 -->
+	<bean id="beanNameViewResolver"
+		class="org.springframework.web.servlet.view.BeanNameViewResolver">
+		<property name="order" value="0" />
+	</bean>
+	<!--<bean id="jsonView" class="com.swust.kelab.web.json.JsonpView">-->
+		<!--&lt;!&ndash;<property name="encoding">-->
+			<!--<value type="org.codehaus.jackson.JsonEncoding">UTF8</value>-->
+		<!--</property> spring3&ndash;&gt;-->
+		<!--<property name="contentType" value="application/json;charset=UTF-8" />-->
+		<!--<property name="extractValueFromSingleKeyModel" value="true" />-->
+		<!--&lt;!&ndash; 配置Json解析时，去除为 null 的字段 by htx &ndash;&gt;-->
+		<!--&lt;!&ndash;<property name="objectMapper" ref="objectMapper" /> spring3&ndash;&gt;-->
+	<!--</bean>-->
+	<bean id="objectMapper" class="org.codehaus.jackson.map.ObjectMapper">
+		<property name="serializationInclusion">
+			<value type="org.codehaus.jackson.map.annotate.JsonSerialize$Inclusion">
+				NON_NULL
+			</value>
+		</property>
+	</bean>
+</beans>

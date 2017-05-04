@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--配置文件修改后自动重新加载 -->
+<configuration scan="true" scanPeriod="60 seconds">
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%.-5level|%d{yyyy-MM-dd HH:mm:ss}|%-10.10logger{0}|%msg%n
+			</pattern>
+		</encoder>
+	</appender>
+	<appender name="file" class="ch.qos.logback.core.FileAppender">
+		<file>/Users/user/Documents/logs/iLiterature/iliterature.log</file>
+		<encoder>
+			<pattern>%.-5level|%d{yyyy-MM-dd HH:mm:ss}|%-40.40logger{0}|%msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="org.springframework" level="error" />
+	<logger name="org.springframework.beans" level="error" />
+	<logger name="org.springframework.test" level="error" />
+
+	<logger name="com.ibatis" level="error" />
+	<logger name="com.ibatis.common.jdbc.SimpleDataSource" level="error" />
+	<logger name="com.ibatis.common.jdbc.ScriptRunner" level="error" />
+
+	<logger name="java.sql.PreparedStatement" level="debug" />
+	<logger name="java.sql.Connection" level="debug" />
+	<logger name="java.sql.Statement" level="debug" />
+	<!-- 记录元搜索爬虫的操作日志 -->
+	<logger name="datalog.metasearch" level="info">
+		<appender-ref ref="file" />
+	</logger>
+	<!-- 记录自然语言处理的操作日志 -->
+	<logger name="datalog.nlp" level="error" />
+	<!-- 记录全文检索的操作日志 -->
+	<logger name="datalog.fts" level="error" />
+	<!-- 记录情感分析日志 -->
+	<logger name="datalog.opinion" level="error" />
+	<!-- 记录摘要生成日志 -->
+	<logger name="datalog.summary" level="error" />
+	<!--默认日志级别 -->
+	<root level="info">
+		<appender-ref ref="console" />
+	</root>
+</configuration>
+

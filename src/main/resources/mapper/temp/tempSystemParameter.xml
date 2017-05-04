@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tempSystemParameter">
+	<!-- 配置映射字段 -->
+	<resultMap type="com.swust.kelab.mongo.domain.TempSystemParameter" id="tab_systemparameter">
+		<id property="sypaId" column="sypa_id"/>
+		<result property="sypaName" column="sypa_name"/>
+		<result property="sypaEnName" column="sypa_en_name"/>
+		<result property="sypaValue" column="sypa_value"/>
+		<result property="sypaRemark" column="sypa_remark"/>
+		<result property="sypaOrder" column="sypa_order"/>
+	</resultMap>
+	<select id="selectAllCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+		SELECT
+		COUNT(sypa.sypa_id)
+		FROM
+		systemparameter sypa;
+	</select>
+	<select id="selectAllData" parameterType="java.util.HashMap" resultMap="tab_systemparameter">
+		SELECT * from systemparameter
+		<if test="startIndex!=null and pageSize!=null">
+			limit #{startIndex}, #{pageSize};
+		</if>
+	</select>
+</mapper>

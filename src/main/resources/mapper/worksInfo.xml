@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="worksInfo">
+	<select id="selectTop" parameterType="java.lang.Integer"
+		resultType="com.swust.kelab.domain.WorksInfo">
+		SELECT
+		wo.work_id AS workId,
+		wo.work_author AS author,
+		wo.work_title AS
+		title,
+		wo.work_url AS url,
+		wo.work_type AS type,
+		wo.work_description AS
+		description,
+		wu.woup_totalHits AS totalHits,
+		wu.woup_time AS sTime
+		FROM
+		works wo,
+		works_update_temp wu 
+		where
+		wo.work_id = wu.woup_workId
+		ORDER BY
+		<if test="_parameter==1">
+			wu.woup_time DESC
+		</if>
+		<if test="_parameter==2">
+			wu.woup_totalHits DESC
+		</if>
+		<if test="_parameter==3">
+			wu.woup_totalRecoms DESC
+		</if>
+		<if test="_parameter==4">
+			wu.woup_grade DESC
+		</if>
+		limit 0 , 20
+	</select>
+	<select id="selectByAuthor" parameterType="java.util.HashMap"
+		resultType="com.swust.kelab.domain.WorksInfo">
+		SELECT
+		wo.work_id AS workId,
+		wo.work_author AS author,
+		wo.work_title AS
+		title,
+		wo.work_url AS url,
+		wo.work_type AS type,
+		wo.work_num AS num,
+		wo.work_mark AS mark,
+		wo.work_nature AS nature,
+		wo.work_authorization AS
+		authorization,
+		wo.work_otherInfo AS otherInfo,
+		wo.work_description AS
+		description
+		FROM
+		works wo
+		LEFT OUTER JOIN author au ON au.auth_id =
+		wo.work_authId
+		<where>
+			<if test="authorId>0">
+				au.auth_id=#{authorId}
+			</if>
+		</where>
+	</select>
+
+	<!--works_update_temp z-->
+	<select id="select" parameterType="java.util.HashMap"
+		resultType="com.swust.kelab.domain.WorksInfo">
+		select
+		wo.work_id as workId,
+		wo.work_title as title,
+		wo.work_author as
+		author,
+		wo.work_type as type,
+		wo.work_url as url,
+		wo.work_description as
+		description,
+		wu.woup_time as sTime,
+		wu.woup_totalHits as totalHits,
+		wu.woup_commentsNum as commentsNum,
+		wu.woup_totalRecoms as
+		totalRecoms,
+		cw.crws_id as crwsSiteId,
+		cw.crws_siteName as crwsSiteName
+		from
+		works_update_temp wu,
+		works wo,
+		crawlwebsite cw
+		<where>
+			wu.woup_workId = wo.work_id and wo.work_wesiId = cw.crws_id
+			<if test="workId>0">
+				and wo.work_id=#{workId}
+			</if>
+			<if test="searchWord != null">
+				and wo.work_title like CONCAT('%',#{searchWord},'%' )
+			</if>
+			<if test="siteId>0">
+				and cw.crws_id = #{siteId}
+			</if>
+		</where>
+		<if test="parameter!=null">
+			order by
+			<if test="parameter==1">
+				wu.woup_totalHits
+			</if>
+			<if test="parameter==2">
+				wu.woup_commentsNum
+			</if>
+			<if test="parameter==3">
+				wu.woup_totalRecoms
+			</if>
+			<if test="orderDesc!=0">
+				DESC
+			</if>
+			<if test="orderDesc==0">
+				ASC
+			</if>
+		</if>
+		<if test="maxCount!=null">
+			limit
+			<if test="startIndex!=null">
+				#{startIndex},
+			</if>
+			#{maxCount}
+		</if>
+	</select>
+	<!-- 至此 -->
+
+	<select id="selectCount" parameterType="java.util.HashMap"
+		resultType="java.lang.Integer">
+		SELECT
+		COUNT(wo.work_id)
+		FROM
+		works wo
+		<where>
+			<if test="searchWord != null">
+				wo.work_title like CONCAT('%','${searchWord}','%' )
+			</if>
+			<if test="siteId>0">
+				and work_wesiId = #{siteId}
+			</if>
+		</where>
+	</select>
+
+
+	<select id="selectWorksUpdateById" parameterType="java.util.HashMap"
+		resultType="com.swust.kelab.domain.WorksUpdate">
+		SELECT
+		wu.woup_attr1 AS attr1,
+		wu.woup_attr2 AS attr2,
+		wu.woup_attr3 AS
+		attr3,
+		wu.woup_attr4 AS attr4,
+		wu.woup_attr5 AS attr5,
+		wu.woup_attr6 AS
+		attr6,
+		wu.woup_attr7 AS attr7,
+		wu.woup_attr9 AS attr9,
+		wu.woup_workId AS
+		workId,
+		wu.woup_time AS wouptime,
+		wo.work_wesiId AS websiteId
+		FROM
+		worksupdate wu
+		LEFT OUTER JOIN
+		works wo ON
+		wo.work_id = wu.woup_workId
+		<where>
+			<if test="workId>0">
+				wu.woup_workId=#{workId}
+			</if>
+			and
+			woup_time in (select max(woup_time) from worksupdate where
+			datediff(woup_time,woup_time)=0 GROUP BY woup_workId)
+		</where>
+		order by
+		wu.woup_workId ASC,
+		wu.woup_time DESC
+
+
+	</select>
+
+	<!-- ***************************************************************************** -->
+
+	<select id="selectWorkUpdateByWebsiteId" parameterType="java.util.HashMap"
+		resultType="java.lang.String">
+		SELECT
+		crws_worksUpdate
+		FROM
+		crawlwebsite
+		<where>
+			crws_id=#{websiteId}
+		</where>
+	</select>
+
+	<!-- 至此 -->
+
+	<select id="selectByWork" parameterType="java.util.HashMap"
+		resultType="com.swust.kelab.domain.WorkDetail">
+		SELECT
+		wu.woup_collectNum AS collectNum,
+		wu.woup_commentsNum AS
+		commentsNum,
+		wu.woup_flowersNum AS flowersNum,
+		wu.woup_grade AS grade,
+		wu.woup_mTickets AS mTickets,
+		wu.woup_time AS sTime,
+		wu.woup_totalHits
+		AS totalHits,
+		wu.woup_totalRecoms AS totalRecoms,
+		wu.woup_updateTime AS
+		updateTime,
+		wu.woup_workId AS workId,
+		wu.woup_wordsNum AS wordsNum
+		FROM
+		worksupdate wu
+		LEFT OUTER JOIN works wo ON wo.work_id = wu.woup_workId
+		<where>
+			<if test="workId>0">
+				wo.work_id=#{workId}
+			</if>
+		</where>
+		ORDER BY
+		wu.woup_workId,
+		wu.woup_totalHits DESC,
+		wu.woup_totalRecoms
+		DESC,
+		wu.woup_commentsNum DESC
+	</select>
+	<select id="countWorks" resultType="java.lang.Long">
+		SELECT
+		COUNT(wo.work_id)
+		FROM
+		works wo
+	</select>
+
+	<!-- zd -->
+	<select id="countWorksComments" resultType="java.lang.Long">
+		SELECT
+		count(woco_id)
+		FROM
+		workscomment
+	</select>
+	<!-- 至此 -->
+
+	<select id="commentsByWork" parameterType="java.util.HashMap"
+		resultType="com.swust.kelab.domain.Comment">
+		SELECT
+		wc.woco_workId AS workId,
+		wc.woco_content AS content
+		FROM
+		workscomment wc
+		<where>
+			<if test="workId>0">
+				wc.woco_workId=#{workId}
+			</if>
+		</where>
+	</select>
+	<select id="selectByAuthor_description" parameterType="java.util.HashMap"
+		resultType="com.swust.kelab.domain.WorkDescription">
+		SELECT
+		wo.work_id AS workId,
+		wo.work_description AS
+		description
+		FROM
+		works
+		wo
+		LEFT OUTER JOIN author au ON au.auth_id = wo.work_authId
+		<where>
+			<if test="authorId>0">
+				au.auth_id=#{authorId}
+			</if>
+		</where>
+	</select>
+
+	<!-- zd -->
+	<select id="selectWorkType" parameterType="java.util.HashMap"
+		resultType="com.swust.kelab.domain.Area">
+		SELECT
+		count(works.work_id) AS `value`,
+		work_type AS `name`
+		FROM
+		works
+		WHERE
+		work_type!=''
+		<if test="siteId!=0">
+			and work_wesiId = #{siteId}
+		</if>
+		GROUP BY
+		work_type
+		ORDER BY
+		count(works.work_id) DESC
+		LIMIT 0,9
+	</select>
+
+	<select id="selectWorkSome" parameterType="java.lang.Integer"
+		resultType="java.lang.Long">
+		select
+		sum(wo.totalWorks)
+		from(
+		SELECT
+		count(works.work_id) AS totalWorks,
+		work_type AS type
+		FROM
+		works
+		<where>
+			work_type!=''
+			<if test="_parameter>0">
+				and work_wesiId = #{_parameter}
+			</if>
+		</where>
+		GROUP BY
+		work_type
+		ORDER BY
+		count(works.work_id) DESC
+		LIMIT 0,9) wo
+	</select>
+
+	<select id="selectHotWork" parameterType="java.lang.Integer"
+		resultType="com.swust.kelab.domain.WorkDetail">
+		<!-- select wo.work_id as workId, wo.work_title as title, wo.work_author 
+			as author, wo.work_type as type, wu.woup_time as updateTime, max(wu.woup_totalHits) 
+			as totalHits, max(wu.woup_commentsNum) as commentsNum, max(wu.woup_totalRecoms) 
+			as totalRecoms from worksupdate wu, works wo <where> wu.woup_workId = wo.work_id 
+			</where> group by wo.work_id order by <if test="_parameter==1"> max(wu.woup_totalHits) 
+			desc </if> <if test="_parameter==2"> max(wu.woup_commentsNum) desc </if> 
+			<if test="_parameter==3"> max(wu.woup_totalRecoms) desc </if> limit 0, 10 -->
+		SELECT
+		wo.work_id as workId,
+		wo.work_title as title,
+		wo.work_author as
+		author,
+		wo.work_type as type,
+		wu.woup_time as updateTime,
+		wu.woup_totalHits as totalHits,
+		wu.woup_commentsNum as commentsNum,
+		wu.woup_totalRecoms as totalRecoms
+		FROM
+		`works_update_temp` wu,
+		works wo
+		WHERE
+		wo.work_id = wu.woup_workId
+		ORDER
+		BY
+		<if test="_parameter==1">
+			woup_totalHits desc
+		</if>
+
+		<if test="_parameter==2">
+			woup_commentsNum desc
+		</if>
+		<if test="_parameter==3">
+			woup_totalRecoms desc
+		</if>
+		LIMIT 0,
+		10;
+	</select>
+
+	<select id="selectUpdate" resultType="com.swust.kelab.web.model.AuthorWorkUpdate">
+		SELECT
+		a.wotime as time,
+		a._totalUpdateWorks as totalUpdateWorks,
+		b._auupAuthorNum as
+		totalUpdateAuthors
+		FROM
+		(
+		select
+		DISTINCT(DATE_FORMAT(woup_time,'%m-%d'))
+		as wotime,
+		count(DISTINCT(woup_workId)) AS _totalUpdateWorks
+		from
+		worksupdate
+		GROUP BY wotime
+		) a,
+		(
+		select
+		DISTINCT(DATE_FORMAT(auup_time,'%m-%d')) as autime,
+		count(DISTINCT(auup_authId)) AS _auupAuthorNum
+		from authorupdate
+		GROUP
+		BY autime
+		) b
+		where a.wotime = b.autime
+		GROUP BY
+		time
+		ORDER BY
+		time DESC
+		limit 0,10;
+	</select>
+
+	<!-- 每个阶段点击量的作品数 -->
+	<select id="selectWorkHit" parameterType="java.util.HashMap"
+		resultType="com.swust.kelab.domain.WorkDetail">
+		select
+		count(woup_workId) as totalWorks
+		from
+		works_update_temp
+		<if test="siteId!=0">
+			, works
+			<where> woup_workId = work_id and work_wesiId = 1 AND </where>
+			<if test="maxBound!=-1">
+             	<![CDATA[woup_totalHits < #{maxBound} and woup_totalHits >= #{minBound}]]>
+			</if>
+			<if test="maxBound==-1">
+                 <![CDATA[woup_totalHits >= #{minBound}]]>
+			</if>
+		</if>
+		<if test="siteId==0">
+			<where>
+				<if test="maxBound!=-1">
+             	<![CDATA[woup_totalHits < #{maxBound} and woup_totalHits >= #{minBound}]]>
+				</if>
+				<if test="maxBound==-1">
+                 <![CDATA[woup_totalHits >= #{minBound}]]>
+				</if>
+			</where>
+		</if>
+	</select>
+
+	<!-- 每个阶段评论数的作品数 -->
+	<select id="selectWorkComment" parameterType="java.util.HashMap"
+		resultType="com.swust.kelab.domain.WorkDetail">
+		select
+		count(woup_workId) as totalWorks
+		from
+		works_update_temp
+		<if test="siteId!=0">
+			, works
+			<where> woup_workId = work_id and work_wesiId = 1 AND </where>
+			<if test="maxBound!=-1">
+             	<![CDATA[woup_commentsNum < #{maxBound} and woup_commentsNum >= #{minBound}]]>
+			</if>
+			<if test="maxBound==-1">
+             	<![CDATA[woup_commentsNum >= #{minBound}]]>
+			</if>
+		</if>
+		<if test="siteId==0">
+			<where>
+				<if test="maxBound!=-1">
+             	<![CDATA[woup_commentsNum < #{maxBound} and woup_commentsNum >= #{minBound}]]>
+				</if>
+				<if test="maxBound==-1">
+             	<![CDATA[woup_commentsNum >= #{minBound}]]>
+				</if>
+			</where>
+		</if>
+	</select>
+
+	<!-- 每个阶段推荐数的作品数 -->
+	<select id="selectWorkRecom" parameterType="java.util.HashMap"
+		resultType="com.swust.kelab.domain.WorkDetail">
+		select
+		count(woup_workId) as totalWorks
+		from
+		works_update_temp
+		<if test="siteId!=0">
+			, works
+			<where> woup_workId = work_id and work_wesiId = 1 AND </where>
+			<if test="maxBound!=-1">
+             	<![CDATA[woup_totalRecoms < #{maxBound} and woup_totalRecoms >= #{minBound}]]>
+			</if>
+			<if test="maxBound==-1">
+             	<![CDATA[woup_totalRecoms >= #{minBound}]]>
+			</if>
+		</if>
+		<if test="siteId==0">
+			<where>
+				<if test="maxBound!=-1">
+             	<![CDATA[woup_totalRecoms < #{maxBound} and woup_totalRecoms >= #{minBound}]]>
+				</if>
+				<if test="maxBound==-1">
+             	<![CDATA[woup_totalRecoms >= #{minBound}]]>
+				</if>
+			</where>
+		</if>
+	</select>
+	<!-- 至此 -->
+
+
+</mapper>

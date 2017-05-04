@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tempAuthorUpdate">
+	<!-- 配置映射字段 -->
+	<resultMap type="com.swust.kelab.mongo.domain.TempAuthorUpdate" id="tab_authorupdate">
+		<id property="auupId" column="auup_id"/>
+		<result property="auupAuthId" column="auup_authId"/>
+		<result property="auupTime" column="auup_time"/>
+		<result property="auupGrade" column="auup_grade"/>
+		<result property="auupAttr1" column="auup_attr1"/>
+		<result property="auupAttr2" column="auup_attr2"/>
+		<result property="auupAttr3" column="auup_attr3"/>
+		<result property="auupAttr4" column="auup_attr4"/>
+		<result property="auupAttr5" column="auup_attr5"/>
+	</resultMap>
+	<select id="selectAllCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+		SELECT
+		COUNT(auup.auup_id)
+		FROM
+		authorupdate auup;
+	</select>
+	<select id="selectAllData" parameterType="java.util.HashMap" resultMap="tab_authorupdate">
+		SELECT * from authorupdate
+		<if test="startIndex!=null and pageSize!=null">
+			limit #{startIndex}, #{pageSize};
+		</if>
+	</select>
+</mapper>

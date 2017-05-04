@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="webSite">
+	<select id="select" parameterType="java.util.HashMap"
+		resultType="com.swust.kelab.domain.WebSite">
+		SELECT
+		we.wesi_id as siteId,
+		we.wesi_name as siteName,
+		we.wesi_homepage
+		as homePage,
+		we.wesi_worksInfo as worksInfo,
+		we.wesi_authorInfo as
+		authorInfo,
+		we.wesi_concernDegree as concernDegree
+		FROM
+		website we
+		<where>
+			<if test="siteName != null">
+				we.wesi_name=#{siteName}
+			</if>
+		</where>
+		<if test="maxCount!=null">
+			limit
+			<if test="startIndex!=null">
+				#{startIndex},
+			</if>
+			#{maxCount}
+		</if>
+	</select>
+	<select id="selectCount" parameterType="java.util.HashMap"
+		resultType="java.lang.Integer">
+		SELECT
+		COUNT(we.wesi_id)
+		FROM
+		website we
+	</select>
+
+	<insert id="insert" parameterType="com.swust.kelab.domain.WebSite"
+		useGeneratedKeys="true" keyProperty="siteId">
+      <![CDATA[
+     	INSERT INTO website  (wesi_name, wesi_homepage,	wesi_worksInfo,	wesi_authorInfo, wesi_concernDegree)
+			VALUES ( #{siteName}, #{homePage}, #{worksInfo}, #{authorInfo}, #{concernDegree} )
+      ]]>
+	</insert>
+
+	<update id="update" parameterType="com.swust.kelab.domain.WebSite">
+		UPDATE
+		website
+		<set>
+			<if test="siteName != null">
+				wesi_name=#{siteName},
+			</if>
+			<if test="homePage !=null">
+				wesi_homepage=#{homePage},
+			</if>
+			<if test="worksInfo !=null">
+				wesi_worksInfo=#{worksInfo},
+			</if>
+			<if test="authorInfo !=null">
+				wesi_authorInfo=#{authorInfo},
+			</if>
+			<if test="concernDegree>0">
+				wesi_concernDegree=#{concernDegree}
+			</if>
+		</set>
+		where
+		wesi_id=#{siteId}
+	</update>
+	<delete id="delete" parameterType="java.lang.Integer">
+		DELETE FROM
+		website
+		WHERE
+		wesi_id=#{siteId}
+	</delete>
+</mapper>

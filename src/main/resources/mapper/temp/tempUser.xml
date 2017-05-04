@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tempUser">
+	<!-- 配置映射字段 -->
+	<resultMap type="com.swust.kelab.mongo.domain.TempUser" id="tab_user">
+		<id property="userId" column="user_id"/>
+		<result property="userLoginName" column="user_loginName"/>
+		<result property="userPassword" column="user_password"/>
+		<result property="userRealName" column="user_realName"/>
+		<result property="userJobNum" column="user_jobNum"/>
+		<result property="userDepartment" column="user_department"/>
+		<result property="userPosition" column="user_position"/>
+		<result property="userContactNum" column="user_contactNum"/>
+		<result property="userEMail" column="user_email"/>
+		<result property="userVerify" column="user_verify"/>
+		<result property="userRejectReason" column="user_rejectReason"/>
+		<result property="userRole" column="user_role"/>
+		<result property="userLoginTime" column="user_loginTime"/>
+	</resultMap>
+	<select id="selectAllCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+		SELECT
+		COUNT(user_id)
+		FROM
+		`user`;
+	</select>
+	<select id="selectAllData" parameterType="java.util.HashMap" resultMap="tab_user">
+		SELECT * from `user`
+		<if test="startIndex!=null and pageSize!=null">
+			limit #{startIndex}, #{pageSize};
+		</if>
+	</select>
+</mapper>

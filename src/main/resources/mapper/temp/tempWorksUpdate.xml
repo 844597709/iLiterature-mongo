@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tempWorksUpdate">
+	<!-- 配置映射字段 -->
+	<resultMap type="com.swust.kelab.mongo.domain.TempWorksUpdate" id="tab_worksupdate">
+		<id property="woupId" column="woup_id"/>
+		<result property="woupWorkId" column="woup_workId"/>
+		<result property="woupTime" column="woup_time" javaType="java.lang.String"/>
+		<result property="woupWordsNum" column="woup_wordsNum"/>
+		<result property="woupTotalHits" column="woup_totalHits"/>
+		<result property="woupTotalRecoms" column="woup_totalRecoms"/>
+		<result property="woupCollectNum" column="woup_collectNum"/>
+		<result property="woupMTickets" column="woup_mTickets"/>
+		<result property="woupFlowersNum" column="woup_flowersNum"/>
+		<result property="woupCommentsNum" column="woup_commentsNum"/>
+		<result property="woupGrade" column="woup_grade"/>
+		<result property="woupUpdateTime" column="woup_updateTime" javaType="java.lang.String"/>
+		<result property="woupAttr1" column="woup_attr1"/>
+		<result property="woupAttr2" column="woup_attr2"/>
+		<result property="woupAttr3" column="woup_attr3"/>
+		<result property="woupAttr4" column="woup_attr4"/>
+		<result property="woupAttr5" column="woup_attr5"/>
+		<result property="woupAttr6" column="woup_attr6"/>
+		<result property="woupAttr7" column="woup_attr7"/>
+		<result property="woupAttr8" column="woup_attr8"/>
+		<result property="woupAttr9" column="woup_attr9"/>
+		<result property="woupAttr10" column="woup_attr10"/>
+	</resultMap>
+	<select id="selectAllCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+		SELECT
+		COUNT(woup.woup_id)
+		FROM
+		worksupdate woup;
+	</select>
+	<select id="selectAllData" parameterType="java.util.HashMap" resultMap="tab_worksupdate">
+		select * from worksupdate
+		<if test="startIndex!=null and pageSize!=null">
+			limit #{startIndex}, #{pageSize};
+		</if>
+	</select>
+</mapper>

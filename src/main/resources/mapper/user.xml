@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="user">
+	<select id="select" parameterType="java.util.HashMap"
+		resultType="com.swust.kelab.domain.User">
+		SELECT
+		us.user_id as userId,
+		us.user_realName as userTrueName,
+		us.user_loginName as userName,
+		us.user_password as password,
+		us.user_role as role,
+		us.user_position as position,
+		us.user_contactNum
+		as contactNum ,
+		us.user_email as email,
+		us.user_department as
+		department,
+		us.user_jobNum as jobNum,
+		us.user_rejectReason as
+		rejectReason,
+		us.user_verify as verify,
+		us.user_loginTime as deadTime
+		FROM
+		`user` us
+		<where>
+			<if test="userId != null and userId > 0 ">
+				us.user_id=#{userId}
+			</if>
+			<if test="userName != null and userName != ''">
+				us.user_loginName=#{userName} or
+				us.user_realName=#{userName}
+			</if>
+			<if test="userTrueName != null and userTrueName != ''">
+				us.user_realName=#{userTrueName}
+			</if>
+		</where>
+		<if test="maxCount!=null">
+			limit
+			<if test="startIndex!=null">
+				#{startIndex},
+			</if>
+			#{maxCount}
+		</if>
+	</select>
+	
+	<select id="selectCount" parameterType="java.util.HashMap"
+		resultType="java.lang.Integer">
+		SELECT COUNT(user_id)
+		FROM user us
+		<where>
+			<if test="userName != null and userName != ''">
+				us.user_name=#{userName} or us.user_truename=#{userName}
+			</if>
+			<if test="userTrueName != null and userTrueName != ''">
+				us.user_truename=#{userTrueName}
+			</if>
+		</where>
+	</select>
+	
+	<insert id="insert" parameterType="com.swust.kelab.domain.User"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO user
+		(user_loginName,
+		user_password, user_realName , user_jobNum
+		,user_department,
+		user_position, user_contactNum, user_email, user_verify,
+		user_rejectReason, user_role, user_loginTime)
+		VALUES (
+		#{userName},
+		#{password},
+		#{userTrueName},
+		#{jobNum},
+		#{department},
+		#{position},
+		#{contactNum},
+		#{email},
+		#{verify},
+		#{rejectReason},
+		#{role},
+		#{deadTime}
+		)
+	</insert>
+
+	<update id="update" parameterType="com.swust.kelab.domain.User">
+		UPDATE
+		user
+		<set>
+			<if test="userName !=null">
+				user_loginName=#{userName},
+			</if>
+			<if test="password !=null">
+				user_password=#{password},
+			</if>
+			<if test="password !=null">
+				user_realName=#{userTrueName},
+			</if>
+			<if test="jobNum !=null">
+				user_jobNum=#{jobNum},
+			</if>
+			<if test="department !=null">
+				user_department=#{department},
+			</if>
+			<if test="position !=null">
+				user_position=#{position},
+			</if>
+			<if test="contactNum !=null">
+				user_contactNum=#{contactNum},
+			</if>
+			<if test="email !=null">
+				user_email=#{email},
+			</if>
+			<if test="verify !=null">
+				user_verify=#{verify},
+			</if>
+			<if test="rejectReason !=null">
+				user_rejectReason=#{rejectReason},
+			</if>
+			<if test="role !=null">
+				user_role=#{role},
+			</if>
+			<!-- STR_TO_DATE(#{deadTime},'%Y-%m-%d %H:%i:%s') -->
+			<if test="deadTime !=null">
+				user_loginTime=#{upDeadTime}
+			</if>
+		</set>
+		WHERE
+		user_id=#{userId}
+	</update>
+	
+	<delete id="delete" parameterType="java.lang.Integer">
+		DELETE FROM user
+		WHERE
+		user_id=#{userId}
+	</delete>
+	
+	<!-- zd -->
+	<select id="selectIsLegal" parameterType="java.util.HashMap" resultType="com.swust.kelab.domain.User">
+  		SELECT
+		user_verify as verify,
+		IF(<![CDATA[user_loginTime < #{dateTime}]]>,0,1) as isLegal
+		FROM
+		user
+		<where>
+			<if test="userId>0">
+				user.user_id=#{userId}
+			</if>
+		</where>
+	</select>
+	
+	<select id="selectVerifyDateTimeUser" parameterType="java.util.HashMap" resultType="com.swust.kelab.domain.User">
+ 		SELECT
+		us.user_id as userId,
+		us.user_realName as userTrueName,
+		us.user_loginName as userName,
+		us.user_password as password,
+		us.user_role as role,
+		us.user_position as position,
+		us.user_contactNum as contactNum ,
+		us.user_email as email,
+		us.user_department as department,
+		us.user_jobNum as jobNum,
+		us.user_rejectReason as rejectReason,
+		us.user_verify as verify,
+		us.user_loginTime as deadTime,
+		IF(<![CDATA[user_loginTime < now()]]>,0,1) as isLegal
+		FROM
+		user us
+		<where>
+			<if test="verify!=0">
+				user_verify=#{verify}-1
+			</if>
+			<if test="isLegal!=0">
+				and IF(<![CDATA[user_loginTime < now()]]>,0,1)=#{isLegal}-1
+			</if>
+			<if test="siteId != null">
+				and cw.crws_id = #{siteId}
+			</if>
+		</where>
+		<if test="maxCount!=null">
+			limit
+			<if test="startIndex!=null">
+				#{startIndex},
+			</if>
+			#{maxCount}
+		</if>
+	</select>
+	<!-- 至此 -->
+</mapper>

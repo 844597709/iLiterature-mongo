@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>iLiterature</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="../css/isearch4-resp.css">
+<link rel="stylesheet" type="text/css" href="../css/jqcloud.css" />
+</head>
+<body>
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<button class="btn btn-navbar" data-target=".nav-collapse"
+					data-toggle="collapse" type="button">
+					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<div class="nav-collapse collapse" id="navbar"></div>
+			</div>
+		</div>
+	</div>
+	<div id="overview" class="jumbotron"><!-- class="jumbotron" data-content="" -->
+		<div id="logo" class="container"></div>
+	</div>
+	<!-- begin container -->
+	<div class="container">
+		<!-- begin Mainbody -->
+		<div id="mainBody" class="row">
+			<!-- begin main -->
+			<div class="span9" id="main-side">
+				<div class="well">					  
+                   <!--最新作者  -->
+					<div class="row-fluid">
+						<div class="span10">
+							<h5 class="page-header" data-toogle="popover"
+								data-placement="top" data-content="最新的网络文学" data-trigger="hover"
+								data-html="true">
+								<i class="icon-align-left"></i>最新作者 <a id="author_Count">&nbsp; 作者区域分布</a>|<a id="author_List">&nbsp;最新作者列表 </a>
+							</h5>
+						</div>
+						<div class="span2">
+							<h6 class="page-header">
+								<a href="authorInfo.html?firstColuId=2">更多</a>
+							</h6>
+						</div>
+					</div><!-- row-fluid -->
+				<div id="author_List1" style="display:none">
+					<div class="row-fluid" >
+					<table class="table table-striped table-bordered">
+						<thead>
+							<tr>
+								<th>作者</th>
+								<th>作品数</th>
+								<th>区域</th>
+								<th><a class="sortclick" id="1">点击量 <!-- <i class="sortclick icon-arrow-up" id='1'></i> --></a></th>
+								<th><a class="sortclick" id='2'>评论量<!-- <i class="sortclick icon-arrow-up" id='2'></i> --></a></th>
+								<th><a class="sortclick" id='3'>推荐量<!--  <i class="sortclick icon-arrow-up" id='3'></i> --></a></th>
+								<!-- <th>更新时间</th> -->
+							</tr>
+						</thead>
+						<tbody id='iData1'></tbody>
+					</table>
+					</div><!-- //最热作品显示 -->					
+				</div><!-- row-fluid -->
+				<!--作品类别统计  -->
+				  <div id="author_Count1" style="display:block">
+				 <div class="well" id='iCharts' style='height: 400px;'></div>
+				  </div><!--well 	 -->	
+		   </div>
+				
+				<div class="well">					  
+                    <!--最热作品  -->
+					<div class="row-fluid">
+						<div class="span10">
+							<h5 class="page-header" data-toogle="popover"
+								data-placement="top" data-content="最新的网络文学" data-trigger="hover"
+								data-html="true">
+								<i class="icon-align-right"></i>最热作品 <a id="work_Count">&nbsp; 作品类别统计</a>|<a id="work_List">&nbsp;最热作品列表 </a>
+							</h5>
+						</div>
+						<div class="span2">
+							<h6 class="page-header">
+								<a href="workInfo.html?firstColuId=3">更多</a>
+							</h6>
+						</div>
+					</div><!-- row-fluid -->
+				<div id="work_List1" style="display:none">
+					<div class="row-fluid" >
+					<table class="table table-striped table-bordered">
+						<thead>
+							<tr>
+								<th>作品</th>
+								<th>作者</th>
+								 <th>类别</th> 
+								<th id="workHits"><a>点击量</a></th>
+								<th id="workComments"><a>评论量<!-- <i class="icon-arrow-down"> </i>--></a></th>
+								<th id="workRecommends"><a>推荐量<!-- <i class="icon-arrow-down"></i> --></a></th>
+								<th>更新时间</th>
+							</tr>
+						</thead>
+						<tbody id='iData'></tbody>
+					</table>
+					</div><!-- //最热作品显示 -->					
+				</div><!-- row-fluid -->
+				<!--作品类别统计  -->
+				  <div id="work_Count1" style="display:block">
+				 <div class="well" id='iAparts' style='height: 250px;'></div>
+				  </div><!--well 	 -->	
+		   </div>
+		   
+		   <div class="well" >
+				  <h4 class="page-header">最近更新情况</h4>
+				  <div id='iUpdate' style='height: 300px;'></div>
+				  </div><!--well  -->
+				  		 
+		</div><!-- span9 -->
+		
+			<div class="span3 well" id="side-right">
+				<!--欢迎信息，提示  -->
+				<div class="well">
+					<div id="welcomemsg"></div>
+					<div id="countInfo"></div>
+				</div>
+				
+				 <div class="well" >
+				 <h4 class="page-header">作者性别分布</h4>
+					<div id='iSex' style='height: 250px;'></div>
+				 </div> 
+				 
+				 <div class="well" >
+				 <h4 class="page-header">作者区域分布</h4>
+					<table class="table table-striped table-bordered">
+						<thead>
+							<tr>
+								<th>省份</th>
+								<th>作者数</th>
+								 <th>比例</th> 
+							</tr>
+						</thead>
+						<tbody id='AreaProvince'>
+						<tr><td class="ProvinceName"> </td><td class="ProvinceNum"><td> </td><td class="Prec"> </td></tr>
+						</tbody>
+					</table>
+				 </div> 
+				
+				
+				
+			</div>
+		</div>
+		<!-- end of mainBody -->
+		<div class="row well">
+			<div id="footer"></div>
+		</div>
+	</div>
+	<script src="../js/ext/jquery-1.8.3.js"></script>
+	<script src="../js/ext/bootstrap.js"></script>
+	<script src="../js/chart/echarts-all.js"></script>
+	<script type="text/javascript" src="../js/jquery.scrollUp.min.js"></script>
+	<!-- top1 -->
+	<script type="text/javascript" src="../js/jquery.unveil.min.js"></script>
+	<!-- top2 -->
+	<script type="text/javascript" src="../js/utils.js"></script>
+	<script type="text/javascript" src="../js/ext/jqcloud-1.0.4.js"></script>
+	<script type="text/javascript" src="../js/common.js"></script>
+	<script type="text/javascript" src="../js/literature.js"></script>
+</body>

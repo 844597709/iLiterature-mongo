@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="author">
+
+	<select id="select" parameterType="java.util.HashMap"
+		resultType="com.swust.kelab.domain.Author">
+		SELECT
+		auth_id AS authorId,
+		auth_wesiId AS wesiId,
+		auth_url AS url,
+		auth_name AS authorName,
+		auth_gender AS gender,
+		auth_area AS area,
+		auth_description AS description,
+		auth_inTime AS inTime,
+		auth_works_num
+		AS worksCount,
+		SUM(wo.work_totalHits) AS totalHits,
+		SUM(wo.work_commentsNum) AS commentsNum,
+		SUM(wo.work_totalRecoms) AS
+		totalRecoms,
+		crws_siteName AS wesiName
+		FROM
+		crawlwebsite cw,
+		author au
+		LEFT OUTER JOIN works wo ON au.auth_id =
+		wo.work_authId
+		WHERE
+		au.auth_wesiId = cw.crws_id
+		<if test="siteId != null">
+			<if test="siteId != 0">
+				AND au.auth_wesiId = #{siteId}
+			</if>
+		</if>
+		<if test="searchWord != null">
+			AND au.auth_name like CONCAT('%','${searchWord}','%' )
+		</if>
+		<if test="searchArea != null">
+			AND au.auth_area like CONCAT('%','${searchArea}','%' )
+		</if>
+		GROUP BY
+		au.auth_id
+		<if test="orderField>0">
+			ORDER BY
+			<if test="orderField==1">
+				totalHits
+			</if>
+			<if test="orderField==2">
+				commentsNum
+			</if>
+			<if test="orderField==3">
+				totalRecoms
+			</if>
+			<if test="orderField==4">
+				worksCount
+			</if>
+			<if test="orderDesc!=0">
+				DESC
+			</if>
+			<if test="orderDesc==0">
+				ASC
+			</if>
+		</if>
+		<if test="maxCount!=null">
+			LIMIT
+			<if test="startIndex!=null">
+				#{startIndex},
+			</if>
+			#{maxCount}
+		</if>
+	</select>
+	<select id="selectAuthorUpdate" parameterType="java.util.HashMap"
+		resultType="com.swust.kelab.domain.AuthorUpdate">
+		SELECT
+		auup_authId as auupAuthId,
+		auup_time as auupTime,
+		auup_grade as
+		auupGrade,
+		auup_attr1 as auupAttr1,
+		auup_attr2 as auupAttr2,
+		auup_attr3
+		as auupAttr3,
+		auup_attr4 as auupAttr4,
+		auup_attr5 as auupAttr5
+		from(select *
+		FROM authorupdate
+		<where>
+			<if test="auupAuthId>0">
+				auup_authId=#{auupAuthId}
+			</if>
+		</where>
+		ORDER BY auup_id DESC LIMIT 20) t ORDER BY auup_id asc;
+	</select>
+	<select id="selectById" parameterType="java.util.HashMap"
+		resultType="com.swust.kelab.domain.Author">
+		SELECT
+		auth_id AS authorId,
+		auth_wesiId AS wesiId,
+		auth_url AS url,
+		auth_name AS authorName,
+		auth_gender AS gender,
+		auth_area AS area,
+		auth_description AS description,
+		auth_inTime AS inTime,
+		auth_works_num
+		AS worksCount,
+		SUM(wo.work_totalHits) AS totalHits,
+		SUM(wo.work_commentsNum) AS commentsNum,
+		SUM(wo.work_totalRecoms) AS
+		totalRecoms,
+		crws_siteName AS wesiName
+		FROM
+		crawlwebsite cw,
+		author au
+		LEFT OUTER JOIN works wo ON au.auth_id =
+		wo.work_authId
+		WHERE
+		au.auth_wesiId = cw.crws_id
+		<if test="authorId>0">
+			AND au.auth_id=#{authorId}
+		</if>
+	</select>
+	<select id="selectCount" parameterType="java.util.HashMap"
+		resultType="java.lang.Integer">
+		SELECT
+		COUNT(au.auth_id)
+		FROM
+		author au
+		<where>
+			<if test="siteId != null">
+				<if test="siteId != 0">
+					au.auth_wesiId = #{siteId}
+				</if>
+			</if>
+			<if test="searchWord != null">
+				AND au.auth_name like CONCAT('%','${searchWord}','%' )
+			</if>
+			<if test="searchArea != null">
+				AND au.auth_area like CONCAT('%','${searchArea}','%' )
+			</if>
+		</where>
+	</select>
+	<insert id="insert" parameterType="com.swust.kelab.domain.Author"
+		useGeneratedKeys="true" keyProperty="authorId">
+      <![CDATA[
+     	INSERT INTO author  (auth_url , auth_name, auth_wesiId,	auth_gender, auth_area, auth_description,auth_inTime)
+			VALUES (#{url}, #{authorName}, #{wesiId}, #{gender}, #{area}, #{description} , #{inTime})
+      ]]>
+	</insert>
+
+	<update id="update" parameterType="com.swust.kelab.domain.Author">
+		UPDATE
+		author
+		<set>
+			<if test="url != null">
+				auth_url=#{url},
+			</if>
+			<if test="authorName != null">
+				auth_name=#{authorName},
+			</if>
+			<if test="wesiId !=null and wesiId>0">
+				auth_wesiId=#{wesiId},
+			</if>
+			<if test="gender !=null">
+				auth_gender=#{gender},
+			</if>
+			<if test="area !=null">
+				auth_area=#{area},
+			</if>
+			<if test="description !=null">
+				auth_description=#{description},
+			</if>
+			<if test="inTime !=null and inTime !=''">
+				auth_inTime=#{inTime}
+			</if>
+		</set>
+		where
+		auth_id=#{authorId}
+	</update>
+	<delete id="delete" parameterType="java.lang.Integer">
+		DELETE FROM
+		author
+		WHERE
+		auth_id=#{authorId}
+	</delete>
+	<select id="countAuthor" parameterType="java.util.HashMap"
+		resultType="java.lang.Long">
+		SELECT
+		COUNT(au.auth_id)
+		FROM
+		author au
+		<where>
+			<if test="siteId != 0">
+				au.auth_wesiId = #{siteId}
+			</if>
+		</where>
+	</select>
+	<!-- lj -->
+	<select id="countAuthorGender" parameterType="java.util.HashMap"
+		resultType="java.lang.Long">
+		SELECT
+		count(auth_id)
+		FROM
+		author
+		<where>
+			<if test="gender != null">
+				auth_gender = #{gender}
+			</if>
+			<if test="siteId!=0">
+				AND auth_wesiId = #{siteId}
+			</if>
+		</where>
+	</select>
+	<!-- code by lj -->
+	<select id="selectCountOfNum" parameterType="java.util.HashMap"
+		resultType="java.lang.Integer">
+		SELECT
+		COUNT(id)
+		FROM
+		(
+		SELECT
+		auth_id AS id,
+		auth_works_num AS wor,
+		SUM(wo.work_totalHits) AS hit,
+		SUM(wo.work_commentsNum) AS com,
+		SUM(wo.work_totalRecoms) AS rec
+		FROM
+		author au
+		LEFT OUTER JOIN works wo
+		ON au.auth_id = wo.work_authId
+		GROUP BY
+		au.auth_id
+		) AS info
+		<where>
+			<if test="type == 1">
+				<if test="minNum >= 0">
+				<![CDATA[hit >= #{minNum}]]>
+				</if>
+				<if test="maxNum >= 0">
+				<![CDATA[AND hit < #{maxNum}]]>
+				</if>
+			</if>
+			<if test="type == 2">
+				<if test="minNum >= 0">
+				<![CDATA[com >= #{minNum}]]>
+				</if>
+				<if test="maxNum >= 0">
+				<![CDATA[AND com < #{maxNum}]]>
+				</if>
+			</if>
+			<if test="type == 3">
+				<if test="minNum >= 0">
+				<![CDATA[rec >= #{minNum}]]>
+				</if>
+				<if test="maxNum >= 0">
+				<![CDATA[AND rec < #{maxNum}]]>
+				</if>
+			</if>
+			<if test="type == 4">
+				<if test="minNum >= 0">
+				<![CDATA[wor >= #{minNum}]]>
+				</if>
+				<if test="maxNum >= 0">
+				<![CDATA[AND wor < #{maxNum}]]>
+				</if>
+			</if>
+		</where>
+	</select>
+
+	<!--地名有问题：黑龙江-黑龙；内蒙古-内蒙-->
+	<!-- 地区信息-->
+	<select id="countAreaInfo" resultType="com.swust.kelab.domain.Area" parameterType="java.util.HashMap">
+		SELECT
+		count(LEFT(auth_area, 2)) AS `value`,
+		LEFT (auth_area, 2) AS `name`
+		FROM
+		`author`
+		WHERE
+		auth_area!=''
+		<if test="siteId !=0">
+		and auth_wesiId=#{siteId}
+		</if>
+		GROUP BY
+		LEFT (auth_area, 2);
+	</select>
+	<!-- 地区最多人数 -->
+	<select id="countAreaMaxPeople" resultType="com.swust.kelab.domain.Area" parameterType="java.util.HashMap">
+		SELECT
+		`t`.value,`name`
+		FROM
+		(
+		SELECT
+		count(LEFT(auth_area, 2)) AS `value`,
+		LEFT
+		(auth_area, 2) as `name`
+		FROM
+		`author`
+		WHERE
+		auth_area!=''
+		<if test="siteId !=0">
+		and auth_wesiId=#{siteId}
+		</if>
+		GROUP BY
+		LEFT
+		(auth_area, 2))t
+		ORDER BY t.value DESC LIMIT 0,1;
+	</select>
+	<!-- 地区总人数 -->
+	<select id="countAreaSumPeople" resultType="Integer" parameterType="java.util.HashMap">
+		SELECT
+		sum(`value`)
+		from(
+		SELECT
+		count(LEFT(auth_area, 2)) AS `value`
+		FROM
+		`author`
+		WHERE
+		auth_area!=''
+		<if test="siteId !=0">
+		and auth_wesiId=#{siteId}
+		</if>
+		GROUP BY
+		LEFT (auth_area, 2))t;
+	</select>
+	<!--        统计作者的作品数                      -->
+	<select id="countAuthorWorks">
+		
+	</select>
+</mapper>

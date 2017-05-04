@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tempColumn">
+	<!-- 配置映射字段 -->
+	<resultMap type="com.swust.kelab.mongo.domain.TempColumn" id="tab_column">
+		<id property="coluId" column="colu_id"/>
+		<result property="coluParent" column="colu_parent"/>
+		<result property="coluName" column="colu_name"/>
+		<result property="coluUrl" column="colu_url"/>
+		<result property="coluType" column="colu_type"/>
+		<result property="coluOrder" column="colu_order"/>
+		<result property="coluIcon" column="colu_icon"/>
+	</resultMap>
+	<select id="selectAllCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+		SELECT
+		COUNT(colu.colu_id)
+		FROM
+		`column` colu;
+	</select>
+	<select id="selectAllData" parameterType="java.util.HashMap" resultMap="tab_column">
+		SELECT * from `column`
+		<if test="startIndex!=null and pageSize!=null">
+			limit #{startIndex}, #{pageSize};
+		</if>
+	</select>
+</mapper>

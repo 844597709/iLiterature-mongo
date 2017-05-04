@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>iLiterature</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="../css/isearch4-resp.css">
+</head>
+<body>
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<button class="btn btn-navbar" data-target=".nav-collapse"
+					data-toggle="collapse" type="button">
+					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<div class="nav-collapse collapse" id="navbar"></div>
+			</div>
+		</div>
+	</div>
+	<div id="overview" class="jumbotron"><!-- class="jumbotron" data-content="" -->
+		<div id="logo" class="container"></div>
+	</div>
+	<!-- begin container -->
+	
+	<div class="container">
+		<div id="mainBody" class="row">
+			<div id="location"></div>
+			<div class="search form-inline">
+				<label  id="siteName" >
+				</label>&nbsp;&nbsp;
+				<i class=" icon-list"></i><a href="authorInfoList.html?firstColuId=2">所有作者</a>&nbsp;&nbsp;
+					<label> 检索：</label> <input type="text" id="searchWord"
+						class="input-small search-query" placeholder="作者">
+						<input type="text" id="Autharea"
+						class="input-small search-query" placeholder="区域">
+						<select id="site" class="span2">
+							<option value="0">所有网站</option>
+						</select>
+					<button id="searchButton">检索</button>&nbsp;&nbsp;
+					
+				</div>
+			<div class="span12">
+				<div class="row-fluid">
+						<div class="span7 well">
+							<div id='iAreas' style='height: 300px;'>区域统计柱状图</div>
+						</div>
+						<div class="span5 well">
+							<div id='iSexs' style='height: 300px;'>性别统计柱状图</div>
+						</div>
+				</div>
+			</div>
+			<div class="span12">
+				<div class="row-fluid">
+						<div class="span6 well">
+							<div id='Authorworks' style='height: 300px;'>作者作品统计</div>
+						</div>
+						<div class="span6 well">
+							<div id='Hits' style='height: 300px;'>作者点击量统计</div>
+						</div>
+				</div>
+			</div>
+			<div class="span12">
+				<div class="row-fluid">
+						<div class="span6 well">
+							<div id='Comms' style='height: 300px;'>作者评论量统计</div>
+						</div>
+						<div class="span6 well">
+							<div id='Recom' style='height: 300px;'>作者推荐量统计</div>
+						</div>
+				</div>
+			</div>
+			<div class="span12">
+				<div class="row-fluid">
+					<div id="levelone"></div>
+				</div>
+			</div>
+		</div>
+		<!-- end of mainBody -->
+		<div class="row well">
+			<div id="footer"></div>
+		</div>
+	</div>
+	<script type="text/javascript" src="../js/ext/jquery-1.8.3.js"></script>
+	<script type="text/javascript" src="../js/ext/bootstrap.js"></script>
+	<script type="text/javascript" src="../js/jquery.scrollUp.min.js"></script>
+	<script src="../js/chart/echarts-all.js"></script>
+	<!-- top1 -->
+	<script type="text/javascript" src="../js/jquery.unveil.min.js"></script>
+	<!-- top2 -->
+	<script type="text/javascript"
+		src="../js/jquery-ui-1.8.21.custom.min.js"></script>
+	<script type="text/javascript" src="../js/md5.js"></script>
+	<script type="text/javascript" src="../js/common.js"></script>
+	<script type="text/javascript" src="../js/utils.js"></script>
+	<script type="text/javascript" src="../js/cachepage.js"></script>
+	<script type="text/javascript" src="../js/authorInfo.js"></script>
+</body>
