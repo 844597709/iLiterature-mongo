@@ -1,14 +1,16 @@
-package com.swust.kelab.mongo.utils;
+package com.swust.kelab.mongo.utils.impl;
 
 import com.mongodb.CommandResult;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
+import com.swust.kelab.mongo.utils.MongoService;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
-@Component("mongoService")
+@Service("mongoService")
 public class MongoServiceImpl implements MongoService {
     @Resource
     private MongoTemplate mongoTemplate;

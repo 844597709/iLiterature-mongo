@@ -13,7 +13,7 @@ import org.springframework.util.Assert;
 import javax.annotation.Resource;
 import java.util.List;
 
-@Component("MongoTemplateDao")
+@Component("mongoTemplateDao")
 public abstract class MongoTemplateDao<T extends BaseModel> implements InitializingBean {
     /*@Value("${mongo.databaseName}")
     protected String       db         = "iLiterature"; //db name默认为iLiterature*/

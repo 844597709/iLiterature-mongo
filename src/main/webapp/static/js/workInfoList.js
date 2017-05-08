@@ -48,7 +48,7 @@ $(function() {
 				"recordPerPage" : 20,
 				"searchWord":searchWord,
 				"siteId":siteId,
-				"parameter":parameter,
+				"field":parameter,
 				"orderDesc":orderDesc,				
 			};
 			initialBind();// 绑定分页的一些操作响应
@@ -72,7 +72,7 @@ $(function() {
 					"recordPerPage" : 20,
 					"searchWord" : searchWord,
 					"siteId":siteId,
-					"parameter":parameter,
+					"field":parameter,
 					"orderDesc":orderDesc,
 				};
 				initialBind();// 绑定分页的一些操作响应
@@ -139,23 +139,24 @@ function refreshContent(pageRecords) {
 		$.each(pageRecords.data, function(itemIndex, item) {
 			var info = '';
 			var url = '';
-			if (item.url != null && item.url != "") {
-				url = item.url;
+			if (item.workUrl != null && item.workUrl != "") {
+				url = item.workUrl;
 			}
+			// TODO 缺少worksName crwsSiteName sTime(woupUpdateTime)
 			var sTime = '';
 			if (item.sTime != null && item.sTime != "") {
 				sTime = item.sTime;
 			}
-			if(item.totalHits<=0)item.totalHits="无";
-			if(item.commentsNum<=0)item.commentsNum="无";
-			if(item.totalRecoms<=0)item.totalRecoms="无";
-			info = item.worksName + "$" + url + "$" + item.description + "$" + sTime;
+			if(item.workTotalHits<=0)item.workTotalHits="无";
+			if(item.workCommentsNum<=0)item.workCommentsNum="无";
+			if(item.workTotalRecoms<=0)item.workTotalRecoms="无";
+			info = item.worksName + "$" + url + "$" + item.workDesc + "$" + sTime;
 			iHtml += "<tr><td class='tdcenter'>" + startIndex + "</td>" + "<td class='tdcenter'><a id='" + item.workId
 					+ "' name='" + info + "'  href='workDetail.html?firstColuId=3&workId=" + item.workId + "'>"
-					+ item.title + "</a>" + "</td><td class='tdcenter'>" + item.author + "</td><td class='tdcenter'>"
-					+ item.type + "</td><td class='tdcenter' title='" + item.crwsSiteName + "'>"
-					+ item.crwsSiteName+  "</td><td class='tdcenter'>" + transforms(item.totalHits)
-					+ "</td><td class='tdcenter'>"+transforms(item.commentsNum) +"</td><td class='tdcenter'>" + transforms(item.totalRecoms)
+					+ item.workTitle + "</a>" + "</td><td class='tdcenter'>" + item.workAuthor + "</td><td class='tdcenter'>"
+					+ item.workType + "</td><td class='tdcenter' title='" + item.crwsSiteName + "'>"
+					+ item.crwsSiteName+  "</td><td class='tdcenter'>" + transforms(item.workTotalHits)
+					+ "</td><td class='tdcenter'>"+transforms(item.workCommentsNum) +"</td><td class='tdcenter'>" + transforms(item.workTotalRecoms)
 					+"</td><td class='tdcenter'>" + sTime.substr(0, 16) + "</td><td class='tdcenter'><a title='" + url
 					+ "' href='" + url + "'target='_blank'><i class='icon-globe'></i></a></td></tr>";
 			startIndex = startIndex + 1;

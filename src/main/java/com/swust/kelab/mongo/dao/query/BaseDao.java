@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.mongodb.DBCursor;
 import com.swust.kelab.mongo.dao.base.PageInfo;
 import com.swust.kelab.mongo.dao.base.PageResult;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 /**
  * 包含增、删、改、查等基本操作
  */
+@Component("baseDao")
 public abstract class BaseDao<T extends BaseModel> extends MongoTemplateDao<T> {
     /**
      * 保存或更新

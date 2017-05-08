@@ -1,15 +1,17 @@
 package com.swust.kelab.mongo.domain;
 
+import com.swust.kelab.mongo.dao.query.BaseModel;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
  * Created by zengdan on 2017/1/6.
  */
-public class TempWorksUpdate {
+public class TempWorksUpdate extends BaseModel {
     private Integer woupId;
     private Integer woupWorkId;
-    private String woupTime;
+    private Date woupTime;
     private Integer woupWordsNum;
     private Integer woupTotalHits;
     private Integer woupTotalRecoms;
@@ -18,7 +20,7 @@ public class TempWorksUpdate {
     private Integer woupFlowersNum;
     private Integer woupCommentsNum;
     private Float woupGrade;
-    private String woupUpdateTime;
+    private Date woupUpdateTime;
     private String woupAttr1;
     private String woupAttr2;
     private String woupAttr3;
@@ -46,13 +48,11 @@ public class TempWorksUpdate {
         this.woupWorkId = woupWorkId;
     }
 
-    public String getWoupTime() {
+    public Date getWoupTime() {
         return woupTime;
     }
 
-    public void setWoupTime(String woupTime) {
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd hh:MM:ss");
-//        this.woupTime = sdf.format(woupTime);
+    public void setWoupTime(Date woupTime) {
         this.woupTime = woupTime;
     }
 
@@ -120,13 +120,11 @@ public class TempWorksUpdate {
         this.woupGrade = woupGrade;
     }
 
-    public String getWoupUpdateTime() {
+    public Date getWoupUpdateTime() {
         return woupUpdateTime;
     }
 
-    public void setWoupUpdateTime(String woupUpdateTime) {
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd hh:MM:ss");
-//        this.woupUpdateTime = sdf.format(woupUpdateTime);
+    public void setWoupUpdateTime(Date woupUpdateTime) {
         this.woupUpdateTime = woupUpdateTime;
     }
 

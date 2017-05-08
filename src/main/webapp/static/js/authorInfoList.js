@@ -159,43 +159,42 @@ function refreshContent(pageRecords) {
 				gender = '男';
 			}*/
 			var url = '';
-			if (item.url != null && item.url != "") {
-				url = item.url;
+			if (item.authUrl != null && item.authUrl != "") {
+				url = item.authUrl;
 			}
 			var inTime = '';
-			if (item.inTime != null && item.inTime != "") {
-				inTime = item.inTime;
+			if (item.authInTime != null && item.authInTime != "") {
+				inTime = item.authInTime;
 			}
 			var area = '';
-			if (item.area != null && item.area != "") {
-				area = item.area;
+			if (item.authArea != null && item.authArea != "") {
+				area = item.authArea;
 			}
 			var description = '';
-			if (item.description != null && item.description != "") {
-				description = item.description;
+			if (item.authDesc != null && item.authDesc != "") {
+				description = item.authDesc;
 			}
-			if(item.totalHits<=-1){
-				item.totalHits="无";
+			if(item.authWorksHitsNum<=-1){
+				item.authWorksHitsNum="无";
 			}
-			if(item.totalRecoms<=-1){
-				item.totalRecoms="无";
+			if(item.authWorksRecomsNum<=-1){
+				item.authWorksRecomsNum="无";
 			}
-			if(item.commentsNum<=-1){
-				item.commentsNum="无";
+			if(item.authWorksCommentsNum<=-1){
+				item.authWorksCommentsNum="无";
 			}
-			if(item.gender==null || item.gender==undefined){
-				item.gender='';
+			if(item.authGender==null || item.authGender==undefined){
+				item.authGender='';
 			}
-			
 			var description1=titleFormat(description,9);
-			info = item.authorName + "$" + url + "$" + item.gender + "$" + area + "$" + description + "$" + inTime;
+			info = item.authName + "$" + url + "$" + item.authGender + "$" + area + "$" + description + "$" + inTime;
 			iHtml += "<tr class=''><td class='tdcenter'>" + startIndex + "</td>" + "<td class='tdcenter'><a id='"
-					+ item.authorId + "' name='" + info + "'  href='authorDetail.html?firstColuId=2&authorId="
-					+ item.authorId + "'>" + item.authorName + "</a>" + "</td><td class='tdcenter'>" + item.gender
+					+ item.authId + "' name='" + info + "'  href='authorDetail.html?firstColuId=2&authorId="
+					+ item.authId + "'>" + item.authName + "</a>" + "</td><td class='tdcenter'>" + item.authGender
 					+ "</td><td class='tdcenter'>" + area + "</td><td class='tdcenter' title='"+description+"'>"+description1
 					+ "</td><td class='tdcenter'>" +item.wesiName+ "</td><td class='tdcenter'>"
-					+ item.worksCount + "</td><td class='tdcenter'>" + transforms(item.totalHits) + "</td><td class='tdcenter'>"
-					+transforms(item.commentsNum) + "</td><td class='tdcenter'>" + transforms(item.totalRecoms)
+					+ item.worksCount + "</td><td class='tdcenter'>" + transforms(item.authWorksHitsNum) + "</td><td class='tdcenter'>"
+					+transforms(item.authWorksCommentsNum) + "</td><td class='tdcenter'>" + transforms(item.authWorksRecomsNum)
 					+ "</td><td class='tdcenter'><a title='" + url + "' href='" + url
 					+ "'target='_blank'><i class='icon-globe'></i></a></td></tr>";
 			startIndex = startIndex + 1;

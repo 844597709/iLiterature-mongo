@@ -1,8 +1,10 @@
-package com.swust.kelab.mongo.utils;
+package com.swust.kelab.mongo.utils.impl;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.swust.kelab.mongo.dao.query.MongoTemplateDao;
+import com.swust.kelab.mongo.utils.AutoIncrement;
+import com.swust.kelab.mongo.utils.AutoIncrementDao;
 import org.springframework.stereotype.Component;
 
 /**

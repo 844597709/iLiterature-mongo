@@ -55,7 +55,8 @@ public class TimeUtils {
             String json = JSON.toJSONString(obj);
             TempWorksUpdate worksUpdate = JSON.parseObject(json, TempWorksUpdate.class);
 
-            DBObject update = new BasicDBObject("$set", new BasicDBObject("woupTime", worksUpdate.getWoupTime().replace(".0", "")));
+//            DBObject update = new BasicDBObject("$set", new BasicDBObject("woupTime", worksUpdate.getWoupTime().replace(".0", "")));
+            DBObject update = new BasicDBObject("$set", new BasicDBObject("woupTime", worksUpdate.getWoupTime()));
             DBObject query = new BasicDBObject("woupId", worksUpdate.getWoupId());
             mongoTemplate.getCollection(collectionName).update(query, update);//更新信息
             /*Document dupdate = null;

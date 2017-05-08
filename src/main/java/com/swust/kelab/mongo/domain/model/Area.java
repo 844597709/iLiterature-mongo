@@ -30,4 +30,7 @@ public class Area extends BaseModel{
 		this.value = value;
 	}
 
+	public int compareTo(Area area){
+		return (this.getValue() > area.getValue()) ? -1 : ((this.getValue() == area.getValue()) ? 0 : 1);
+	}
 }

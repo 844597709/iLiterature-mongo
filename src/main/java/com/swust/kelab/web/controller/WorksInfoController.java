@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping("worksInfo")
+@RequestMapping("worksInfoOld")
 public class WorksInfoController {
-    @Resource
+    /*@Resource
     private WorksInfoService worksInfoService;
 
     //cdk 2016/5/12
@@ -170,7 +170,7 @@ public class WorksInfoController {
         return jv;
     }
     
-    //*****************************************************
+    /*//*****************************************************
     @RequestMapping(value = "selectWorksUpdateById", method = RequestMethod.POST)
     public JsonAndView selectWorksUpdateById(Integer workId) throws Exception {
         JsonAndView jv = new JsonAndView();
@@ -189,7 +189,7 @@ public class WorksInfoController {
         jv.addData("data", data);
         return jv;
     }
-    //******************************************************
+    /*//******************************************************
 
     @SuppressWarnings("null")
 	@RequestMapping(value = "commentsByWork", method = RequestMethod.POST)
@@ -205,5 +205,5 @@ public class WorksInfoController {
         List<Comment> result = worksInfoService.commentsByWork(workId);
         jv.addData("data", result);
         return jv;
-    }
+    }*/
 }

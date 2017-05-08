@@ -66,7 +66,7 @@ public class SiteDao {
 		return sqlSession.selectList("site.select", query);
 	}
 
-	public long countSite() throws Exception {
+	public long countSite() {
 		return sqlSession.selectOne("site.countSite");
 	}
 }

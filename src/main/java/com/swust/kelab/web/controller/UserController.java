@@ -17,6 +17,7 @@ import com.swust.kelab.service.web.UserService;
 import com.swust.kelab.web.json.JsonAndView;
 import com.swust.kelab.web.model.EPOQuery;
 import com.swust.kelab.web.model.QueryData;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * 同义词

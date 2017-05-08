@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Repository(value = "worksInfoDao")
+@Repository(value = "worksInfoDaoOld")
 public class WorksInfoDao {
     @Resource
     private SqlSession sqlSession;

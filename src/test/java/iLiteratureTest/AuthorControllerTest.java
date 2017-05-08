@@ -1,6 +1,9 @@
 package iLiteratureTest;
 
 import com.google.common.collect.Lists;
+import com.swust.kelab.mongo.dao.base.PageResult;
+import com.swust.kelab.mongo.dao.query.AuthorQuery;
+import com.swust.kelab.mongo.domain.TempAuthor;
 import com.swust.kelab.mongo.domain.model.Area;
 import com.swust.kelab.mongo.service.AuthorServiceTemp;
 import org.junit.Test;
@@ -20,20 +23,23 @@ import java.util.Map;
 public class AuthorControllerTest {
     @Resource
     private AuthorServiceTemp authorService;
+
+    @Test
+    public void viewAllAuthorTest(){
+        AuthorQuery query = new AuthorQuery();
+//        query.setAuthWebsiteId();
+        PageResult<TempAuthor> result = authorService.viewAllAuthor(query);
+    }
+
     @Test
     public void countAuthorGender(){
-        Map<String, Integer> result = authorService.countInfoGender(null);
+        Map<String, Integer> result = authorService.countInfoGender(0);
         System.out.println(result);
     }
 
     @Test
     public void countAuthorArea(){
-        Map<String, Integer> map = authorService.countInfoArea(null);
-        List<Area> list = Lists.newArrayList();
-        for(Map.Entry<String, Integer> entry:map.entrySet()){
-            Area area = new Area(entry.getKey(), entry.getValue());
-            list.add(area);
-        }
-        System.out.println(list);
+        Map<String, Integer> map = authorService.countInfoArea(0);
+        System.out.println(map);
     }
 }

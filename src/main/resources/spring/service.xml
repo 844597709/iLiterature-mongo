@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:context="http://www.springframework.org/schema/context"
@@ -14,4 +14,7 @@
 	<!-- 不强制指定为CGLIB执行，因为GenericModel无默认构造函数，无法创建其子类 -->
 	<tx:annotation-driven transaction-manager="transactionManager" />
 	<context:component-scan base-package="com.swust.kelab.service" />
+
+	<!--<context:component-scan base-package="com.swust.kelab.mongo.utils.impl"/>-->
+	<!--<context:component-scan base-package="com.swust.kelab.mongo.service"/>-->
 </beans>

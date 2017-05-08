@@ -7,7 +7,7 @@
 	<resultMap type="com.swust.kelab.mongo.domain.TempWorksUpdate" id="tab_worksupdate">
 		<id property="woupId" column="woup_id"/>
 		<result property="woupWorkId" column="woup_workId"/>
-		<result property="woupTime" column="woup_time" javaType="java.lang.String"/>
+		<result property="woupTime" column="woup_time"/>
 		<result property="woupWordsNum" column="woup_wordsNum"/>
 		<result property="woupTotalHits" column="woup_totalHits"/>
 		<result property="woupTotalRecoms" column="woup_totalRecoms"/>
@@ -16,7 +16,7 @@
 		<result property="woupFlowersNum" column="woup_flowersNum"/>
 		<result property="woupCommentsNum" column="woup_commentsNum"/>
 		<result property="woupGrade" column="woup_grade"/>
-		<result property="woupUpdateTime" column="woup_updateTime" javaType="java.lang.String"/>
+		<result property="woupUpdateTime" column="woup_updateTime"/>
 		<result property="woupAttr1" column="woup_attr1"/>
 		<result property="woupAttr2" column="woup_attr2"/>
 		<result property="woupAttr3" column="woup_attr3"/>

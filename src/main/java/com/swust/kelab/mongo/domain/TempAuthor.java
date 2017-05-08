@@ -12,6 +12,9 @@ public class TempAuthor extends BaseModel{
 	private String authDesc;
 	private String authInTime;
 	private Integer authWorksNum;
+	private Integer authWorksHitsNum;
+	private Integer authWorksCommentsNum;
+	private Integer authWorksRecomsNum;
 
 	public Integer getAuthId() {
 		return authId;
@@ -83,5 +86,29 @@ public class TempAuthor extends BaseModel{
 
 	public void setAuthWorksNum(Integer authWorksNum) {
 		this.authWorksNum = authWorksNum;
+	}
+
+	public Integer getAuthWorksRecomsNum() {
+		return authWorksRecomsNum;
+	}
+
+	public void setAuthWorksRecomsNum(Integer authWorksRecomsNum) {
+		this.authWorksRecomsNum = authWorksRecomsNum;
+	}
+
+	public Integer getAuthWorksHitsNum() {
+		return authWorksHitsNum;
+	}
+
+	public void setAuthWorksHitsNum(Integer authWorksHitsNum) {
+		this.authWorksHitsNum = authWorksHitsNum;
+	}
+
+	public Integer getAuthWorksCommentsNum() {
+		return authWorksCommentsNum;
+	}
+
+	public void setAuthWorksCommentsNum(Integer authWorksCommentsNum) {
+		this.authWorksCommentsNum = authWorksCommentsNum;
 	}
 }

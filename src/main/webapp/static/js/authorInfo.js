@@ -225,17 +225,17 @@ $(function() {
 		showAuthorWorks:function(datarange1,datarange2,datarange3,datarange4){
 			//查询作者作品统计
 			//var url="../../handler/author/countInfoNum";
-			var url="../../handler/author/countInfoNumAll";
+			var url="../../handler/author/countAuthorInfoNumAll";
 			var WorksData={};
 			var worksCountValue=[];
 			var totalHitsValue=[];
 			var totalRecomsValue=[];
 			var commentsNumValue=[];
 			$.post(url,{
-				"range1":datarange1,
-				"range2":datarange2,
-				"range3":datarange3,
-				"range4":datarange4,
+				"hitsRange":datarange1,
+				"commentsRange":datarange2,
+				"recomsRange":datarange3,
+				"worksRange":datarange4,
 				"siteId":authorInfo.iDate.siteId
 			},function(data){
 				if(data.ret){

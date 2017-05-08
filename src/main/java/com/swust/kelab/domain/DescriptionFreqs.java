@@ -81,6 +81,7 @@ public class DescriptionFreqs {
 	            }  
 	        });  
 		}
+
 	public List<WorkDescription> getHighFreqWords(String[] rawWords){
 		if(rawWords==null){
 			WorkDescription description=new WorkDescription();

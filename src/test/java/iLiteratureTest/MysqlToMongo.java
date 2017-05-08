@@ -234,7 +234,8 @@ public class MysqlToMongo {
 //            String collectionName="works";
 //            String space="tempWorks";
 
-            String collectionName="worksupdate";
+//            String collectionName="worksupdate";
+            String collectionName="worksupdatetemp";
             String space="tempWorksUpdate";
 
 //            String collectionName="workscomment";

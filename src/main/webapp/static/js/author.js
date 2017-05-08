@@ -197,37 +197,37 @@ function refreshContent(pageRecords) {
 		$.each(pageRecords.data, function(itemIndex, item) {
 			var info = '';
 			var gender = '';
-			if (item.gender == 2) {
+			if (item.authGender == 2) {
 				gender = '女';
-			} else if (item.gender == 1) {
+			} else if (item.authGender == 1) {
 				gender = '男';
 			}
 			var url = '';
-			if (item.url != null && item.url != "") {
-				url = item.url;
+			if (item.authUrl != null && item.authUrl != "") {
+				url = item.authUrl;
 			}
 			var inTime = '';
-			if (item.inTime != null && item.inTime != "") {
-				inTime = item.inTime;
+			if (item.authInTime != null && item.authInTime != "") {
+				inTime = item.authInTime;
 			}
 			var area = '';
-			if (item.area != null && item.area != "") {
-				area = item.area;
+			if (item.authArea != null && item.authArea != "") {
+				area = item.authArea;
 			}
 			var description = '';
-			if (item.description != null && item.description != "") {
-				description = item.description;
+			if (item.authDesc != null && item.authDesc != "") {
+				description = item.authDesc;
 			}
 			var description1=titleFormat(description,9);
-			info = item.authorName + "$" + url + "$" + gender + "$" + area + "$" + description + "$" + inTime;
+			info = item.authName + "$" + url + "$" + gender + "$" + area + "$" + description + "$" + inTime;
 			iHtml += "<tr class=''><td class='tdcenter'>" + startIndex + "</td>" + "<td class='tdcenter'><a id='"
-					+ item.authorId + "' name='" + info + "' class='edit' data-toggle='modal' href='#modal'>"
-					+ item.authorName + "</a>" + "</td><td class='tdcenter'><a title='" + url + "' href='" + url
+					+ item.authId + "' name='" + info + "' class='edit' data-toggle='modal' href='#modal'>"
+					+ item.authName + "</a>" + "</td><td class='tdcenter'><a title='" + url + "' href='" + url
 					+ "'target='_blank'>" + url.substr(0, 30) + "</a></td><td class='tdcenter'>" + gender
 					+ "</td><td class='tdcenter'>" + area + "</td><td class='tdcenter' title='"+description+"'>"+description1
 					+ "</td><td class='tdcenter'>" + inTime.substr(0, 16)
-					+ "</td><td class='tdcenter'><a href='' id='del" + item.authorId
-					+ "' class='action btn-del' name='" + item.authorId + "'></a>" + "</td></tr>";
+					+ "</td><td class='tdcenter'><a href='' id='del" + item.authId
+					+ "' class='action btn-del' name='" + item.authId + "'></a>" + "</td></tr>";
 			startIndex = startIndex + 1;
 		});
 		$('#iData').append(iHtml);

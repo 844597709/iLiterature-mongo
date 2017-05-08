@@ -1,11 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
-	http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo-1.1.xsd">
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
@@ -50,10 +48,11 @@
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="configLocation" value="classpath:mybatis/mybatis-config.xml" />
-		<!--<property name="mapperLocations" value="classpath:mapper/*.xml" />-->
-		<property name="mapperLocations" value="classpath:mapper/temp/*.xml" />
-		<property name="typeAliasesPackage" value="com.swust.kelab.mongo.domain" />
-		<!--<property name="typeAliasesPackage" value="com.swust.kelab.domain" />-->
+		<property name="mapperLocations" value="classpath:mapper/*.xml" />
+		<!--跑数据时使用-->
+		<!--<property name="mapperLocations" value="classpath:mapper/temp/*.xml" />-->
+		<!--<property name="typeAliasesPackage" value="com.swust.kelab.mongo.domain" />-->
+		<property name="typeAliasesPackage" value="com.swust.kelab.domain" />
 	</bean>
 	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
 		<constructor-arg index="0" ref="sqlSessionFactory" />
@@ -71,4 +70,6 @@
 		<constructor-arg value="user"></constructor-arg>
 	</bean>
 	<context:component-scan base-package="com.swust.kelab.repos" />
+
+	<!--<context:component-scan base-package="com.swust.kelab.mongo.dao"/>-->
 </beans>

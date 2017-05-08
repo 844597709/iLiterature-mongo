@@ -11,18 +11,96 @@ import com.swust.kelab.mongo.dao.base.PageResult;
 import com.swust.kelab.mongo.domain.TempAuthor;
 import com.swust.kelab.mongo.domain.model.Area;
 import com.swust.kelab.mongo.dao.query.BaseQuery;
+import com.swust.kelab.mongo.utils.CollectionUtil;
+import com.swust.kelab.web.model.EPOQuery;
+import com.swust.kelab.web.model.QueryData;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service(value = "authorService")
 public class AuthorServiceTemp {
 	@Resource
 	private AuthorDaoTemp authorDao;
+
+	/**
+	 * 查询前topNum的作者
+	 */
+	public List<TempAuthor> selectHotTopAuthor(Integer siteId, Integer sortField, Integer descOrAsc, Integer topNum) {
+		Integer tag = 1;
+		if(descOrAsc == 0){
+			tag = 1;
+		}else{
+			tag = -1;
+		}
+		List<TempAuthor> authorList = authorDao.selectHotTopAuthor(siteId, sortField, tag, topNum);
+		return  authorList;
+	}
+
+	public QueryData viewAuthorByPage(EPOQuery iQuery, Integer siteId, Integer sortField, Integer descOrAsc, String searchArea){
+		Integer tag = 1;
+		if(descOrAsc == 0){
+			tag = 1;
+		}else{
+			tag = -1;
+		}
+		QueryData queryData = authorDao.viewAuthorByPage(iQuery, siteId, sortField, tag, searchArea);
+		return queryData;
+	}
+
+    public Map<String, Object> countInfoNumAll(String hitsRange, String commentsRange, String recomsRange, String worksRange, Integer siteId, Integer descOrAsc)
+            throws Exception {
+        //获取所有，不排序
+        List<TempAuthor> allAuthorList = authorDao.selectHotTopAuthor(siteId, 0, descOrAsc, Integer.MAX_VALUE);
+        if(allAuthorList.isEmpty()){
+            return CollectionUtil.emptyMap();
+        }
+        List<TempAuthor> sortedAuthorByHitsNum = allAuthorList.stream().sorted((o1, o2) -> o1.getAuthWorksHitsNum().compareTo(o2.getAuthWorksHitsNum())).collect(Collectors.toList());
+        List<TempAuthor> sortedAuthorByCommentsNum = allAuthorList.stream().sorted((o1, o2) -> o1.getAuthWorksCommentsNum().compareTo(o2.getAuthWorksCommentsNum())).collect(Collectors.toList());
+        List<TempAuthor> sortedAuthorByRecomsNum = allAuthorList.stream().sorted((o1, o2) -> o1.getAuthWorksRecomsNum().compareTo(o2.getAuthWorksRecomsNum())).collect(Collectors.toList());
+        List<TempAuthor> sortedAuthorByWorksNum = allAuthorList.stream().sorted((o1, o2) -> o1.getAuthWorksNum().compareTo(o2.getAuthWorksNum())).collect(Collectors.toList());
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("totalHits", this.getHitsRangeWithAuthorCount(1, hitsRange, sortedAuthorByHitsNum));
+        map.put("commentsNum", this.getHitsRangeWithAuthorCount(2, commentsRange, sortedAuthorByCommentsNum));
+        map.put("totalRecoms", this.getHitsRangeWithAuthorCount(3, recomsRange, sortedAuthorByRecomsNum));
+        map.put("worksCount", this.getHitsRangeWithAuthorCount(4, worksRange, sortedAuthorByWorksNum));
+        return map;
+    }
+
+    private List<Area> getHitsRangeWithAuthorCount(Integer field, String rangeStr, List<TempAuthor> sortAuthorList){
+        List<Long> ranges = this.getRanges(rangeStr);
+        List<Area> list = Lists.newArrayList();
+        for(Long range:ranges){
+            List<TempAuthor> rangeAuthorList = Lists.newArrayList();
+            Integer num = 0;
+            for(int i=0; i<sortAuthorList.size(); i++){
+                if(field == 1){
+                    num = sortAuthorList.get(i).getAuthWorksHitsNum();
+                }else if(field == 2){
+                    num = sortAuthorList.get(i).getAuthWorksCommentsNum();
+                }else if(field == 3){
+                    num = sortAuthorList.get(i).getAuthWorksRecomsNum();
+                }else if(field == 4){
+                    num = sortAuthorList.get(i).getAuthWorksNum();
+                }
+                if(num>range){
+                    rangeAuthorList = sortAuthorList.subList(0, i);
+                    sortAuthorList = sortAuthorList.subList(i, sortAuthorList.size());
+                    break;
+                }
+            }
+            list.add(new Area(String.valueOf(range), Long.valueOf(rangeAuthorList.stream().count()).intValue()));
+        }
+        return list;
+    }
+
+	private List<Long> getRanges(String rangeStr) {
+		String[] strs = rangeStr.split(",");
+        List<Long> ranges = Arrays.stream(strs).map(range -> Long.parseLong(range)).collect(Collectors.toList());
+        return ranges;
+	}
 
 	/**
 	 * 分页查询作者信息
@@ -46,67 +124,41 @@ public class AuthorServiceTemp {
 	 * 统计性别
 	 */
 	public Map<String, Integer> countInfoGender(Integer wesiId) {
-		Map<String, Integer> map = Maps.newHashMap();
-		DBObject queryFields = new BasicDBObject();
-		queryFields.put("_id", "$authGender");
-		queryFields.put("value", new BasicDBObject("$sum", 1));
-		DBObject group = new BasicDBObject("$group", queryFields);
-		List<DBObject> list = Lists.newArrayList();
-		if(wesiId!=null){
-			DBObject match = new BasicDBObject("$match", new BasicDBObject("authWebsiteId", wesiId));
-			list.add(match);
-		}
-		list.add(group);
-		AggregationOutput output = authorDao.getDBCollection().aggregate(list);
-		System.out.println(output.toString());
-		Iterator<DBObject> iter = output.results().iterator();
-		while(iter.hasNext()){
-			DBObject obj = iter.next();
-			String json = JSON.toJSONString(obj);
-			com.swust.kelab.mongo.domain.model.Area area = JSON.parseObject(json, com.swust.kelab.mongo.domain.model.Area.class);
-			//get_id暂时
-			String gender = area.get_id();//获取性别
-			map.put(gender, area.getValue());
-		}
-		return map;
+		List<Area> genderList = authorDao.countInfoGender(wesiId);
+		Map<String, Integer> genderMap = Maps.newHashMap();
+		genderList.forEach(area->{
+			if("男".equals(area.getName())){
+				genderMap.put("authorMan", area.getValue());
+			}else if("女".equals(area.getName())){
+				genderMap.put("authorWoman", area.getValue());
+			}else{
+				if(genderMap.containsKey("authorOther")){
+					genderMap.put("authorOther", genderMap.get("authorOther")+area.getValue());
+				}else{
+					genderMap.put("authorOther", area.getValue());
+				}
+			}
+		});
+		return genderMap;
 	}
 
 	/**
 	 * 统计省份作者数
 	 */
 	public Map<String, Integer> countInfoArea(Integer wesiId) {
-		Map<String, Integer> map = Maps.newHashMap();
-		DBObject queryFields = new BasicDBObject();
-		queryFields.put("_id", "$authArea");
-		queryFields.put("value", new BasicDBObject("$sum", 1));
-		DBObject group = new BasicDBObject("$group", queryFields);
-		List<DBObject> list = Lists.newArrayList();
-		if(wesiId!=null){
-			DBObject match = new BasicDBObject("$match", new BasicDBObject("authWebsiteId", wesiId));
-			list.add(match);
-		}
-		list.add(group);
-		AggregationOutput output = authorDao.getDBCollection().aggregate(list);
-		Iterator<DBObject> iter = output.results().iterator();
-		Integer num = 0;
-		while(iter.hasNext()){
-			DBObject obj = iter.next();
-			String json = JSON.toJSONString(obj);
-			Area area = JSON.parseObject(json, Area.class);
-			//get_id暂时
-			if(area.get_id()!="" && area.get_id()!=null){
-				String name = area.get_id().split("-")[0].trim();//获取省份名称
-				if(map.keySet().contains(name)){
-					Integer oldValue = map.get(name);
-					map.put(name, oldValue+area.getValue());
+		List<Area> areaList = authorDao.countInfoArea(wesiId);
+		Map<String, Integer> areaMap = Maps.newHashMap();
+		areaList.forEach(area->{
+			if(area.getName()!="" && area.getName()!=null){
+				String name = area.getName().split("-")[0].trim();//获取省份名称
+				if(areaMap.containsKey(name)){
+					areaMap.put(name, areaMap.get(name)+area.getValue());
 				}else{
-					map.put(name, area.getValue());
+					areaMap.put(name, area.getValue());
 				}
-				num+=area.getValue();
 			}
-		}
-		System.out.println("总数num:"+num);
-		return map;
+		});
+		return areaMap;
 	}
 
 	public Map<String, Object> countAuthorInfo(Integer websiteId, String worksR, String hitsR, String commentsR, String recomsR){

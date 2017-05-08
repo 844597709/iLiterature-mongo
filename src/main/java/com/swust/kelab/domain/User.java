@@ -1,5 +1,7 @@
 package com.swust.kelab.domain;
 
+import com.mysql.jdbc.StringUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -18,59 +20,76 @@ public class User {
     private String jobNum;
     private String rejectReason;
     private int verify;
-    
+
     //--zd--
     private int time;
     private String deadTime;
     private Date upDeadTime;
     private int isLegal;
-    
-    public int getTime(){
-    	return time;
+
+    public int getTime() {
+        return time;
     }
-    public void setTime(int time){
-    	this.time = time;
+
+    public void setTime(int time) {
+        this.time = time;
     }
-    
-    public String getDeadTime(){
-    	return deadTime;
+
+    public String getDeadTime() {
+        return deadTime;
     }
-    public Date getUpDeadTime() throws ParseException{
-    	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-    	upDeadTime = df.parse(deadTime);
-    	return upDeadTime;
+
+    public Date getUpDeadTime() {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        if (!StringUtils.isNullOrEmpty(deadTime)) {
+            try {
+                this.upDeadTime = df.parse(deadTime);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return this.upDeadTime;
     }
-    public void setDeadTime(int time){
-    	//System.out.println("time--"+time);
-    	Date date = new Date(System.currentTimeMillis());
-    	//System.out.println("date--"+date);
-    	Calendar calendar = Calendar.getInstance();
-    	//System.out.println("Calendar.DATE--"+Calendar.DATE);
-    	calendar.add(Calendar.DATE, time);
-    	date = calendar.getTime();
-    	//System.out.println("calendar.getTime()--"+date);
-    	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-    	String deadTime = df.format(date);
-    	System.out.println("deadTime--"+deadTime);
-    	this.deadTime = deadTime;
-    	System.out.println("this.deadTime--"+this.deadTime);
+
+    public void setDeadTime(int time) {
+        //System.out.println("time--"+time);
+        Date date = new Date(System.currentTimeMillis());
+        //System.out.println("date--"+date);
+        Calendar calendar = Calendar.getInstance();
+        //System.out.println("Calendar.DATE--"+Calendar.DATE);
+        calendar.add(Calendar.DATE, time);
+        date = calendar.getTime();
+        //System.out.println("calendar.getTime()--"+date);
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        String deadTime = df.format(date);
+        System.out.println("deadTime--" + deadTime);
+        this.deadTime = deadTime;
+        System.out.println("this.deadTime--" + this.deadTime);
     }
-    public void setDeadTime(String deadTime) throws ParseException{
-    	/*System.out.println("deadTime1--"+deadTime);
-    	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+
+    public void setDeadTime(String deadTime) {
+        /*System.out.println("deadTime1--"+deadTime);
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
     	String deadTime = df.format(time);
     	System.out.println("deadTime2--"+deadTime);*/
-    	SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-        Date date = sdf.parse(deadTime);
-        String time = sdf.format(date);
-    	this.deadTime = time;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (!StringUtils.isNullOrEmpty(deadTime)) {
+            try {
+                Date date = sdf.parse(deadTime);
+                String time = sdf.format(date);
+                this.deadTime = time;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
-    
-    public int getIsLegal(){
-    	return isLegal;
+
+    public int getIsLegal() {
+        return isLegal;
     }
-    public void setIsLegal(int isLegal){
-    	this.isLegal = isLegal;
+
+    public void setIsLegal(int isLegal) {
+        this.isLegal = isLegal;
     }
     //--至此--
 

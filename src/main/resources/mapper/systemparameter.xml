@@ -4,15 +4,15 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="systemparameter">
 	<select id="select" resultType="com.swust.kelab.domain.SystemParameter">
-            <![CDATA[
-			select 
-				sypa_id as sypaId,
-				sypa_name as sypaName,
-				sypa_value as sypaValue,
-				sypa_remark as sypaRemark
-			from
-				systemparameter
-		]]>
+		<!--<![CDATA[-->
+		select
+			sypa_id as sypaId,
+			sypa_name as sypaName,
+			sypa_value as sypaValue,
+			sypa_remark as sypaRemark
+		from
+			systemparameter
+		<!--]]>-->
 	</select>
 
 	<update id="updateSystemparam" parameterType="map">

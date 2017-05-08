@@ -14,53 +14,55 @@ import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-@Service(value = "worksInfoService")
+@Service(value = "worksInfoServiceOld")
 public class WorksInfoService {
     /*@Resource
     private AuthorDao authorDao;*/
-    @Resource
+
+
+    /*@Resource
     private WorksInfoDao worksInfoDao;
     @Resource
     HttpServletRequest request;
-    public String[] allCommentWords; 
+    public String[] allCommentWords; */
 
     //--zd-- 
     /**
      * @author zengdan
-     * 小说前9种类别统计， 按类型点击量排名
-     */
-    public List<Area> selectWorkType(Integer siteId) throws Exception {
+     * 小说前9种类别统计， 按类型点击量排名*/
+
+    /*public List<Area> selectWorkType(Integer siteId) throws Exception {
         List<Area> caList = worksInfoDao.selectWorkType(siteId);
         return caList;
-    }
+    }*/
     
     /**
      * @author zengdan
-     * 小说剩余所有类别统计
-     */
-    public long selectWorkRest(int siteId) throws Exception {
+     * 小说剩余所有类别统计*/
+
+    /*public long selectWorkRest(int siteId) throws Exception {
     	HashMap<String, Integer> map = new HashMap<String, Integer>();
         map.put("siteId", siteId);
     	long workSome = worksInfoDao.selectWorkSome(siteId);
     	long workCount = worksInfoDao.selectCount(map);
         long workRest = workCount - workSome;
         return workRest;
-    }
+    }*/
     
     /**
      * @author zengdan
-     * 最热10部
-     */
-    public List<WorkDetail> selectHotWork(int ActionType) throws Exception {
+     * 最热10部*/
+
+    /*public List<WorkDetail> selectHotWork(int ActionType) throws Exception {
         List<WorkDetail> caList = worksInfoDao.selectHotWork(ActionType);
         return caList;
-    }
+    }*/
     
     /**
      * @author zengdan
-     * 最近每日更新作者数、作品数
-     */
-    public List<AuthorWorkUpdate> selectUpdate() throws Exception {
+     * 最近每日更新作者数、作品数*/
+
+    /*public List<AuthorWorkUpdate> selectUpdate() throws Exception {
     	int[] time = {1,2,3,4,5,6,7};
     	List<AuthorWorkUpdate> list = worksInfoDao.selectUpdate();
     	List<AuthorWorkUpdate> alist = new ArrayList<AuthorWorkUpdate>();
@@ -93,10 +95,10 @@ public class WorksInfoService {
     		list1.add(alist.get(i));
     	}
         return list1;
-    }
+    }*/
     
     //点击量图
-    public List<NameValuePair> selectWorkHit(int siteId) throws Exception {
+    /*public List<NameValuePair> selectWorkHit(int siteId) throws Exception {
 		List<NameValuePair> hitAndWorkNum = new ArrayList<NameValuePair>();
 		long[] each = {0,100000,500000,1000000,2000000,3000000,5000000,7000000,9000000,10000000,-1};
 		for(int i=0; i<10; i++){
@@ -112,10 +114,10 @@ public class WorksInfoService {
 			}
 		}
 		return hitAndWorkNum;
-    }
+    }*/
     
     //评论数图
-    public List<NameValuePair> selectWorkComment(int siteId) throws Exception {
+    /*public List<NameValuePair> selectWorkComment(int siteId) throws Exception {
 		List<NameValuePair> hitAndWorkNum = new ArrayList<NameValuePair>();
 		long[] each = {0,5,10,20,30,40,50,100,200,500,-1};
 		for(int i=0; i<10; i++){
@@ -131,10 +133,10 @@ public class WorksInfoService {
 			}
 		}
 		return hitAndWorkNum;
-    }
+    }*/
     
     //推荐数图
-    public List<NameValuePair> selectWorkRecom(int siteId) throws Exception {
+    /*public List<NameValuePair> selectWorkRecom(int siteId) throws Exception {
 		List<NameValuePair> hitAndWorkNum = new ArrayList<NameValuePair>();
 		long[] each = {0,1000,5000,10000,20000,30000,50000,70000,90000,100000,-1};
 		for(int i=0; i<10; i++){
@@ -150,15 +152,15 @@ public class WorksInfoService {
 			}
 		}
 		return hitAndWorkNum;
-    }
+    }*/
     //--至此--
     
     //--ljf--****************
-   /* public List<WorkUpdate> selectWorkUpdateByID(int workId) throws Exception {
+    /*public List<WorkUpdate> selectWorkUpdateByID(int workId) throws Exception {
     	GenericQuery query = new GenericQuery();
         List<WorkUpdate> caList = worksInfoDao.selectWorkUpdateByID(query.fill("workId", workId));
         return caList;
-    }*/
+    }
     public String selectWorkUpdateByWebsiteId(int websiteId) throws Exception {
     	GenericQuery query = new GenericQuery();
     	String caList = worksInfoDao.selectWorkUpdateByWebsiteId(query.fill("websiteId", websiteId));
@@ -169,15 +171,15 @@ public class WorksInfoService {
     	GenericQuery query = new GenericQuery();
         List<WorksUpdate> caList = worksInfoDao.selectWorksUpdateById(query.fill("workId", workId));
         return caList;
-    }
+    }*/
     //--至此--***************
     
-    /**
+   /* *
      * 查詢全部主題
      * 
-     * @throws Exception
-     */
-    public List<WorksInfo> viewTop(int ActionType) throws Exception {
+     * @throws Exception*/
+
+    /*public List<WorksInfo> viewTop(int ActionType) throws Exception {
         List<WorksInfo> caList = worksInfoDao.selectTop(ActionType);
         return caList;
     }
@@ -186,14 +188,14 @@ public class WorksInfoService {
         GenericQuery query = new GenericQuery();
         List<WorksInfo> result = worksInfoDao.selectByAuthor(query.fill("authorId", authorId));
         return result;
-    }
+    }*/
 
-    /**
+   /* *
      * 分页查询主题分类
      * @author zengdan
-     * @throws Exception
-     */
-    public QueryData viewAllWorksInfo(EPOQuery iQuery, int parameter, int orderDesc, int siteId) throws Exception {
+     * @throws Exception*/
+
+    /*public QueryData viewAllWorksInfo(EPOQuery iQuery, int parameter, int orderDesc, int siteId) throws Exception {
         QueryData queryData = new QueryData();
         // 构造查询条件
         ListQuery query = iQuery.format();
@@ -252,13 +254,13 @@ public class WorksInfoService {
         GenericQuery query = new GenericQuery();
         List<WorkDetail> result = worksInfoDao.selectByWork(query.fill("workId", workId));
         return result;
-    }
+    }*/
 
     /**
      * @author zhuhai
-     * 评论词云
-     */
-    public List<Comment> commentsByWork(int workId) throws Exception {
+     * 评论词云*/
+
+    /*public List<Comment> commentsByWork(int workId) throws Exception {
         GenericQuery query = new GenericQuery();
         List<Comment> result = worksInfoDao.commentsByWork(query.fill("workId", workId));
         this.allCommentWords=null;
@@ -279,5 +281,5 @@ public class WorksInfoService {
         DescriptionFreqs freqs=new DescriptionFreqs();
         List<WorkDescription> wordcloud=freqs.getHighFreqWords(this.allCommentWords);
         return wordcloud;
-    }
+    }*/
 }

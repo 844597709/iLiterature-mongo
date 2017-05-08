@@ -27,7 +27,7 @@ $(function() {
 		},
 		countInfo : function() {
 			// 统计信息
-			var url = '../../handler/author/countInfo';
+			var url = '../../handler/base/countInfo';
 			$.post(url, function(data) {
 				if (data.ret && data.data.result) {
 					var entry = data.data.result;
@@ -40,7 +40,7 @@ $(function() {
 			});
 		},
 		/*作者类别统计*/
-		 showPie : function(htmlId){
+		showPie : function(htmlId){
 				var myChart1 = echarts.init(document.getElementById(htmlId));
 				var myUrl = '../../handler/worksInfo/selectWorkType';
 				var myData ='';
@@ -178,10 +178,10 @@ $(function() {
 			// 为echarts对象加载数据
 			myChart2.setOption(option);
 			},
-			/**最近更新情况--曲线图*/
+		/*最近更新情况--曲线图*/
 		showUpdate : function(htmlId){
 			var myChart2 = echarts.init(document.getElementById(htmlId));
-			var myUrl = '../../handler/worksInfo/selectNovelUpdateByTime';
+			var myUrl = '../../handler/worksInfo/selectWorkUpdateByTime';
 			var Time=[];
 			var Works = [];
 			var AuthorNum = [];
@@ -302,115 +302,114 @@ $(function() {
 				$('#AreaProvince').empty().append(iHtml);
 		      }
 			},
-		     Percentage : function (number1, number2) { 
-			    return (Math.round(number1 / number2 * 10000) / 100.00 + "%");// 小数点后两位百分比
-			},
-			//查询区域统计信息
-			showAreaDetails:function(){				
-				var url="../../handler/author/countInfoArea";
-				var AreaData={};
-				var max=0;
-				var iLength=0;
-				var allAuthorNum=0;
-				$.post(url,{
-					"siteId":0
-				},function(data){
-					if(data.ret){
-						AreaData=data.data.result;
-						//区域人数最大数，便于确定数值范围
-						max=data.data.maxProvinceNum;
-						//区域值的长度，便于显示区域百分比的列数
-						iLength=AreaData.length;
-						//区域所有作者数，便于算出区域省份的百分比
-						allAuthorNum=data.data.allAuthorNum;
-					}
-				});
-				this.showMap(AreaData,max,iLength,allAuthorNum,"iCharts");
-				return;
-			},
-			
-			/*作者区域分布 --地图*/
-			showMap:function(AreaData,max,iLength,allAuthorNum,htmlId){
-				var obj=this;
-				var data2=[];   //先声明一维
-				for(var k=0;k<60;k++){        //一维长度为i,i为变量，可以根据实际情况改变
-					data2[k]=new Array(); 
-					for(var j=0;j<2;j++){      //一维数组里面每个元素数组可以包含的数量p，p也是一个变量；
-						data2[k][j]='';       //这里将变量初始化，我这边统一初始化为空，后面在用所需的值覆盖里面的值
-						 }
-				   }
-				var data1="[";
-				for(var i=0;i<AreaData.length;i++){
-					if(i==AreaData.length-1){
-						data1+="{name:'"+AreaData[i].name+"',value:"+AreaData[i].value+"}";
-					}else{
-						data1+="{name:'"+AreaData[i].name+"',value:"+AreaData[i].value+"},";
-					}
-					data2[i][0]=AreaData[i].name;
-					data2[i][1]=parseInt(AreaData[i].value);
+		Percentage : function (number1, number2) {
+			return (Math.round(number1 / number2 * 10000) / 100.00 + "%");// 小数点后两位百分比
+		},
+		//查询区域统计信息
+		showAreaDetails:function(){
+			var url="../../handler/author/countInfoArea";
+			var AreaData={};
+			var max=0;
+			var iLength=0;
+			var allAuthorNum=0;
+			$.post(url,{
+				"siteId":0
+			},function(data){
+				if(data.ret){
+					AreaData=data.data.result;
+					//区域人数最大数，便于确定数值范围
+					max=data.data.maxProvinceNum;
+					//区域值的长度，便于显示区域百分比的列数
+					iLength=AreaData.length;
+					//区域所有作者数，便于算出区域省份的百分比
+					allAuthorNum=data.data.allAuthorNum;
 				}
-				data1+="]";
-				var myobj=eval(data1);
-				data2=data2.sort(function(x,y){return (y[1]-x[1]);});
-				obj.showMapList(data2,allAuthorNum,iLength);
-				var myChart = echarts.init(document.getElementById(htmlId));
-				option = {
-					    title : {
-					        text: "作者区域分布",
-					        x:'center'
-					    },
-					    tooltip : {
-					        trigger: 'item'
-					    },
-					    dataRange: {
-					    	precision:0,
-					        min: 0,
-					        max: (max-max%100+100),
-					        x: 'left',
-					        y: 'bottom',
-					        text:['高','低'],           // 文本，默认为数值文本
-					        calculable : true
-					    },
-					    toolbox: {
-					        show: true,
-					        orient : 'vertical',
-					        x: 'right',
-					        y: 'center',
-					    },
-					    series : [
-					        {
-					            name: '作者数',
-					            type: 'map',
-					            mapType: 'china',
-					            roam: false,
-					            itemStyle:{
-					                normal:{label:{show:true}},
-					                emphasis:{label:{show:true}}
-					            },
-					            data:myobj
-					        }
-					    ]
-					};
-				myChart.setOption(option);
-			},
+			});
+			this.showMap(AreaData,max,iLength,allAuthorNum,"iCharts");
+			return;
+		},
+		/*作者区域分布 --地图*/
+		showMap:function(AreaData,max,iLength,allAuthorNum,htmlId){
+			var obj=this;
+			var data2=[];   //先声明一维
+			for(var k=0;k<60;k++){        //一维长度为i,i为变量，可以根据实际情况改变
+				data2[k]=new Array();
+				for(var j=0;j<2;j++){      //一维数组里面每个元素数组可以包含的数量p，p也是一个变量；
+					data2[k][j]='';       //这里将变量初始化，我这边统一初始化为空，后面在用所需的值覆盖里面的值
+					 }
+			   }
+			var data1="[";
+			for(var i=0;i<AreaData.length;i++){
+				if(i==AreaData.length-1){
+					data1+="{name:'"+AreaData[i].name+"',value:"+AreaData[i].value+"}";
+				}else{
+					data1+="{name:'"+AreaData[i].name+"',value:"+AreaData[i].value+"},";
+				}
+				data2[i][0]=AreaData[i].name;
+				data2[i][1]=parseInt(AreaData[i].value);
+			}
+			data1+="]";
+			var myobj=eval(data1);
+			data2=data2.sort(function(x,y){return (y[1]-x[1]);});
+			obj.showMapList(data2,allAuthorNum,iLength);
+			var myChart = echarts.init(document.getElementById(htmlId));
+			option = {
+					title : {
+						text: "作者区域分布",
+						x:'center'
+					},
+					tooltip : {
+						trigger: 'item'
+					},
+					dataRange: {
+						precision:0,
+						min: 0,
+						max: (max-max%100+100),
+						x: 'left',
+						y: 'bottom',
+						text:['高','低'],           // 文本，默认为数值文本
+						calculable : true
+					},
+					toolbox: {
+						show: true,
+						orient : 'vertical',
+						x: 'right',
+						y: 'center',
+					},
+					series : [
+						{
+							name: '作者数',
+							type: 'map',
+							mapType: 'china',
+							roam: false,
+							itemStyle:{
+								normal:{label:{show:true}},
+								emphasis:{label:{show:true}}
+							},
+							data:myobj
+						}
+					]
+				};
+			myChart.setOption(option);
+		},
 		
 		init : function() {
 			// 初始化welcomeInfo
 			this.welcomeInfo();
 			this.countInfo();
 			this.showPie( "iAparts" );/*作者类别统计*/
-			this.showUpdate("iUpdate");/*最新一周作品作者更新情况*/
+			// this.showUpdate("iUpdate");/*最新一周作品作者更新情况*/
 			this.showSex("iSex");/*作者性别统计*/
 			//*作者区域分布*/
 			this.showAreaDetails();
-			/*this.showTable(1,0);*/
+			// this.showTable(1,0);
 		}
 	};
 	homePage.init();
 	showTop(1, "iData");
 	showTable(1); //显示作者的top10
 	sortclick();
-	/*showMap( "iCharts" );*/
+	// showMap( "iCharts" );
 	showAuthorList("work_Count","work_List");
 	showAuthorList("author_Count","author_List");
 	showAuthorList("work_List","work_Count");
@@ -423,7 +422,7 @@ $(function() {
  * 显示作品列表的top10
  */
  function showTop(type, htmlId) {
-	var url = '../../handler/worksInfo/selectHotWork';	
+	var url = '../../handler/worksInfo/selectHotTopWork';
 	showWorkPost(url,type);
 }
 /*点击作品排序*/
@@ -433,45 +432,45 @@ function clickWorkSort(id,type){
 	});
 }
 
- function showAuthorList (id,id1){
-	$('#'+id).click(function(){	
+function showAuthorList (id,id1){
+	$('#'+id).click(function(){
 		$("#"+id1+"1").hide();
-		$('#'+id+"1").show();		
+		$('#'+id+"1").show();
 	});
 }
- function showWorkPost (iUrl,type){
+
+function showWorkPost (iUrl,type){
 	$.post(iUrl, {
-		ActionType : type
+	    siteId: 0,
+		field : type
 	}, function(data) {
 		if (data.ret && data.data.data) {
 			var iHtml = "";
 			$.each(data.data.data, function(entryIndex, entry) {						
 				if(entryIndex<10){
-					if(entry.commentsNum <=0){
-						entry.commentsNum='无';
+					if(entry.workCommentsNum <=0){
+						entry.workCommentsNum='无';
 					}
-					else entry.commentsNum=transforms(entry.commentsNum);
-					if(entry.totalRecoms <=0){
-						entry.totalRecoms='无';
+					else entry.workCommentsNum=transforms(entry.workCommentsNum);
+					if(entry.workTotalRecoms <=0){
+						entry.workTotalRecoms='无';
 					}
-					else  entry.totalRecoms=transforms(entry.totalRecoms);
-					if(entry.totalHits <=0){
-						entry.totalHits='无';
+					else  entry.workTotalRecoms=transforms(entry.workTotalRecoms);
+					if(entry.workTotalHits <=0){
+						entry.workTotalHits='无';
 					}
-					else entry.totalHits=transforms(entry.totalHits);
-				iHtml = iHtml + "<tr><td><a href='workDetail.html?firstColuId=3&workId=" + entry.workId + "'>" + entry.title + "..</a></td><td>" + entry.author
-						+ "</td><td>" + entry.type + "</td><td>" + entry.totalHits + "</td><td>" + entry.commentsNum 
-						+ "</td><td>"+ entry.totalRecoms + "</td><td>" 
-						+ entry.updateTime.substring(0, 16) + "</td></tr>";										
+					else entry.workTotalHits=transforms(entry.workTotalHits);
+				iHtml = iHtml + "<tr><td><a href='workDetail.html?firstColuId=3&workId=" + entry.workId + "'>" + entry.workTitle + "..</a></td><td>" + entry.workAuthor
+						+ "</td><td>" + entry.workType + "</td><td>" + entry.workTotalHits + "</td><td>" + entry.workCommentsNum
+						+ "</td><td>"+ entry.workTotalRecoms + "</td></tr>";
+						// + "<td>"+entry.updateTime.substring(0, 16) + "</td></tr>";
 				 }
 				});
 			$('#iData').empty().append(iHtml);
 		}
 	});
 }
- /**
-	 * 显示作者列表的top10
-	 */
+
  /*格式化描述*/
  function titleFormat(titlestr, length) {
 		var r = /[^\x00-\xff]/g;
@@ -486,47 +485,90 @@ function clickWorkSort(id,type){
 		}
 		return titlestr;
 	}
-	 function showTable(field) {
-		var url = '../../handler/author/viewAllAuthor';
-		$.post(url, {				
-			"field":field,
-			"desc":1,
-			"siteId":0,
-		}, function(data) {
-			if (data.ret) {
-				var iHtml = "";
-				$.each(data.data.pageData[0].data, function(entryIndex, entry) {
-					if(entryIndex<10){
-						if(entry.commentsNum <=0){
-							entry.commentsNum='无';
-						}
-						else entry.commentsNum=transforms(entry.commentsNum);
-						if(entry.totalRecoms <=0){
-							entry.totalRecoms='无';
-						}
-						else  entry.totalRecoms=transforms(entry.totalRecoms);
-						if(entry.totalHits <=0){
-							entry.totalHits='无';
-						}
-						else entry.totalHits=transforms(entry.totalHits);
-						//var descript=titleFormat(entry.description,9);
-						if(entry.area=="")entry.area="未知";
-						iHtml = iHtml + "<tr><td><a href='authorDetail.html?firstColuId=2&authorId=" + entry.authorId + "'>" + entry.authorName
-						+ "</a></td><td>" +entry.worksCount + "</td><td>" + entry.area + "</a></td><td>" + entry.totalHits 
-						+" </td><td>" + entry.commentsNum  +"</td><td>" + entry.totalRecoms + "</td></tr>";					
-					 }
-					});
-				$('#iData1').empty().append(iHtml);
-				$("[rel=popover]").popover({
-					placement : 'top',
-					trigger : 'hover',
-					html : 'true', // needed to show html of course
+
+/**
+ * 显示作者列表的top10
+ */
+ /*function showTable(field) {
+	var url = '../../handler/author/viewAllAuthor';
+	$.post(url, {
+		"field":field,
+		"desc":1,
+		"siteId":0,
+	}, function(data) {
+		if (data.ret) {
+			var iHtml = "";
+			$.each(data.data.pageData[0].data, function(entryIndex, entry) {
+				if(entryIndex<10){
+					if(entry.workCommentsNum <=0){
+						entry.workCommentsNum='无';
+					}
+					else entry.workCommentsNum=transforms(entry.workCommentsNum);
+					if(entry.workTotalRecoms <=0){
+						entry.workTotalRecoms='无';
+					}
+					else  entry.workTotalRecoms=transforms(entry.workTotalRecoms);
+					if(entry.workTotalHits <=0){
+						entry.workTotalHits='无';
+					}
+					else entry.workTotalHits=transforms(entry.workTotalHits);
+					//var descript=titleFormat(entry.description,9);
+					if(entry.authArea=="")entry.authArea="未知";
+					iHtml = iHtml + "<tr><td><a href='authorDetail.html?firstColuId=2&authorId=" + entry.authId + "'>" + entry.authName
+					+ "</a></td><td>" +entry.authWorksNum + "</td><td>" + entry.authArea + "</a></td><td>" + entry.workTotalHits
+					+" </td><td>" + entry.workCommentsNum  +"</td><td>" + entry.workTotalRecoms + "</td></tr>";
+				 }
 				});
-			}
-		});
-	}
+			$('#iData1').empty().append(iHtml);
+			$("[rel=popover]").popover({
+				placement : 'top',
+				trigger : 'hover',
+				html : 'true', // needed to show html of course
+			});
+		}
+	});
+}*/
+function showTable(field) {
+	var url = '../../handler/author/selectHotTopAuthor';
+	$.post(url, {
+		"field":field,
+		"desc":1,
+		"siteId":0,
+	}, function(data) {
+		if (data.ret) {
+			var iHtml = "";
+			$.each(data.data.result, function(entryIndex, entry) {
+				if(entryIndex<10){
+					if(entry.authWorksCommentsNum <=0){
+						entry.authWorksCommentsNum='无';
+					}
+					else entry.authWorksCommentsNum=transforms(entry.authWorksCommentsNum);
+					if(entry.authWorksRecomsNum <=0){
+						entry.authWorksRecomsNum='无';
+					}
+					else  entry.authWorksRecomsNum=transforms(entry.authWorksRecomsNum);
+					if(entry.authWorksHitsNum <=0){
+						entry.authWorksHitsNum='无';
+					}
+					else entry.authWorksHitsNum=transforms(entry.authWorksHitsNum);
+					//var descript=titleFormat(entry.description,9);
+					if(entry.authArea=="")entry.authArea="未知";
+					iHtml = iHtml + "<tr><td><a href='authorDetail.html?firstColuId=2&authorId=" + entry.authId + "'>" + entry.authName
+						+ "</a></td><td>" +entry.authWorksNum + "</td><td>" + entry.authArea + "</a></td><td>" + entry.authWorksHitsNum
+						+" </td><td>" + entry.authWorksCommentsNum  +"</td><td>" + entry.authWorksRecomsNum + "</td></tr>";
+				}
+			});
+			$('#iData1').empty().append(iHtml);
+			$("[rel=popover]").popover({
+				placement : 'top',
+				trigger : 'hover',
+				html : 'true', // needed to show html of course
+			});
+		}
+	});
+}
 	
-	 function sortclick(){
+ function sortclick(){
 		$(".sortclick").click(function(){
 			/*if($(this).attr("class")=="icon-arrow-down"){
 				$(this).attr("class","icon-arrow-up");
