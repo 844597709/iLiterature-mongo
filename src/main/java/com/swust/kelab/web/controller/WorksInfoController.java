@@ -122,6 +122,7 @@ public class WorksInfoController {
         jv.addData("data", resultList);
         return jv;
     }
+
     //作品简介词云
     @RequestMapping(value = "selectByAuthor_description", method = RequestMethod.POST)
     public JsonAndView selectByAuthor_description(Integer authorId) throws Exception {

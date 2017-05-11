@@ -6,6 +6,10 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import com.swust.kelab.mongo.dao.AuthorUpdateDaoTemp;
+import com.swust.kelab.mongo.dao.WorksUpdateDaoTemp;
+import com.swust.kelab.mongo.domain.model.Area;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Lists;
@@ -21,8 +25,12 @@ import com.swust.kelab.web.model.QueryData;
 public class SiteService {
 	@Resource
 	private SiteDao siteDao;
+//	@Resource
+//	HttpServletRequest request;
 	@Resource
-	HttpServletRequest request;
+	private WorksUpdateDaoTemp worksUpdateDao;
+	@Resource
+	private AuthorUpdateDaoTemp authorUpdateDao;
 
 	// --zd--
 	public List<Site> selectSite() throws Exception {
@@ -41,6 +49,7 @@ public class SiteService {
 		return siteDao.selectSiteById(siteId);
 	}*/
 
+	@Deprecated
 	public QueryData viewAuthorAndWorkNum(EPOQuery iQuery) throws Exception {
 		QueryData queryData = new QueryData();
 		// 构造查询条件
@@ -99,6 +108,61 @@ public class SiteService {
 		queryData.setPageData(pageDataList);
 		return queryData;
 	}
+
+	/**
+	 * 慢的很
+	 */
+	/*public QueryData viewAuthorAndWorkNum(EPOQuery iQuery) {
+		QueryData queryData = new QueryData();
+		int[] pageArray = iQuery.getPageArray();
+		String searchWord = iQuery.getSearchWord();
+		Integer perPageCount = iQuery.getRecordPerPage();
+		if (perPageCount <= 0) {
+			perPageCount = 10;
+		}
+		int totalCount = siteDao.selectCount(new GenericQuery());
+		queryData.setTotalCount(totalCount);
+		if (totalCount == 0) {
+			return queryData;
+		}
+		queryData.setTotalCount(totalCount);
+		int totalPage = QueryData.computeTotalPage(totalCount, perPageCount);
+		queryData.setTotalPage(totalPage);
+		// 未指定页数，则只读取前三页数据
+		if (pageArray == null) {
+			pageArray = new int[]{1, 2, 3};
+		}
+		List<PageData> pageDataList = Lists.newArrayList();
+		// 分别获取每页的数据
+		Long timea = System.currentTimeMillis();
+		for (int i = 0; i < pageArray.length; i++) {
+			int page = pageArray[i];
+			if (page <= 0 || page > totalPage) {
+				continue;
+			}
+			ListQuery query = new GenericQuery(i*perPageCount, perPageCount);
+			query.put("searchWord", searchWord);
+			List<Site> sites = siteDao.selectList(query);
+			sites.forEach(site->{
+				Area lastTimeWithWorkCount = worksUpdateDao.selectLastTimeWithWorkCount(site.getSiteId());
+				Area lastTimeWithAuthorCount = authorUpdateDao.selectLastTimeWithAuthorCount(site.getSiteId());
+				String lastTime = lastTimeWithWorkCount.getName();
+				if(StringUtils.isEmpty(lastTime)){
+					lastTime = lastTimeWithAuthorCount.getName();
+				}
+				site.setAuthorUpdate(lastTime);
+				site.setTotalAuthors(lastTimeWithAuthorCount.getValue());
+				site.setTotalWorks(lastTimeWithWorkCount.getValue());
+			});
+			pageDataList.add(new PageData(page, sites));
+		}
+		Long timeaa = System.currentTimeMillis();
+		System.out.println("site-count:"+(timeaa-timea));
+		// 装载返回结果
+		queryData.setPageData(pageDataList);
+		return queryData;
+	}*/
+
 	// --至此--
 
 	/**

@@ -28,7 +28,7 @@ $(function() {
 					$('#iData').empty().append("没有相关数据");
 					return;
 				}
-				var url = '../../handler/author/viewAuthor';
+				var url = '../../handler/author/viewAuthorById';
 				$.post(url, {
 					"authorId" : this.authorId
 				}, function(data) {
@@ -38,8 +38,8 @@ $(function() {
 						var item = data.data.result;
 						var info = '';
 						var gender = '';
-						if(item.gender!=null&&item.gender!=""){
-							gender=item.gender;
+						if(item.authGender!=null&&item.authGender!=""){
+							gender=item.authGender;
 						}
 						/*if (item.gender == 2) {
 							gender = '女';
@@ -47,44 +47,47 @@ $(function() {
 							gender = '男';
 						}*/
 						var url = '';
-						if (item.url != null && item.url != "") {
-							url = item.url;
+						if (item.authUrl != null && item.authUrl != "") {
+							url = item.authUrl;
 						}
 						var inTime = '';
-						if (item.inTime != null && item.inTime != "") {
-							inTime = item.inTime;
+						if (item.authInTime != null && item.authInTime != "") {
+							inTime = item.authInTime;
 						}
 						var area = '';
-						if (item.area != null && item.area != "") {
-							area = item.area;
+						if (item.authArea != null && item.authArea != "") {
+							area = item.authArea;
 						}
-						var description = '';
-						if (item.description != null && item.description != "") {
-							description = item.description;
+						var description = '无';
+						if (item.authDesc != null && item.authDesc != "") {
+							description = item.authDesc;
 						}
-						if(item.totalRecoms<0){
-							item.totalRecoms=0;
+						if(item.authWorksRecomsNum<0){
+							item.authWorksRecomsNum=0;
 						}
-						if(item.totalHits<0){
-							item.totalHits=0;
+						if(item.authWorksHitsNum<0){
+							item.authWorksHitsNum=0;
 						}
-						if(item.commentsNum<0){
-							item.commentsNum=0;
+						if(item.authWorksCommentsNum<0){
+							item.authWorksCommentsNum=0;
+						}
+						if(item.authWorksNum<0){
+							item.authWorksNum=0;
 						}
 						var description1=titleFormat(description,9);
-						info = item.authorName + "$" + url + "$" + gender + "$" + area + "$" + description + "$" + inTime;
+						info = item.authName + "$" + url + "$" + gender + "$" + area + "$" + description + "$" + inTime;
 						iHtml += "<tr class=''><td class='tdcenter'><a id='"
-							+ item.authorId + "' name='" + info + "'  href='authorDetail.html?firstColuId=2&authorId="
-							+ item.authorId + "'>" + item.authorName + "</a>" + "</td><td class='tdcenter'>" + gender
+							+ item.authId + "' name='" + info + "'  href='authorDetail.html?firstColuId=2&authorId="
+							+ item.authId + "'>" + item.authName + "</a>" + "</td><td class='tdcenter'>" + gender
 							+ "</td><td class='tdcenter'>" + area + "</td><td class='tdcenter' title='"+description+"'>"+description1
-							+ "</td><td class='tdcenter'>" + item.wesiName + "</td><td class='tdcenter'>"
-							+ item.worksCount + "</td><td class='tdcenter'>" + transforms(item.totalHits) + "</td><td class='tdcenter'>"
-							+ transforms(item.commentsNum) + "</td><td class='tdcenter'>" + transforms(item.totalRecoms)
+							+ "</td><td class='tdcenter'>" + item.crawlWebsiteList[0].crwsSiteName + "</td><td class='tdcenter'>"
+							+ item.authWorksNum + "</td><td class='tdcenter'>" + transforms(item.authWorksHitsNum) + "</td><td class='tdcenter'>"
+							+ transforms(item.authWorksCommentsNum) + "</td><td class='tdcenter'>" + transforms(item.authWorksRecomsNum)
 							+ "</td><td class='tdcenter'><a title='" + url + "' href='" + url
 							+ "'target='_blank'><i class='icon-globe'></i></a></td></tr>";
 						$('#iData').append(iHtml);	
 						
-						if(item.worksCount >0){
+						if(item.authWorksNum >0){
 							showflag=true;
 						}
 					}
@@ -97,7 +100,7 @@ $(function() {
 					$('#iData').empty().append("没有相关数据");
 					return;
 				}
-				var url = '../../handler/worksInfo/selectByAuthor_description';
+				var url = '../../handler/worksInfo/selectWorksByAuthId';
 				$.post(url,{"authorId" : this.authorId},function(data) {
 					var iHtml="";
 					if (data.ret) {
@@ -140,41 +143,41 @@ $(function() {
 						if(myData!=''){
 							$.each(myData,function(itemIndex, item) {
 								workId[itemIndex]=item.workId;
-								if(item.description.length>200){
+								if(item.workDesc.length>200){
 									hideHtml="<li> 简介：<div id='short"+itemIndex+"'><span>"
-									+ item.description.substring(0,200)
+									+ item.workDesc.substring(0,200)
 									+ "</span><a href='javascript:void(0)' id='shorta' onclick='description(1,"+itemIndex+");'>(展开全部)</a></div>"
-									+"<div id='showAll"+itemIndex+"' style='display:none'><span>"+item.description+"</span>"
+									+"<div id='showAll"+itemIndex+"' style='display:none'><span>"+item.workDesc+"</span>"
 									+"<a href='javascript:void(0)'  id='showAlla' onclick='description(2,"+itemIndex+");'>(收缩)</a></div>"
 									+"</li>";
 								}else{
-									hideHtml="<li>简介："+item.description+"</li>";
+									hideHtml="<li>简介："+item.workDesc+"</li>";
 								}
 								iHtml += "<div class='accordion-group'>"
 									+ "<div class='accordion-heading'>"
 									+ "<a class='accordion-toggle' data-toggle='collapse' data-parent='#detail' href='#detail"
 									+ item.workId
 									+ "' >"
-									+ item.title
+									+ item.workTitle
 									+ "</a></div><div id='detail"
 									+ item.workId
 									+ "' class='accordion-body collapse in'>"
 									+ "<div class='accordion-inner'><ul><li><a href='workDetail.html?firstColuId=3&siteId="+authorInfo.siteId+"&workId="+
 									item.workId
 									+ "' target='_blank'> 作品："
-									+ item.title
+									+ item.workTitle
 									+ "</a></li><li> 类型："
-									+ item.type
+									+ item.workType
 									+ "</li><li>内容标签 :"
-									+ item.mark
+									+ item.workMark
 									+ "</li>"+hideHtml+"<li> 书号："
-									+ item.num
+									+ item.workNum
 									+ " </li><li> 作品性质："
-									+ item.nature
+									+ item.workNature
 									+ " </li><li> 授权状态/签约状态："
-									+ item.authorization
+									+ item.workAuthorization
 									+ " </li><li> 其他信息："
-									+ item.otherInfo + " </li></ul></div></div></div>";
+									+ item.workOtherInfo + " </li></ul></div></div></div>";
 							});
 						}
 					}
@@ -187,7 +190,7 @@ $(function() {
 				if(showflag){
 					$("#iAttrs").show();
 					$("#iAttrs1").show();
-					var url="../../handler/worksInfo/viewWork";
+					var url="../../handler/worksInfo/selectWorkById";
 					var totalHits=[];
 					var title=[];
 					var comms=[];
@@ -199,25 +202,25 @@ $(function() {
 							if(data.ret){
 								var item = data.data.data;
 								if(item!=null){
-									if(item.totalHits<0){
-										item.totalHits=0;
+									if(item.workTotalHits<0){
+										item.workTotalHits=0;
 									}
-									if(item.commentsNum<0){
-										item.commentsNum=0;
+									if(item.workCommentsNum<0){
+										item.workCommentsNum=0;
 									}
-									if(item.totalRecoms<0){
-										item.totalRecoms=0;
+									if(item.workTotalRecoms<0){
+										item.workTotalRecoms=0;
 									}
-									totalHits[i]=item.totalHits;
-									title[i]=item.title;
-									comms[i]=item.commentsNum;
-									recom[i]=item.totalRecoms;
+									totalHits[i]=item.workTotalHits;
+									title[i]=item.workTitle;
+									comms[i]=item.workCommentsNum;
+									recom[i]=item.workTotalRecoms;
 								}
 							}
 						});
 					}
-					this.showLine(title,totalHits, "iAttrs", "作者作品");
-					this.showLine1(title,totalHits,comms,recom,'iAttrs1',"作者作品");
+					this.showLine(title, totalHits, "iAttrs", "作者作品");
+					this.showLine1(title, totalHits, comms, recom, 'iAttrs1', "作者作品");
 				}
 			},
 			showAuthorAttrs:function(){

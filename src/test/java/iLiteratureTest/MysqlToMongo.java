@@ -33,10 +33,12 @@ public class MysqlToMongo {
     @Resource
     private MysqlDao mysqlDao;
 //    private static RiskBusinessDao riskBusinessDao = new RiskBusinessDaoImpl();
-    public static final String url = "jdbc:mysql://127.0.0.1:3306/iliterature_new";
+//    public static final String url = "jdbc:mysql://127.0.0.1:3306/iliterature_new";
+    public static final String url = "jdbc:mysql://192.168.0.29:3306/iliterature";
     public static final String name = "com.mysql.cj.jdbc.Driver";
     public static final String user = "root";
-    public static final String password = "150801";
+//    public static final String password = "150801";
+    public static final String password = "cs.swust";
 
     public static java.sql.Connection mysqlConn = null;
     public static java.sql.PreparedStatement pst = null;
@@ -90,7 +92,8 @@ public class MysqlToMongo {
         MongoDatabase mongoConn = null;
         MongoClient mongoClient=null;
         if(mongoClient == null){
-            mongoClient = new MongoClient("127.0.0.1", 27017 );
+//            mongoClient = new MongoClient("127.0.0.1", 27017 );
+            mongoClient = new MongoClient("192.168.0.29", 27017 );
         }
         mongoConn = mongoClient.getDatabase(databaseName);
         return mongoConn;
@@ -235,17 +238,17 @@ public class MysqlToMongo {
 //            String space="tempWorks";
 
 //            String collectionName="worksupdate";
-            String collectionName="worksupdatetemp";
-            String space="tempWorksUpdate";
+//            String collectionName="worksupdatetemp";
+//            String space="tempWorksUpdate";
 
-//            String collectionName="workscomment";
+//            String collectionName="workscommenttemp";
 //            String space="tempWorksComment";
 
 //            String collectionName="column";
 //            String space="tempColumn";
 
-//            String collectionName="crawlwebsite";
-//            String space="tempCrawlWebsite";
+            String collectionName="crawlwebsite";
+            String space="tempCrawlWebsite";
 
 //            String collectionName="systemparameter";
 //            String space="tempSystemParameter";

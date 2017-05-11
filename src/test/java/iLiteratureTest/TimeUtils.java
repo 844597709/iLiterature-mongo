@@ -7,6 +7,7 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.*;
 import com.swust.kelab.mongo.domain.TempWorks;
+import com.swust.kelab.mongo.domain.TempWorksComment;
 import com.swust.kelab.mongo.domain.TempWorksUpdate;
 import org.bson.Document;
 import org.junit.Test;
@@ -20,16 +21,17 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by zengdam on 2017/2/21.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:spring/applicationContext.xml", "classpath:mongodb/mongodb-config.xml"})
+@ContextConfiguration(locations = {"classpath:spring/applicationContext.xml", "classpath:spring/dao.xml", "classpath:mongodb/mongodb-config.xml"})
 public class TimeUtils {
     @Resource
     private MongoTemplate mongoTemplate;
-    private String collectionName="worksupdate";
+    private String collectionName="workscommenttemp";
 
     @Test
     public void updateTime(){
@@ -38,9 +40,12 @@ public class TimeUtils {
             "woupUpdateTime":"0000-00-00 00:00:00"}]})*/
         MongoClient client = new MongoClient();
         MongoDatabase db = client.getDatabase("iLiterature");
-        MongoCollection col = db.getCollection("worksupdate");
+        MongoCollection col = db.getCollection("workscommenttemp");
 
         List<DBObject> list = new ArrayList<DBObject>();
+
+        DBObject match = new BasicDBObject("$match", new BasicDBObject("wocoTime", new BasicDBObject("$regex", "\\.0$")));
+        list.add(match);
         long timec = System.currentTimeMillis();
 //        MongoCursor cursor = col.find().iterator();
         AggregateIterable iterable = col.aggregate(list).allowDiskUse(true);
@@ -53,11 +58,10 @@ public class TimeUtils {
             long timep = System.currentTimeMillis();
             Document obj = iterator.next();
             String json = JSON.toJSONString(obj);
-            TempWorksUpdate worksUpdate = JSON.parseObject(json, TempWorksUpdate.class);
-
-//            DBObject update = new BasicDBObject("$set", new BasicDBObject("woupTime", worksUpdate.getWoupTime().replace(".0", "")));
-            DBObject update = new BasicDBObject("$set", new BasicDBObject("woupTime", worksUpdate.getWoupTime()));
-            DBObject query = new BasicDBObject("woupId", worksUpdate.getWoupId());
+            TempWorksComment worksUpdate = JSON.parseObject(json, TempWorksComment.class);
+            DBObject update = new BasicDBObject("$set", new BasicDBObject("wocoTime", worksUpdate.getWocoTime().replace(".0", "")));
+//            DBObject update = new BasicDBObject("$set", new BasicDBObject("wocoTime", worksUpdate.getWocoTime()));
+            DBObject query = new BasicDBObject("wocoId", worksUpdate.getWocoId());
             mongoTemplate.getCollection(collectionName).update(query, update);//更新信息
             /*Document dupdate = null;
             if(worksUpdate.getWoupTime().contains(".")){
@@ -70,9 +74,9 @@ public class TimeUtils {
 //            Document dquery = new Document("woupId", worksUpdate.getWoupId());
 //            col.updateOne(dquery, dupdate);
             long timepp = System.currentTimeMillis();
-            if((timepp-timep)>50){
+            if((timepp-timep)>100){
                 number++;
-                System.out.println(number+": 第"+num+"次更新超时, woupId="+worksUpdate.getWoupId()+", 消耗"+(timepp-timep)+"ms...");
+                System.out.println(number+": 第"+num+"次更新超时, woupId="+worksUpdate.getWocoId()+", 消耗"+(timepp-timep)+"ms...");
             }
             num++;
         }

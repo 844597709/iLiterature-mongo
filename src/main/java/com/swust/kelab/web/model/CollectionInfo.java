@@ -364,8 +364,6 @@ public class CollectionInfo {
 				if(commentsNum[i].equals("-1"))
 					commentsNum[i] = "0" ;
 			}
-			
-			
 		}
 		
 		List<String[]> attr = new ArrayList<String[]>();

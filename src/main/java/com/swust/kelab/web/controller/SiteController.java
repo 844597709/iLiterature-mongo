@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.swust.kelab.mongo.service.SiteServiceTemp;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,6 +20,8 @@ import com.swust.kelab.web.model.QueryData;
 public class SiteController {
     @Resource
     private SiteService siteService;
+    @Resource
+    private SiteServiceTemp siteServiceTemp;
 
     //--zd--
     @RequestMapping(value = "/selectSite", method = RequestMethod.POST)
@@ -39,7 +42,8 @@ public class SiteController {
             jv.setErrmsg("数据格式错误");
             return jv;
         }
-        QueryData queryData = siteService.viewAuthorAndWorkNum(query);
+//        QueryData queryData = siteService.viewAuthorAndWorkNum(query);
+        QueryData queryData = siteServiceTemp.viewSiteWithAuthorAndWorkCountByPage(query);
         jv.addData("totalPage", queryData.getTotalPage());
         jv.addData("totalCount", queryData.getTotalCount());
         jv.addData("pageData", queryData.getPageData());

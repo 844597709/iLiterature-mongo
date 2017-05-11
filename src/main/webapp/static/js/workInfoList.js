@@ -142,22 +142,21 @@ function refreshContent(pageRecords) {
 			if (item.workUrl != null && item.workUrl != "") {
 				url = item.workUrl;
 			}
-			// TODO 缺少worksName crwsSiteName sTime(woupUpdateTime)
-			var sTime = '';
-			if (item.sTime != null && item.sTime != "") {
-				sTime = item.sTime;
+			var sTime = item.workLastUpdateTime;
+			if (!item.workLastUpdateTime) {
+				sTime = '';
 			}
 			if(item.workTotalHits<=0)item.workTotalHits="无";
 			if(item.workCommentsNum<=0)item.workCommentsNum="无";
 			if(item.workTotalRecoms<=0)item.workTotalRecoms="无";
-			info = item.worksName + "$" + url + "$" + item.workDesc + "$" + sTime;
+			info = item.workTitle + "$" + url + "$" + item.workDesc + "$" + sTime;
 			iHtml += "<tr><td class='tdcenter'>" + startIndex + "</td>" + "<td class='tdcenter'><a id='" + item.workId
 					+ "' name='" + info + "'  href='workDetail.html?firstColuId=3&workId=" + item.workId + "'>"
 					+ item.workTitle + "</a>" + "</td><td class='tdcenter'>" + item.workAuthor + "</td><td class='tdcenter'>"
 					+ item.workType + "</td><td class='tdcenter' title='" + item.crwsSiteName + "'>"
-					+ item.crwsSiteName+  "</td><td class='tdcenter'>" + transforms(item.workTotalHits)
+					+ item.crawlWebsiteList[0].crwsSiteName+  "</td><td class='tdcenter'>" + transforms(item.workTotalHits)
 					+ "</td><td class='tdcenter'>"+transforms(item.workCommentsNum) +"</td><td class='tdcenter'>" + transforms(item.workTotalRecoms)
-					+"</td><td class='tdcenter'>" + sTime.substr(0, 16) + "</td><td class='tdcenter'><a title='" + url
+					+"</td><td class='tdcenter'>" + sTime + "</td><td class='tdcenter'><a title='" + url
 					+ "' href='" + url + "'target='_blank'><i class='icon-globe'></i></a></td></tr>";
 			startIndex = startIndex + 1;
 		});

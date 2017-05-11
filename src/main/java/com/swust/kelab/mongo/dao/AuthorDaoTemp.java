@@ -3,31 +3,37 @@ package com.swust.kelab.mongo.dao;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.mongodb.*;
-import com.swust.kelab.mongo.domain.TempAuthor;
+import com.swust.kelab.mongo.dao.base.CommonDao;
 import com.swust.kelab.mongo.dao.query.BaseDao;
+import com.swust.kelab.mongo.domain.TempAuthor;
 import com.swust.kelab.mongo.domain.model.Area;
+import com.swust.kelab.mongo.domain.vo.TempAuthorVo;
 import com.swust.kelab.web.model.EPOQuery;
 import com.swust.kelab.web.model.PageData;
 import com.swust.kelab.web.model.QueryData;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.Resource;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * Created by zengdan on 2017/2/9.
  */
 @Repository(value = "authorDao")
 public class AuthorDaoTemp extends BaseDao<TempAuthor> {
+    @Resource
+    private CommonDao commonDao;
+
     @Override
     public void init() {
         super.collection = "author";
     }
 
     public List<TempAuthor> selectHotTopAuthor(Integer siteId, Integer sortField, Integer descOrAsc, Integer topNum) {
+        /*
+        db.author.find().sorted({"authWorksHitsNum":-1}).explain();
+        */
         DBObject sort = new BasicDBObject();
         this.sortFields(sortField, descOrAsc, sort);
         DBObject site = new BasicDBObject();
@@ -51,7 +57,7 @@ public class AuthorDaoTemp extends BaseDao<TempAuthor> {
         if (perPageCount <= 0) {
             perPageCount = 10;
         }
-        int allAuthorCount = super.getDBCollection().find().count();
+        int allAuthorCount = Long.valueOf(super.getCount()).intValue();
         if (allAuthorCount == 0) {
             return queryData;
         }
@@ -77,22 +83,122 @@ public class AuthorDaoTemp extends BaseDao<TempAuthor> {
             if (page <= 0 || page > totalPage) {
                 continue;
             }
-            if(searchWord!=null){
-                queryFields.put("authName", Pattern.compile("^.*"+searchWord+".*$"));
+            if (searchWord != null) {
+//                queryFields.put("authName", Pattern.compile("^.*"+searchWord+".*$"));
+                queryFields.put("authName", new BasicDBObject("$regex", searchWord));
             }
-            if(searchArea!=null){
-                queryFields.put("authArea", Pattern.compile("^.*"+searchArea+".*$"));
+            if (searchArea != null) {
+//                queryFields.put("authArea", Pattern.compile("^.*"+searchArea+".*$"));
+                queryFields.put("authArea", new BasicDBObject("$regex", searchArea));
             }
-            DBCursor cursor = super.getDBCollection().find(queryFields).sort(sort).skip(i * perPageCount).limit(perPageCount);
+            /*DBCursor cursor = super.getDBCollection().find(queryFields).sort(sort).skip(i * perPageCount).limit(perPageCount);
             List<TempAuthor> authorList = Lists.newArrayList();
             while (cursor.hasNext()) {
                 authorList.add(decode(cursor.next(), TempAuthor.class));
+            }*/
+
+            /*db.works.aggregate([
+            {"$match":{"workWebsiteId": 1}},
+            {"$sort":{"workTotalHits":-1}},
+            {"$skip":0},
+            {"$limit":20},
+            {"$lookup":{
+                from: "crawlwebsite",
+                localField: "workWebsiteId",
+                foreignField: "crwsId",
+                as: "crawlWebsiteList"
+            }}]);*/
+            DBObject match = new BasicDBObject("$match", queryFields);
+            DBObject sortFields = new BasicDBObject("$sort", sort);
+            DBObject skip = new BasicDBObject("$skip", i*perPageCount);
+            DBObject limit = new BasicDBObject("$limit", perPageCount);
+            DBObject lookupFields = new BasicDBObject("from", "crawlwebsite").append("localField", "authWebsiteId")
+                    .append("foreignField", "crwsId").append("as", "crawlWebsiteList");
+            DBObject lookup = new BasicDBObject("$lookup", lookupFields);
+            List<DBObject> queryList = Lists.newArrayList();
+            queryList.add(match);
+            queryList.add(sortFields);
+            queryList.add(skip);
+            queryList.add(limit);
+            queryList.add(lookup);
+            Iterator<DBObject> iterator = super.getDBCollection().aggregate(queryList).results().iterator();
+            List<TempAuthorVo> authorList = Lists.newArrayList();
+            while(iterator.hasNext()){
+                String json = JSON.toJSONString(iterator.next());
+                TempAuthorVo authorVo = JSON.parseObject(json, TempAuthorVo.class);
+                authorList.add(authorVo);
             }
             pageDataList.add(new PageData(page, authorList));
         }
         // 装载返回结果
         queryData.setPageData(pageDataList);
         return queryData;
+    }
+
+    public TempAuthorVo selectAuthorById(Integer authId){
+        DBObject query = new BasicDBObject("authId", authId);
+        DBObject match = new BasicDBObject("$match", query);
+        DBObject lookupFields = new BasicDBObject("from", "crawlwebsite").append("localField", "authWebsiteId")
+                .append("foreignField", "crwsId").append("as", "crawlWebsiteList");
+        DBObject lookup = new BasicDBObject("$lookup", lookupFields);
+        List<DBObject> queryList = Lists.newArrayList();
+        queryList.add(match);
+        queryList.add(lookup);
+        Iterator<DBObject> iterator = super.getDBCollection().aggregate(queryList).results().iterator();
+        TempAuthorVo author = JSON.parseObject(JSON.toJSONString(iterator.next()), TempAuthorVo.class);
+        return author;
+    }
+
+    /**
+     * 所有作者统计信息（点击量，评论量，推荐量）
+     */
+    @Deprecated
+    public List<TempAuthor> selectSortedAuthors(Integer siteId, Integer sortField, Integer descOrAsc) {
+        /*db.author.aggregate([{"$match":{"authWebsiteId":siteId},{"$sort":{"authWorksHitsNum":-1}}}])*/
+        DBObject site = new BasicDBObject();
+        if (siteId != 0) {
+            site.put("authWebsiteId", siteId);
+        }
+        DBObject sort = new BasicDBObject();
+        this.sortFields(sortField, descOrAsc, sort);
+        List<DBObject> queryList = Lists.newArrayList();
+        queryList.add(new BasicDBObject("$match", site));
+        queryList.add(new BasicDBObject("$sort", sort));
+        Cursor cursor = super.getDBCollection().aggregate(queryList, AggregationOptions.builder().allowDiskUse(true).build());
+        List<TempAuthor> authorList = Lists.newArrayList();
+        while (cursor.hasNext()) {
+            TempAuthor author = decode(cursor.next(), TempAuthor.class);
+            authorList.add(author);
+        }
+        return authorList;
+    }
+
+    public Area selectRangeWithAuthorCount(Integer siteId, Integer sortField, Integer min, Integer max) {
+        /*db.author.find({{"authWebsiteId":siteId},{"authWorksHitsNum":{"$gte":5000,"$lte":10000}}});*/
+        /*DBObject site = new BasicDBObject();
+        if (siteId != 0) {
+            site.put("authWebsiteId", siteId);
+        }
+        DBObject field = new BasicDBObject();*/
+        String fieldStr = "";
+        if (sortField == 1) {
+            fieldStr = "authWorksHitsNum";
+        } else if (sortField == 2) {
+            fieldStr = "authWorksCommentsNum";
+        } else if (sortField == 3) {
+            fieldStr = "authWorksRecomsNum";
+        } else if (sortField == 4) {
+            fieldStr = "authWorksNum";
+        }
+//        field.put(fieldStr, new BasicDBObject().append("$gte", min).append("$lt", max));
+        DBObject query = new BasicDBObject();
+        if (siteId != 0) {
+            query.put("authWebsiteId", siteId);
+        }
+        query.put(fieldStr, new BasicDBObject().append("$gte", min).append("$lt", max));
+        int authorCount = super.getDBCollection().find(query).count();
+        Area area = new Area(min.toString(), authorCount);
+        return area;
     }
 
     private void sortFields(Integer sortField, Integer descOrAsc, DBObject sort) {
@@ -155,7 +261,8 @@ public class AuthorDaoTemp extends BaseDao<TempAuthor> {
             list.add(match);
         }
         list.add(group);
-        AggregationOutput output = super.getDBCollection().aggregate(list);
+        List<Area> genderList = commonDao.queryByCondition(super.getDBCollection(), list);
+        /*AggregationOutput output = super.getDBCollection().aggregate(list);
         Iterator<DBObject> iter = output.results().iterator();
         List<Area> genderList = Lists.newArrayList();
         while (iter.hasNext()) {
@@ -164,7 +271,7 @@ public class AuthorDaoTemp extends BaseDao<TempAuthor> {
             Area area = JSON.parseObject(json, Area.class);
             area.setName(area.get_id()); // 获取性别
             genderList.add(area);
-        }
+        }*/
         return genderList;
     }
 
@@ -182,7 +289,8 @@ public class AuthorDaoTemp extends BaseDao<TempAuthor> {
             list.add(match);
         }
         list.add(group);
-        AggregationOutput output = super.getDBCollection().aggregate(list);
+        List<Area> areaList = commonDao.queryByCondition(super.getDBCollection(), list);
+        /*AggregationOutput output = super.getDBCollection().aggregate(list);
         Iterator<DBObject> iter = output.results().iterator();
         List<Area> areaList = Lists.newArrayList();
         while (iter.hasNext()) {
@@ -191,7 +299,7 @@ public class AuthorDaoTemp extends BaseDao<TempAuthor> {
             Area area = JSON.parseObject(json, Area.class);
             area.setName(area.get_id());
             areaList.add(area);
-        }
+        }*/
         return areaList;
     }
 

@@ -21,9 +21,9 @@ public class CommonDao {
         List<Area> list = Lists.newArrayList();
         while (iterator.hasNext()) {
             String json = JSON.toJSONString(iterator.next());
-            Area typeWithCount = JSON.parseObject(json, Area.class);
-            typeWithCount.setName(typeWithCount.get_id());
-            list.add(typeWithCount);
+            Area area = JSON.parseObject(json, Area.class);
+            area.setName(area.get_id());
+            list.add(area);
         }
         return list;
     }

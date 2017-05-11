@@ -262,7 +262,7 @@ public class WorksInfoService {
 
     /*public List<Comment> commentsByWork(int workId) throws Exception {
         GenericQuery query = new GenericQuery();
-        List<Comment> result = worksInfoDao.commentsByWork(query.fill("workId", workId));
+        List<Comment> result = worksInfoDao.c(query.fill("workId", workId));
         this.allCommentWords=null;
         for(int i=0;i<result.size();i++){
         	this.allCommentWords=(String[]) ArrayUtils.addAll(this.allCommentWords, result.get(i).rawwords);
@@ -271,6 +271,7 @@ public class WorksInfoService {
         List<Comment> wordcloud=freqs.getHighFreqWords(this.allCommentWords);
         return wordcloud;
     }
+
     public List<WorkDescription> selectByAuthor_description(int authorId) throws Exception {
         GenericQuery query = new GenericQuery();
         List<WorkDescription> result = worksInfoDao.selectByAuthor_description(query.fill("authorId", authorId));

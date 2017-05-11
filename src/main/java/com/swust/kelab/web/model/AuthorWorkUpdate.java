@@ -1,32 +1,32 @@
 package com.swust.kelab.web.model;
 
 public class AuthorWorkUpdate {
-	private long totalUpdateAuthors;
-	private long totalUpdateWorks;
+	private Integer totalUpdateAuthors;
+	private Integer totalUpdateWorks;
 	private String time;
 	
 	public AuthorWorkUpdate(){
 	}
 	
-	public AuthorWorkUpdate(long totalUpdateAuthors,long totalUpdateWorks,String time){
+	public AuthorWorkUpdate(Integer totalUpdateAuthors, Integer totalUpdateWorks, String time){
 		this.setTotalUpdateAuthors(totalUpdateAuthors);
 		this.setTotalUpdateWorks(totalUpdateWorks);
 		this.setTime(time);
 	}
 
-	public long getTotalUpdateAuthors() {
+	public Integer getTotalUpdateAuthors() {
 		return totalUpdateAuthors;
 	}
 
-	public void setTotalUpdateAuthors(long totalUpdateAuthors) {
+	public void setTotalUpdateAuthors(Integer totalUpdateAuthors) {
 		this.totalUpdateAuthors = totalUpdateAuthors;
 	}
 
-	public long getTotalUpdateWorks() {
+	public Integer getTotalUpdateWorks() {
 		return totalUpdateWorks;
 	}
 
-	public void setTotalUpdateWorks(long totalUpdateWorks) {
+	public void setTotalUpdateWorks(Integer totalUpdateWorks) {
 		this.totalUpdateWorks = totalUpdateWorks;
 	}
 

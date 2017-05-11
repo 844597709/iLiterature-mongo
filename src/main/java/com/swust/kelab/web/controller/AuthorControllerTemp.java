@@ -1,10 +1,10 @@
 package com.swust.kelab.web.controller;
 
 import com.google.common.collect.Lists;
-import com.swust.kelab.mongo.dao.base.PageResult;
 import com.swust.kelab.mongo.domain.TempAuthor;
+import com.swust.kelab.mongo.domain.TempAuthorUpdate;
 import com.swust.kelab.mongo.domain.model.Area;
-import com.swust.kelab.mongo.dao.query.AuthorQuery;
+import com.swust.kelab.mongo.domain.vo.TempAuthorVo;
 import com.swust.kelab.mongo.service.AuthorServiceTemp;
 import com.swust.kelab.mongo.utils.CollectionUtil;
 import com.swust.kelab.web.json.JsonAndView;
@@ -15,10 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.annotation.Resource;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Controller
@@ -66,13 +64,28 @@ public class AuthorControllerTemp {
         return jv;
     }
 
+    @RequestMapping(value = "/viewAuthorById", method = RequestMethod.POST)
+    public JsonAndView viewAuthorById(Integer authorId) throws Exception {
+        JsonAndView jv = new JsonAndView();
+        // 查询条件格式验证
+        if (authorId <= 0) {
+            jv.setRet(false);
+            jv.setErrcode(601);
+            jv.setErrmsg("数据格式错误");
+            return jv;
+        }
+        TempAuthorVo author = authorService.selectAuthorById(authorId);
+        jv.addData("result", author);
+        return jv;
+    }
+
     // 一次全部查出作者统计：range1~4：1点击量、2评论数、3推荐数、4作品数
     @RequestMapping(value = "/countAuthorInfoNumAll", method = RequestMethod.POST)
-    public JsonAndView countAuthorNumAll(String hitsRange, String commentsRange, String recomsRange, String worksRange, Integer siteId)
-            throws Exception {
+    public JsonAndView countAuthorNumAll(String hitsRange, String commentsRange, String recomsRange, String worksRange, Integer siteId) {
         System.out.println(hitsRange+" "+commentsRange+" "+recomsRange+" "+worksRange+" "+siteId);
         JsonAndView jv = new JsonAndView();
-        Map<String, Object> map = authorService.countInfoNumAll(hitsRange, commentsRange, recomsRange, worksRange, siteId, DESCORASC);
+//        Map<String, Object> map = authorService.countInfoNumAll(hitsRange, commentsRange, recomsRange, worksRange, siteId, DESCORASC);
+        Map<String, List<Area>> map = authorService.countAuthorInfoNum(hitsRange, commentsRange, recomsRange, worksRange, siteId);
         if (map == null || map.size() == 0) {
             jv.setRet(false);
             jv.setErrcode(601);
@@ -83,7 +96,7 @@ public class AuthorControllerTemp {
         return jv;
     }
 
-    /*@RequestMapping(value = "/viewAuthorUpdate", method = RequestMethod.POST)
+    @RequestMapping(value = "/viewAuthorUpdate", method = RequestMethod.POST)
     public JsonAndView viewAuthorUpdate(Integer auupAuthId) throws Exception {
 		JsonAndView jv = new JsonAndView();
 		// 查询条件格式验证
@@ -93,13 +106,12 @@ public class AuthorControllerTemp {
 			jv.setErrmsg("数据格式错误");
 			return jv;
 		}
-		List<AuthorUpdate> result = authorService.viewAuthorUpdate(auupAuthId);
+		List<TempAuthorUpdate> result = authorService.selectAuthorUpdateByAuthId(auupAuthId);
 		jv.addData("result", result);
 		return jv;
-
 	}
 
-	@RequestMapping(value = "/viewAuthor", method = RequestMethod.POST)
+	/*@RequestMapping(value = "/viewAuthor", method = RequestMethod.POST)
 	public JsonAndView viewAuthor(Integer authorId) throws Exception {
 		JsonAndView jv = new JsonAndView();
 		// 查询条件格式验证

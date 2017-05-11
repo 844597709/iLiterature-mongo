@@ -18,8 +18,6 @@ public class Comment {
         this.workId = workId;
     }
 
-
-
     public void setContent(String content) {
     	String temp_words=ToAnalysis.parse(content).toString().replaceAll("[a-zA-Z0-9]", "");
     	temp_words=temp_words.replace('[', ' ').replace(']', ' ').replace('(', ' ');

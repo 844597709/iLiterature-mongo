@@ -1,9 +1,11 @@
 package com.swust.kelab.mongo.domain;
 
+import com.swust.kelab.mongo.dao.query.BaseModel;
+
 /**
  * Created by zengdan on 2017/1/6.
  */
-public class TempCrawlWebsite {
+public class TempCrawlWebsite extends BaseModel {
     private Integer crwsId;
     private String crwsSiteName;
     private String crwsEncode;
@@ -28,6 +30,7 @@ public class TempCrawlWebsite {
     private Integer crwsCommentJsHandler;
     private Integer crwsEnable;
     private String crwsParamFilter;
+    private String crwsAuthorOrWorkUpdateTime;
 
     public Integer getCrwsId() {
         return crwsId;
@@ -219,5 +222,13 @@ public class TempCrawlWebsite {
 
     public void setCrwsParamFilter(String crwsParamFilter) {
         this.crwsParamFilter = crwsParamFilter;
+    }
+
+    public String getCrwsAuthorOrWorkUpdateTime() {
+        return crwsAuthorOrWorkUpdateTime;
+    }
+
+    public void setCrwsAuthorOrWorkUpdateTime(String crwsAuthorOrWorkUpdateTime) {
+        this.crwsAuthorOrWorkUpdateTime = crwsAuthorOrWorkUpdateTime;
     }
 }

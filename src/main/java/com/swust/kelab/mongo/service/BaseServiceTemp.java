@@ -2,9 +2,9 @@ package com.swust.kelab.mongo.service;
 
 import com.google.common.collect.Maps;
 import com.swust.kelab.mongo.dao.AuthorDaoTemp;
+import com.swust.kelab.mongo.dao.SiteDaoTemp;
 import com.swust.kelab.mongo.dao.WorksCommentDao;
 import com.swust.kelab.mongo.dao.WorksInfoDaoTemp;
-import com.swust.kelab.repos.SiteDao;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -22,24 +22,18 @@ public class BaseServiceTemp {
     @Resource
     private WorksCommentDao worksCommentDao;
     @Resource
-    private SiteDao siteDao;
+    private SiteDaoTemp siteDaoTemp;
 
     public Map<String, Long> countInfo() {
         Map<String, Long> map = Maps.newHashMap();
-       /* long author = authorDao.getCount(null);
-        long site = siteDao.countSite();
-        long works = worksInfoDao.getCount(null);
-        // TODO comments表还未导数据
-        long worksComments = worksCommentDao.getCount(null);*/
-        long author = authorDao.getDBCollection().find().count();
-        long site = siteDao.countSite();
-        long works = worksInfoDao.getDBCollection().find().count();
-//        long worksComments = worksCommentDao.getDBCollection().find().count();
+        long author = authorDao.getCount();
+        long site = siteDaoTemp.getCount();
+        long works = worksInfoDao.getCount();
+        long worksComments = worksCommentDao.getCount();
         map.put("author", author);
         map.put("site", site);
         map.put("works", works);
-//        map.put("worksComments", worksComments);
-        map.put("worksComments", 0L);
+        map.put("worksComments", worksComments);
         return map;
     }
 }

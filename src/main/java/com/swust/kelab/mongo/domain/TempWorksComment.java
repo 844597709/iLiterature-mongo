@@ -2,6 +2,8 @@ package com.swust.kelab.mongo.domain;
 
 import com.swust.kelab.mongo.dao.query.BaseModel;
 
+import java.util.Date;
+
 public class TempWorksComment extends BaseModel{
 	private Integer wocoId;
 	private Integer wocoWorkId;

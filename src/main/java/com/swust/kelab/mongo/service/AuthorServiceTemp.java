@@ -1,16 +1,15 @@
 package com.swust.kelab.mongo.service;
 
-import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.mongodb.AggregationOutput;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import com.swust.kelab.mongo.dao.AuthorDaoTemp;
+import com.swust.kelab.mongo.dao.AuthorUpdateDaoTemp;
 import com.swust.kelab.mongo.dao.base.PageResult;
-import com.swust.kelab.mongo.domain.TempAuthor;
-import com.swust.kelab.mongo.domain.model.Area;
 import com.swust.kelab.mongo.dao.query.BaseQuery;
+import com.swust.kelab.mongo.domain.TempAuthor;
+import com.swust.kelab.mongo.domain.TempAuthorUpdate;
+import com.swust.kelab.mongo.domain.model.Area;
+import com.swust.kelab.mongo.domain.vo.TempAuthorVo;
 import com.swust.kelab.mongo.utils.CollectionUtil;
 import com.swust.kelab.web.model.EPOQuery;
 import com.swust.kelab.web.model.QueryData;
@@ -24,6 +23,8 @@ import java.util.stream.Collectors;
 public class AuthorServiceTemp {
 	@Resource
 	private AuthorDaoTemp authorDao;
+	@Resource
+	private AuthorUpdateDaoTemp authorUpdateDao;
 
 	/**
 	 * 查询前topNum的作者
@@ -50,55 +51,135 @@ public class AuthorServiceTemp {
 		return queryData;
 	}
 
-    public Map<String, Object> countInfoNumAll(String hitsRange, String commentsRange, String recomsRange, String worksRange, Integer siteId, Integer descOrAsc)
-            throws Exception {
-        //获取所有，不排序
+	public TempAuthorVo selectAuthorById(Integer authId){
+		return authorDao.selectAuthorById(authId);
+	}
+
+	public List<TempAuthorUpdate> selectAuthorUpdateByAuthId(Integer authId){
+		List<TempAuthorUpdate> authorUpdateList = authorUpdateDao.selectAuthorUpdateByAuthId(authId);
+		return authorUpdateList;
+	}
+
+	@Deprecated
+    public Map<String, Object> countInfoNumAll(String hitsRange, String commentsRange, String recomsRange, String worksRange, Integer siteId, Integer descOrAsc) {
+        Long timea = System.currentTimeMillis();
+		// 方法1：
+		/*int documentCount = Long.valueOf(authorDao.getCount()).intValue();
+		System.out.println(documentCount);
+		List<TempAuthor> sortedAuthorByHitsNum = authorDao.selectHotTopAuthor(siteId, 1, descOrAsc, documentCount);
+		List<TempAuthor> sortedAuthorByCommentsNum = authorDao.selectHotTopAuthor(siteId, 2, descOrAsc, documentCount);
+		List<TempAuthor> sortedAuthorByRecomsNum = authorDao.selectHotTopAuthor(siteId, 3, descOrAsc, documentCount);
+		List<TempAuthor> sortedAuthorByWorksNum = authorDao.selectHotTopAuthor(siteId, 4, descOrAsc, documentCount);
+		*/
+
+		// 方法2：
+		//获取所有，不排序
         List<TempAuthor> allAuthorList = authorDao.selectHotTopAuthor(siteId, 0, descOrAsc, Integer.MAX_VALUE);
-        if(allAuthorList.isEmpty()){
-            return CollectionUtil.emptyMap();
-        }
-        List<TempAuthor> sortedAuthorByHitsNum = allAuthorList.stream().sorted((o1, o2) -> o1.getAuthWorksHitsNum().compareTo(o2.getAuthWorksHitsNum())).collect(Collectors.toList());
-        List<TempAuthor> sortedAuthorByCommentsNum = allAuthorList.stream().sorted((o1, o2) -> o1.getAuthWorksCommentsNum().compareTo(o2.getAuthWorksCommentsNum())).collect(Collectors.toList());
-        List<TempAuthor> sortedAuthorByRecomsNum = allAuthorList.stream().sorted((o1, o2) -> o1.getAuthWorksRecomsNum().compareTo(o2.getAuthWorksRecomsNum())).collect(Collectors.toList());
-        List<TempAuthor> sortedAuthorByWorksNum = allAuthorList.stream().sorted((o1, o2) -> o1.getAuthWorksNum().compareTo(o2.getAuthWorksNum())).collect(Collectors.toList());
-        Map<String, Object> map = new HashMap<String, Object>();
+		if(allAuthorList.isEmpty()){
+			return CollectionUtil.emptyMap();
+		}
+		List<TempAuthor> sortedAuthorByHitsNum = allAuthorList.stream().sorted((o1, o2) -> o1.getAuthWorksHitsNum().compareTo(o2.getAuthWorksHitsNum())).collect(Collectors.toList());
+		List<TempAuthor> sortedAuthorByCommentsNum = allAuthorList.stream().sorted((o1, o2) -> o1.getAuthWorksCommentsNum().compareTo(o2.getAuthWorksCommentsNum())).collect(Collectors.toList());
+		List<TempAuthor> sortedAuthorByRecomsNum = allAuthorList.stream().sorted((o1, o2) -> o1.getAuthWorksRecomsNum().compareTo(o2.getAuthWorksRecomsNum())).collect(Collectors.toList());
+		List<TempAuthor> sortedAuthorByWorksNum = allAuthorList.stream().sorted((o1, o2) -> o1.getAuthWorksNum().compareTo(o2.getAuthWorksNum())).collect(Collectors.toList());
+
+		// 方法3：
+//		List<TempAuthor> sortedAuthorByHitsNum = authorDao.selectSortedAuthors(siteId, 1, descOrAsc);
+
+		Map<String, Object> map = new HashMap<String, Object>();
         map.put("totalHits", this.getHitsRangeWithAuthorCount(1, hitsRange, sortedAuthorByHitsNum));
         map.put("commentsNum", this.getHitsRangeWithAuthorCount(2, commentsRange, sortedAuthorByCommentsNum));
+//        map.put("commentsNum", CollectionUtil.emptyList());
         map.put("totalRecoms", this.getHitsRangeWithAuthorCount(3, recomsRange, sortedAuthorByRecomsNum));
+//        map.put("totalRecoms", CollectionUtil.emptyList());
         map.put("worksCount", this.getHitsRangeWithAuthorCount(4, worksRange, sortedAuthorByWorksNum));
-        return map;
+//        map.put("worksCount", CollectionUtil.emptyList());
+        Long timeaa = System.currentTimeMillis();
+		System.out.println("author-countInfoNum:"+(timeaa-timea));
+		return map;
     }
 
-    private List<Area> getHitsRangeWithAuthorCount(Integer field, String rangeStr, List<TempAuthor> sortAuthorList){
-        List<Long> ranges = this.getRanges(rangeStr);
-        List<Area> list = Lists.newArrayList();
-        for(Long range:ranges){
-            List<TempAuthor> rangeAuthorList = Lists.newArrayList();
-            Integer num = 0;
-            for(int i=0; i<sortAuthorList.size(); i++){
-                if(field == 1){
-                    num = sortAuthorList.get(i).getAuthWorksHitsNum();
-                }else if(field == 2){
-                    num = sortAuthorList.get(i).getAuthWorksCommentsNum();
-                }else if(field == 3){
-                    num = sortAuthorList.get(i).getAuthWorksRecomsNum();
-                }else if(field == 4){
-                    num = sortAuthorList.get(i).getAuthWorksNum();
-                }
-                if(num>range){
-                    rangeAuthorList = sortAuthorList.subList(0, i);
-                    sortAuthorList = sortAuthorList.subList(i, sortAuthorList.size());
-                    break;
-                }
-            }
-            list.add(new Area(String.valueOf(range), Long.valueOf(rangeAuthorList.stream().count()).intValue()));
-        }
-        return list;
-    }
+    @Deprecated
+	private List<Area> getHitsRangeWithAuthorCount(Integer field, String rangeStr, List<TempAuthor> sortAuthorList){
+		List<Integer> ranges = this.getRanges(rangeStr);
+		List<Area> list = Lists.newArrayList();
+		for(Integer range:ranges){
+			List<TempAuthor> rangeAuthorList = Lists.newArrayList();
+			Integer num = 0;
+			for(int i=0; i<sortAuthorList.size(); i++){
+				if(field == 1){
+					num = sortAuthorList.get(i).getAuthWorksHitsNum();
+				}else if(field == 2){
+					num = sortAuthorList.get(i).getAuthWorksCommentsNum();
+				}else if(field == 3){
+					num = sortAuthorList.get(i).getAuthWorksRecomsNum();
+				}else if(field == 4){
+					num = sortAuthorList.get(i).getAuthWorksNum();
+				}
+				if(num>range){
+					rangeAuthorList = sortAuthorList.subList(0, i);
+					sortAuthorList = sortAuthorList.subList(i, sortAuthorList.size());
+					break;
+				}
+			}
+			list.add(new Area(String.valueOf(range), Long.valueOf(rangeAuthorList.stream().count()).intValue()));
+		}
+		return list;
+	}
 
-	private List<Long> getRanges(String rangeStr) {
+	public Map<String, List<Area>> countAuthorInfoNum(String hitsRange, String commentsRange, String recomsRange, String worksRange, Integer siteId){
+		List<Integer> hitsList = this.getRanges(hitsRange);
+		List<Integer> commentsList = this.getRanges(commentsRange);
+		List<Integer> recomsList = this.getRanges(recomsRange);
+		List<Integer> worksList = this.getRanges(worksRange);
+		if(hitsList.size()<=1){
+			return CollectionUtil.emptyMap();
+		}
+		if(commentsList.size()<=1){
+			return CollectionUtil.emptyMap();
+		}
+		if(recomsList.size()<=1){
+			return CollectionUtil.emptyMap();
+		}
+		if(worksList.size()<=1){
+			return CollectionUtil.emptyMap();
+		}
+
+		Long timea = System.currentTimeMillis();
+		List<Area> rangeWithHitsCount = Lists.newArrayList();
+		for(int i=1; i<hitsList.size(); i++){
+			Area hits = authorDao.selectRangeWithAuthorCount(siteId, 1, hitsList.get(i-1), hitsList.get(i));
+			rangeWithHitsCount.add(hits);
+		}
+		List<Area> rangeWithCommentsCount = Lists.newArrayList();
+		for(int i=1; i<commentsList.size(); i++){
+			Area comments = authorDao.selectRangeWithAuthorCount(siteId, 2, commentsList.get(i-1), commentsList.get(i));
+			rangeWithCommentsCount.add(comments);
+		}
+		List<Area> rangeWithRecomsCount = Lists.newArrayList();
+		for(int i=1; i<recomsList.size(); i++){
+			Area recoms = authorDao.selectRangeWithAuthorCount(siteId, 3, recomsList.get(i-1), recomsList.get(i));
+			rangeWithRecomsCount.add(recoms);
+		}
+		List<Area> rangeWithWorksCount = Lists.newArrayList();
+		for(int i=1; i<worksList.size(); i++){
+			Area works = authorDao.selectRangeWithAuthorCount(siteId, 4, worksList.get(i-1), worksList.get(i));
+			rangeWithWorksCount.add(works);
+		}
+		Long timeaa = System.currentTimeMillis();
+		System.out.println("work-消耗时间："+(timeaa-timea));
+
+		Map<String, List<Area>> map = Maps.newHashMap();
+		map.put("totalHits", rangeWithHitsCount);
+		map.put("commentsNum", rangeWithCommentsCount);
+		map.put("totalRecoms", rangeWithRecomsCount);
+		map.put("worksCount", rangeWithWorksCount);
+		return map;
+	}
+
+	private List<Integer> getRanges(String rangeStr) {
 		String[] strs = rangeStr.split(",");
-        List<Long> ranges = Arrays.stream(strs).map(range -> Long.parseLong(range)).collect(Collectors.toList());
+        List<Integer> ranges = Arrays.stream(strs).map(range -> Integer.parseInt(range)).collect(Collectors.toList());
         return ranges;
 	}
 
@@ -115,6 +196,7 @@ public class AuthorServiceTemp {
 	/**
 	 * 根据authId查询作者信息
 	 */
+	@Deprecated
 	public TempAuthor viewAuthor(Integer authId) {
 		TempAuthor author = authorDao.findById(authId);
 		return author;

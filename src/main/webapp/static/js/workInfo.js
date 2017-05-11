@@ -344,7 +344,7 @@ $(function () {
                 "hitsRange":datarange1,
                 "commentsRange":datarange2,
                 "recomsRange":datarange3,
-                "siteId":authorInfo.iDate.siteId
+                "siteId":analyse.iDate.siteId
             },function(data){
                 if(data.ret){
                     WorksData=data.data.result;
@@ -363,17 +363,17 @@ $(function () {
                 }
             });
             this.showWorkHeader(totalHitsValue,"Hits");//点击量
-            this.showWorkHeader(totalRecomsValue,"Recom"); //推荐数
-            this.showWorkHeader(commentsNumValue,"Comms"); //评论数
+            this.showWorkHeader(totalRecomsValue,"Recoms"); //推荐数
+            this.showWorkHeader(commentsNumValue,"Comments"); //评论数
             return;
         },
         showWorkHeader:function(value,htmlId){
             var text="作品点击量统计";
             var name=["0-10万","10-50万","50-100万","100-200万","200-300万","300-500万","500-700万","700-900万","900-1000万","1亿及以上"];
-            if(htmlId=="Comms"){
+            if(htmlId=="Comments"){
                 text="作品评论数统计";
                 name=["1-5条","5-10条","10-20条","20-30条","30-40条","40-50条","50-100条","100-200条","200-500条","500条及以上"]
-            }else if(htmlId=="Recom"){
+            }else if(htmlId=="Recoms"){
                 text="作品推荐数统计";
                 name=["1-1000","1000-5000","5000-1万","1-2万","2-3万","3-5万","5-7万","7-9万","9-10万","10万及以上"]
             }
@@ -386,7 +386,7 @@ $(function () {
                     trigger: 'axis'
                 },
                 legend: {
-                    data:['作者人数']
+                    data:['作品数']
                 },
                 calculable : true,
                 xAxis : [
@@ -402,7 +402,7 @@ $(function () {
                 ],
                 series : [
                     {
-                        name:'作者人数',
+                        name:'作品数',
                         type:'bar',
                         data:value,
                         markPoint : {

@@ -46,7 +46,7 @@ public class SiteDao {
 	}
 	// --至此--
 
-	public int selectCount(ListQuery query) throws Exception {
+	public int selectCount(ListQuery query) {
 		return sqlSession.selectOne("site.selectCount", query);
 	}
 
@@ -62,7 +62,7 @@ public class SiteDao {
 		return sqlSession.delete("site.delete", siteId);
 	}
 
-	public List<Site> selectList(ListQuery query) throws Exception {
+	public List<Site> selectList(ListQuery query) {
 		return sqlSession.selectList("site.select", query);
 	}
 

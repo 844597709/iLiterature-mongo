@@ -170,7 +170,7 @@ function refreshContent(pageRecords) {
 			if (item.authArea != null && item.authArea != "") {
 				area = item.authArea;
 			}
-			var description = '';
+			var description = "无";
 			if (item.authDesc != null && item.authDesc != "") {
 				description = item.authDesc;
 			}
@@ -183,6 +183,9 @@ function refreshContent(pageRecords) {
 			if(item.authWorksCommentsNum<=-1){
 				item.authWorksCommentsNum="无";
 			}
+			if(item.authWorksNum<=-1){
+				item.authWorksNum="无";
+			}
 			if(item.authGender==null || item.authGender==undefined){
 				item.authGender='';
 			}
@@ -192,8 +195,8 @@ function refreshContent(pageRecords) {
 					+ item.authId + "' name='" + info + "'  href='authorDetail.html?firstColuId=2&authorId="
 					+ item.authId + "'>" + item.authName + "</a>" + "</td><td class='tdcenter'>" + item.authGender
 					+ "</td><td class='tdcenter'>" + area + "</td><td class='tdcenter' title='"+description+"'>"+description1
-					+ "</td><td class='tdcenter'>" +item.wesiName+ "</td><td class='tdcenter'>"
-					+ item.worksCount + "</td><td class='tdcenter'>" + transforms(item.authWorksHitsNum) + "</td><td class='tdcenter'>"
+					+ "</td><td class='tdcenter'>" +item.crawlWebsiteList[0].crwsSiteName+ "</td><td class='tdcenter'>"
+					+ item.authWorksNum + "</td><td class='tdcenter'>" + transforms(item.authWorksHitsNum) + "</td><td class='tdcenter'>"
 					+transforms(item.authWorksCommentsNum) + "</td><td class='tdcenter'>" + transforms(item.authWorksRecomsNum)
 					+ "</td><td class='tdcenter'><a title='" + url + "' href='" + url
 					+ "'target='_blank'><i class='icon-globe'></i></a></td></tr>";

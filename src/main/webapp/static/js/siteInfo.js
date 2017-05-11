@@ -83,18 +83,18 @@ function refreshContent(pageRecords) {
 						+ "<i class=\" icon-warning-sign\"></i><strong>没有相关结果！</strong></td></tr>");
 	} else {
 		$.each(pageRecords.data, function(itemIndex, item) {
-			var crawInfo = '作者信息 : ' + item.authorUpdate + "</br> 作品信息 : " + item.worksUpdate + " </br>其他信息 : "
-					+ item.extraWorksInfo;
-			if(item.authorUpdate == '0'){
-				item.authorUpdate = '';
+			var crawInfo = '作者信息 : ' + item.crwsAuthorUpdate + "</br> 作品信息 : " + item.crwsWorksUpdate + " </br>其他信息 : "
+					+ item.crwsExtraWorksInfo;
+			if(!item.crwsAuthorOrWorkUpdateTime){
+				item.crwsAuthorOrWorkUpdateTime = '';
 			}
 			iHtml += "<tr class=''><td class='tdcenter'>" + startIndex + "</td>" + "<td class='tdcenter'><a id='"
-					+ item.siteId + "' class='edit' href='"+item.seedUrl+"' target='_black'>"
-					+ item.siteName + "</a>" + "</td><td class='tdcenter'>" + item.seedUrl
-					+ "</td><td class='tdcenter'>" + item.totalAuthors + "</td><td class='tdcenter'><a href='authorInfo.html?firstColuId=2&siteId=" + item.siteId
-					+ "''><i class='icon-globe'></i></a><td class='tdcenter'>" + item.totalWorks + "</td></td>"
-					+ "<td class='tdcenter'><a href='workInfo.html?firstColuId=3&siteId=" + item.siteId
-					+ "'><i class='icon-globe'></i></a></td><td class='tdcenter'>" + item.authorUpdate.substring(0,19) + "</td></tr>";
+					+ item.crwsId + "' class='edit' href='"+item.crwsSeedUrl+"' target='_black'>"
+					+ item.crwsSiteName + "</a>" + "</td><td class='tdcenter'>" + item.crwsSeedUrl
+					+ "</td><td class='tdcenter'>" + item.crwsTotalAuthorNum + "</td><td class='tdcenter'><a href='authorInfo.html?firstColuId=2&siteId=" + item.crwsId
+					+ "''><i class='icon-globe'></i></a><td class='tdcenter'>" + item.crwsTotalWorkNum + "</td></td>"
+					+ "<td class='tdcenter'><a href='workInfo.html?firstColuId=3&siteId=" + item.crwsId
+					+ "'><i class='icon-globe'></i></a></td><td class='tdcenter'>" + item.crwsAuthorOrWorkUpdateTime + "</td></tr>";
 			startIndex = startIndex + 1;
 		});
 		$('#iData').append(iHtml);

@@ -26,7 +26,7 @@ $(function() {
 					$('#iData').empty().append("没有相关数据");
 					return;
 				}
-				var url = '../../handler/worksInfo/viewWork';
+				var url = '../../handler/worksInfo/selectWorkById';
 				$.post(url, {
 					"workId" : this.workId
 				}, function(data) {
@@ -36,23 +36,23 @@ $(function() {
 						var item = data.data.data;
 						var info = '';
 						var url = '';
-						if (item.url != null && item.url != "") {
-							url = item.url;
+						if (item.workUrl != null && item.url != "") {
+							url = item.workUrl;
 						}
 						var sTime = '';
-						if (item.sTime != null && item.sTime != "") {
-							sTime = item.sTime;
+						if (item.workLastUpdateTime != null && item.workLastUpdateTime != "") {
+							sTime = item.workLastUpdateTime;
 						}
-						if(item.totalHits.length>4){
-							item.totalHits=item.totalHits.substr(0,item.totalHits.length-4)+"万";
-						}
-						info = item.authorName + "$" + url + "$" + item.description + "$" + sTime;
+						/*if(item.workTotalHits.length>4){
+							item.workTotalHits=item.workTotalHits.substr(0,item.workTotalHits.length-4)+"万";
+						}*/
+						info = item.workAuthor + "$" + url + "$" + item.workDesc + "$" + sTime;
 						iHtml += "<tr><td class='tdcenter'><a id='" + item.workId + "' name='" + info
-						+ "'  href='workDetail.html?firstColuId=3&workId=" + item.workId + "'>" + item.title
-						+ "</a>" + "</td><td class='tdcenter'>" + item.author + "</td><td class='tdcenter'>"
-						+ item.type + "</td><td class='tdcenter' title='" + item.description + "'>"
-						+ item.description.substr(0, 20) + "</td><td class='tdcenter'>" + transforms(item.totalHits)
-						+ "</td><td class='tdcenter'>" + sTime.substr(0, 16)
+						+ "'  href='workDetail.html?firstColuId=3&workId=" + item.workId + "'>" + item.workTitle
+						+ "</a>" + "</td><td class='tdcenter'>" + item.workAuthor + "</td><td class='tdcenter'>"
+						+ item.workType + "</td><td class='tdcenter' title='" + item.workDesc + "'>"
+						+ item.workDesc.substr(0, 20) + "</td><td class='tdcenter'>" + transforms(item.workTotalHits)
+						+ "</td><td class='tdcenter'>" + sTime
 						+ "</td><td class='tdcenter'><a title='" + url + "' href='" + url
 						+ "'target='_blank'><i class='icon-globe'></i></a></td></tr>";
 						$('#iData').append(iHtml);
@@ -95,6 +95,7 @@ $(function() {
 					$('#iData').empty().append("没有相关数据");
 					return;
 				}
+				// TODO 是否能变成selectWorkById
 				var url = '../../handler/worksInfo/selectByWork';
 				var timeArr = [];
 				var nameArr = [];

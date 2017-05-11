@@ -1,7 +1,10 @@
 package com.swust.kelab.web.controller;
 
+import com.swust.kelab.domain.Comment;
+import com.swust.kelab.domain.WorkDescription;
 import com.swust.kelab.mongo.domain.TempWorks;
 import com.swust.kelab.mongo.domain.model.Area;
+import com.swust.kelab.mongo.domain.vo.TempWorksVo;
 import com.swust.kelab.mongo.service.WorksInfoServiceTemp;
 import com.swust.kelab.web.json.JsonAndView;
 import com.swust.kelab.web.model.AuthorWorkUpdate;
@@ -20,7 +23,9 @@ import java.util.Map;
 public class WorksInfoControllerTemp {
     private static final Integer DESCORASC = -1; // 默认降序
     private static final Integer TOPNUM = 10; // top值
+    private static final String STARTTIME = "2016-12-10"; // 暂时写死
     private static final Integer DAYNUM = 10; // 展示近期天数
+//    private static final Integer PAGESIZE = 1000;
 
     @Resource
     private WorksInfoServiceTemp worksInfoService;
@@ -36,7 +41,7 @@ public class WorksInfoControllerTemp {
     @RequestMapping(value = "selectHotTopWork", method = RequestMethod.POST)
     public JsonAndView selectHotTopWork(Integer siteId, Integer field) {
         JsonAndView jv = new JsonAndView();
-        List<TempWorks> resultList = worksInfoService.selectHotTopWork(siteId, field, DESCORASC, TOPNUM);
+        List<TempWorksVo> resultList = worksInfoService.selectHotTopWork(siteId, field, DESCORASC, TOPNUM);
         jv.addData("data", resultList);
         return jv;
     }
@@ -44,14 +49,13 @@ public class WorksInfoControllerTemp {
     @RequestMapping(value = "selectWorkUpdateByTime", method = RequestMethod.POST)
     public JsonAndView selectWorkUpdateByTime() {
         JsonAndView jv = new JsonAndView();
-        // TODO 后期有时间再修改，加入开始时间
-        List<AuthorWorkUpdate> resultList = worksInfoService.selectWorkUpdateByTime(DAYNUM);
+        List<AuthorWorkUpdate> resultList = worksInfoService.selectWorkUpdateByTime(DESCORASC, STARTTIME, DAYNUM);
         jv.addData("data", resultList);
         return jv;
     }
 
     @RequestMapping(value = "/viewAllWorksInfo", method = RequestMethod.POST)
-    public JsonAndView viewAllWorksInfo(EPOQuery query, Integer field, Integer orderDesc, Integer siteId) throws Exception {
+    public JsonAndView viewAllWorksInfo(EPOQuery query, Integer field, Integer orderDesc, Integer siteId) {
         JsonAndView jv = new JsonAndView();
         // 查询条件格式验证
         if (query == null) {
@@ -69,11 +73,11 @@ public class WorksInfoControllerTemp {
 
     // 一次全部查出作者统计：range1~4：1点击量、2评论数、3推荐数、4作品数
     @RequestMapping(value = "/countWorkInfoNumAll", method = RequestMethod.POST)
-    public JsonAndView countWorkNumAll(String hitsRange, String commentsRange, String recomsRange, Integer siteId)
-            throws Exception {
+    public JsonAndView countWorkNumAll(String hitsRange, String commentsRange, String recomsRange, Integer siteId) {
         System.out.println(hitsRange+" "+commentsRange+" "+recomsRange+" "+siteId);
         JsonAndView jv = new JsonAndView();
-        Map<String, Object> map = worksInfoService.countInfoNumAll(hitsRange, commentsRange, recomsRange, siteId, DESCORASC);
+//        Map<String, Object> map = worksInfoService.countInfoNumAll(hitsRange, commentsRange, recomsRange, siteId, DESCORASC, PAGESIZE);
+        Map<String, List<Area>> map = worksInfoService.countWorkInfoNum(hitsRange, commentsRange, recomsRange, siteId);
         if (map == null || map.size() == 0) {
             jv.setRet(false);
             jv.setErrcode(601);
@@ -81,6 +85,67 @@ public class WorksInfoControllerTemp {
             return jv;
         }
         jv.addData("result", map);
+        return jv;
+    }
+
+    //作品简介词云
+    @RequestMapping(value = "selectWorksByAuthId", method = RequestMethod.POST)
+    public JsonAndView selectWorksByAuthId(Integer authorId) {
+        JsonAndView jv = new JsonAndView();
+        // 查询条件格式验证
+        if (authorId <= 0) {
+            jv.setRet(false);
+            jv.setErrcode(601);
+            jv.setErrmsg("数据格式错误");
+            return jv;
+        }
+        List<WorkDescription> resultList = worksInfoService.selectWorksDescByAuthId(authorId);
+        jv.addData("data", resultList);
+        return jv;
+    }
+
+    @RequestMapping(value = "selectByAuthor", method = RequestMethod.POST)
+    public JsonAndView selectByAuthor(Integer authorId) {
+        JsonAndView jv = new JsonAndView();
+        // 查询条件格式验证
+        if (authorId <= 0) {
+            jv.setRet(false);
+            jv.setErrcode(601);
+            jv.setErrmsg("数据格式错误");
+            return jv;
+        }
+        List<TempWorks> resultList = worksInfoService.selectWorksByAuthId(authorId);
+        jv.addData("data", resultList);
+        return jv;
+    }
+
+    @RequestMapping(value = "selectWorkById", method = RequestMethod.POST)
+    public JsonAndView selectWorkById(Integer workId) {
+        JsonAndView jv = new JsonAndView();
+        // 查询条件格式验证
+        if (workId <= 0) {
+            jv.setRet(false);
+            jv.setErrcode(601);
+            jv.setErrmsg("数据格式错误");
+            return jv;
+        }
+        TempWorksVo result = worksInfoService.selectWorkById(workId);
+        jv.addData("data", result);
+        return jv;
+    }
+
+    @RequestMapping(value = "commentsByWork", method = RequestMethod.POST)
+    public JsonAndView commentsByWork(Integer workId) {
+        JsonAndView jv = new JsonAndView();
+        // 查询条件格式验证
+        if (workId <= 0) {
+            jv.setRet(false);
+            jv.setErrcode(601);
+            jv.setErrmsg("数据格式错误");
+            return jv;
+        }
+        List<Comment> result = worksInfoService.selectWorkCommentById(workId);
+        jv.addData("data", result);
         return jv;
     }
 }

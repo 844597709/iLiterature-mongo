@@ -76,7 +76,7 @@ public abstract class BaseDao<T extends BaseModel> extends MongoTemplateDao<T> {
     /**
      * 统计表数据数量
      */
-    public Long getCount(BaseQuery query){
-        return super.getDBCollection().count(query.getQuery());
+    public Long getCount(){
+        return super.getDBCollection().count();
     }
 }

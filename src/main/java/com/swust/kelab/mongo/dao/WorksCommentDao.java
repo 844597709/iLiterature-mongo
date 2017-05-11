@@ -1,9 +1,14 @@
 package com.swust.kelab.mongo.dao;
 
+import com.google.common.collect.Lists;
 import com.mongodb.BasicDBObject;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 import com.swust.kelab.mongo.domain.TempWorksComment;
 import com.swust.kelab.mongo.dao.query.BaseDao;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * Created by zengdan on 2017/2/9.
@@ -13,6 +18,18 @@ public class WorksCommentDao extends BaseDao<TempWorksComment> {
     @Override
     public void init() {
         super.collection = "workscomment";
+    }
+
+    public List<TempWorksComment> selectWorkCommentById(Integer workId){
+        // TODO 记得加索引
+        DBObject query = new BasicDBObject("wocoWorkId", workId);
+        DBCursor cursor = super.getDBCollection().find(query);
+        List<TempWorksComment> workCommentList = Lists.newArrayList();
+        while(cursor.hasNext()){
+            TempWorksComment worksComment = decode(cursor.next(), TempWorksComment.class);
+            workCommentList.add(worksComment);
+        }
+        return workCommentList;
     }
 
     @Override
