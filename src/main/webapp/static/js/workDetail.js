@@ -35,24 +35,28 @@ $(function() {
 						iHtml = "";
 						var item = data.data.data;
 						var info = '';
-						var url = '';
-						if (item.workUrl != null && item.url != "") {
-							url = item.workUrl;
+						var url = item.workUrl;
+						if (!item.workUrl) {
+							url = '';
 						}
-						var sTime = '';
-						if (item.workLastUpdateTime != null && item.workLastUpdateTime != "") {
-							sTime = item.workLastUpdateTime;
+						var sTime = item.workLastUpdateTime;
+						if (!item.workLastUpdateTime) {
+							sTime = '';
+						}
+						var desc = item.workDesc;
+						if(item.workDesc.length>20){
+							desc = desc.substr(0, 20)+' ...';
 						}
 						/*if(item.workTotalHits.length>4){
 							item.workTotalHits=item.workTotalHits.substr(0,item.workTotalHits.length-4)+"万";
 						}*/
 						info = item.workAuthor + "$" + url + "$" + item.workDesc + "$" + sTime;
 						iHtml += "<tr><td class='tdcenter'><a id='" + item.workId + "' name='" + info
-						+ "'  href='workDetail.html?firstColuId=3&workId=" + item.workId + "'>" + item.workTitle
+						+ "'  href='workDetailTemp.html?firstColuId=3&workId=" + item.workId + "'>" + item.workTitle
 						+ "</a>" + "</td><td class='tdcenter'>" + item.workAuthor + "</td><td class='tdcenter'>"
 						+ item.workType + "</td><td class='tdcenter' title='" + item.workDesc + "'>"
-						+ item.workDesc.substr(0, 20) + "</td><td class='tdcenter'>" + transforms(item.workTotalHits)
-						+ "</td><td class='tdcenter'>" + sTime
+						+ desc + "</td><td class='tdcenter'>" + transforms(item.workTotalHits)
+						+ "</td><td class='tdcenter' id='workLastUpdateTime'>" + sTime
 						+ "</td><td class='tdcenter'><a title='" + url + "' href='" + url
 						+ "'target='_blank'><i class='icon-globe'></i></a></td></tr>";
 						$('#iData').append(iHtml);
@@ -64,7 +68,7 @@ $(function() {
 				if (this.authorId <= 0) {
 					return;
 				}
-				var url = '../../handler/worksInfo/commentsByWork';
+				var url = '../../handler/worksInfo/selectCommentsByWorkId';
 				$.post(url,{"workId" : this.workId},function(data) {
 					var iHtml="";
 					if (data.ret) {
@@ -96,7 +100,7 @@ $(function() {
 					return;
 				}
 				// TODO 是否能变成selectWorkById
-				var url = '../../handler/worksInfo/selectByWork';
+				/*var url = '../../handler/worksInfo/selectByWork';
 				var timeArr = [];
 				var nameArr = [];
 				var dataArr = [];
@@ -120,79 +124,108 @@ $(function() {
 				          }
 					}
 					$('#detail').empty().append(iHtml);
-				});
-				this.showLine(timeArr, dataArr[0], dataArr[1], dataArr[2], "iCharts", "");
+				});*/
+                var url = '../../handler/worksInfo/selectWeekOfWorkInfo';
+                var timeArr = [];
+                var hitsArr = [];
+                var commentArr = [];
+                var recomsArr = [];
+                $.post(url, {
+                    "workId" : this.workId,
+					"endTime" : $('#workLastUpdateTime').text()
+                }, function(data) {
+                    var iHtml = "";
+                    if (data.ret) {
+                        var myData = data.data.data ;
+                        $.each(myData, function (entryIndex, entry) {
+                            timeArr[entryIndex] = entry.woupRoughTime;
+							if(entry.woupTotalHits==-1)entry.woupTotalHits=0;
+                            hitsArr[entryIndex] = entry.woupTotalHits;
+							if(entry.woupCommentsNum==-1)entry.woupCommentsNum=0;
+                            commentArr[entryIndex] = entry.woupCommentsNum;
+							if(entry.woupTotalRecoms==-1)entry.woupTotalRecoms=0;
+                            recomsArr[entryIndex] = entry.woupTotalRecoms;
+                        });
+                    }
+                    $('#detail').empty().append(iHtml);
+                });
+				this.showLine(timeArr, hitsArr, commentArr, recomsArr, "iCharts");
 				return;
 			},
-			showLine : function(timeArr, hitsArr, recomsArr, commentArr, htmlId, text) {
+			// showLine : function(timeArr, hitsArr, commentArr, recomsArr, htmlId, text) {
+			showLine : function(timeArr, hitsArr, commentArr, recomsArr, htmlId) {
 				var myChart = echarts.init(document.getElementById(htmlId));
 				option = {
-						title : {
-							text :'',
-						},
-						tooltip : {
-							trigger : 'axis'
-						},
-						legend: {
-					        data:['点击量','推荐数','评论数']
-					    },
-						toolbox : {
-							show : true,
-							feature : {
-								/*mark : {
-									show : true
-								},
-								dataView : {
-									show : true,
-									readOnly : false
-								},*/
-								magicType : {
-									show : true,
-									type : [ 'line', 'bar' ]
-								},
-								restore : {
-									show : true
-								},
-								saveAsImage : {
-									show : true
-								}
-							}
-						},
-						calculable : true,
-						xAxis : [ {
+					title : {
+						text: '周统计',
+					},
+					tooltip : {
+						trigger: 'axis'
+					},
+					legend: {
+						data:['点击量','评论量','推荐量']
+					},
+					calculable : true,
+					xAxis : [
+						{
 							type : 'category',
 							boundaryGap : false,
 							data : timeArr
-						} ],
-						yAxis : [ {
+						}
+					],
+					yAxis : [
+						{
 							type : 'value',
-							scale : true,
-							splitNumber : 9,
-							splitArea : {
-								show : true
-							},
-							axisLabel : {
-								formatter : '{value} '
+							axisLabel: {
+								formatter: '{value} '
 							}
-						} ],
-						series : [ {
-							name : '点击量',
-							type : 'line',
-							data : hitsArr,
-						},
+						}
+					],
+					series : [
 						{
-							name : '推荐数',
-							type : 'line',
-							data : recomsArr,
-						} ,
-						{
-							name : '评论数',
-							type : 'line',
-							data : commentArr,
-						} ]
-						
+							name:'点击量',
+							type:'line',
+							data:hitsArr,
+							markPoint : {
+								data : [
+									{type : 'min', name: '最小值'}
+								]
+							},
+							markLine : {
+								data : [
+									{type : 'average', name: '平均值'}
+								]
+							}
+						}, {
+							name:'推荐量',
+							type:'line',
+							data:recomsArr,
+							markPoint : {
+								data : [
+									{type : 'min', name: '最小值'}
+								]
+							},
+							markLine : {
+								data : [
+									{type : 'average', name: '平均值'}
+								]
+							}
+						}, {
+							name:'评论量',
+							type:'line',
+							data:commentArr,
+							markPoint : {
+								data : [
+									{type : 'min', name: '最小值'}
+								]
+							},
+							markLine : {
+								data : [
+									{type : 'average', name: '平均值'}
+								]
+							}
+						}]
 				};
-				
 				
 				// 为echarts对象加载数据
 				myChart.setOption(option);
@@ -205,6 +238,7 @@ $(function() {
 				}
 				//ljf
 				//var url = '../../handler/worksInfo/selectByWork';
+                // TODO 要修改
 				var url = '../../handler/worksInfo/selectWorksUpdateById';
 				var timeArr=[];
 				var attrArr=new Array();
@@ -324,7 +358,9 @@ $(function() {
 				this.showData();
 				this.showComments();
 				this.showDetails();
-				this.showDetailsAgain();
+
+				// TODO 有时间再修改以下字段图表
+				// this.showDetailsAgain();
 			}
 	};
 	authorInfo.init();

@@ -166,7 +166,6 @@ public class WorksInfoController {
         }
         List<WorkDetail> result = worksInfoService.selectByWork(workId);
         Map<String, Object> data = CollectionInfo.totalAttr(result);
-        
         jv.addData("data", data);
         return jv;
     }

@@ -32,6 +32,8 @@ public class TempWorksUpdate extends BaseModel {
     private String woupAttr9;
     private String woupAttr10;
 
+    private String woupRoughTime;
+
     public Integer getWoupId() {
         return woupId;
     }
@@ -206,5 +208,13 @@ public class TempWorksUpdate extends BaseModel {
 
     public void setWoupAttr10(String woupAttr10) {
         this.woupAttr10 = woupAttr10;
+    }
+
+    public String getWoupRoughTime() {
+        return woupRoughTime;
+    }
+
+    public void setWoupRoughTime(String woupRoughTime) {
+        this.woupRoughTime = woupRoughTime;
     }
 }

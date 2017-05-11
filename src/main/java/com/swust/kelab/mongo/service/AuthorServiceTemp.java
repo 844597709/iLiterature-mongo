@@ -55,9 +55,9 @@ public class AuthorServiceTemp {
 		return authorDao.selectAuthorById(authId);
 	}
 
-	public List<TempAuthorUpdate> selectAuthorUpdateByAuthId(Integer authId){
-		List<TempAuthorUpdate> authorUpdateList = authorUpdateDao.selectAuthorUpdateByAuthId(authId);
-		return authorUpdateList;
+	public TempAuthorUpdate selectAuthorUpdateByAuthId(Integer authId){
+		TempAuthorUpdate authorUpdate = authorUpdateDao.selectAuthorUpdateByAuthId(authId);
+		return authorUpdate;
 	}
 
 	@Deprecated
@@ -65,7 +65,6 @@ public class AuthorServiceTemp {
         Long timea = System.currentTimeMillis();
 		// 方法1：
 		/*int documentCount = Long.valueOf(authorDao.getCount()).intValue();
-		System.out.println(documentCount);
 		List<TempAuthor> sortedAuthorByHitsNum = authorDao.selectHotTopAuthor(siteId, 1, descOrAsc, documentCount);
 		List<TempAuthor> sortedAuthorByCommentsNum = authorDao.selectHotTopAuthor(siteId, 2, descOrAsc, documentCount);
 		List<TempAuthor> sortedAuthorByRecomsNum = authorDao.selectHotTopAuthor(siteId, 3, descOrAsc, documentCount);
@@ -188,6 +187,7 @@ public class AuthorServiceTemp {
 	 * 
 	 * @throws Exception
 	 */
+	@Deprecated
 	public PageResult<TempAuthor> viewAllAuthor(BaseQuery query) {
 		PageResult<TempAuthor> result = authorDao.query(query);
 		return result;
@@ -243,6 +243,7 @@ public class AuthorServiceTemp {
 		return areaMap;
 	}
 
+	@Deprecated
 	public Map<String, Object> countAuthorInfo(Integer websiteId, String worksR, String hitsR, String commentsR, String recomsR){
 		String[] works = worksR.split(",");
 		String[] hits = hitsR.split(",");
@@ -259,6 +260,7 @@ public class AuthorServiceTemp {
 		return map;
 	}
 
+	@Deprecated
 	private List<Integer> getNum(Integer websiteId, String field, String[] ranges){
 		List<Integer> list = new ArrayList<Integer>();
 		for(int i=0; i<ranges.length-1; i++){

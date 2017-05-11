@@ -14,14 +14,13 @@ import java.util.List;
  * Created by zengdan on 2017/2/9.
  */
 @Component("worksCommentDao")
-public class WorksCommentDao extends BaseDao<TempWorksComment> {
+public class WorksCommentDaoTemp extends BaseDao<TempWorksComment> {
     @Override
     public void init() {
         super.collection = "workscomment";
     }
 
-    public List<TempWorksComment> selectWorkCommentById(Integer workId){
-        // TODO 记得加索引
+    public List<TempWorksComment> selectCommentsByWorkId(Integer workId){
         DBObject query = new BasicDBObject("wocoWorkId", workId);
         DBCursor cursor = super.getDBCollection().find(query);
         List<TempWorksComment> workCommentList = Lists.newArrayList();

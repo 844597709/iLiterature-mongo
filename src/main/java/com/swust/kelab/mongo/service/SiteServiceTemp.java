@@ -105,13 +105,11 @@ public class SiteServiceTemp {
         }
         List<PageData> pageDataList = Lists.newArrayList();
         // 分别获取每页的数据
-        Long timea = System.currentTimeMillis();
         for (int i = 0; i < pageArray.length; i++) {
             int page = pageArray[i];
             if (page <= 0 || page > totalPage) {
                 continue;
             }
-            Long timeb = System.currentTimeMillis();
             ListQuery query = new GenericQuery();
             query.put("startIndex", i*perPageCount);
             query.put("maxCount", perPageCount);
@@ -120,16 +118,9 @@ public class SiteServiceTemp {
             if(sites.isEmpty()){
                 continue;
             }
-            Long timebb = System.currentTimeMillis();
-            System.out.println("site-mysql查询："+(timebb-timeb));
-
-//            sites.forEach(site->{
             for(Site site:sites) {
-                Long timec = System.currentTimeMillis();
                 Area lastTimeWithWorkCount = worksUpdateDao.selectLastTimeWithWorkCount(site.getSiteId());
                 Area lastTimeWithAuthorCount = authorUpdateDao.selectLastTimeWithAuthorCount(site.getSiteId());
-                Long timecc = System.currentTimeMillis();
-                System.out.println(i + " site-mongo查询:" + (timecc - timec));
 
                 String lastTime = lastTimeWithWorkCount.getName();
                 if (StringUtils.isEmpty(lastTime)) {
@@ -138,12 +129,9 @@ public class SiteServiceTemp {
                 site.setAuthorUpdate(lastTime);
                 site.setTotalAuthors(lastTimeWithAuthorCount.getValue());
                 site.setTotalWorks(lastTimeWithWorkCount.getValue());
-//            });
             }
             pageDataList.add(new PageData(page, sites));
         }
-        Long timeaa = System.currentTimeMillis();
-        System.out.println("site-count:"+(timeaa-timea));
         // 装载返回结果
         queryData.setPageData(pageDataList);
         return queryData;

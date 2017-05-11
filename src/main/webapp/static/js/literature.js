@@ -464,7 +464,7 @@ function showWorkPost(iUrl, type) {
                     } else entry.workTotalHits = transforms(entry.workTotalHits);
                     var lastUpdateTime = entry.workLastUpdateTime;
                     if (!entry.workLastUpdateTime)lastUpdateTime = '';
-                    iHtml = iHtml + "<tr><td><a href='workDetail.html?firstColuId=3&workId=" + entry.workId + "'>" + entry.workTitle + "</a></td><td>" + entry.workAuthor
+                    iHtml = iHtml + "<tr><td><a href='workDetailTemp.html?firstColuId=3&workId=" + entry.workId + "'>" + entry.workTitle + "</a></td><td>" + entry.workAuthor
                         + "</td><td>" + entry.workType + "</td><td>" + entry.workTotalHits + "</td><td>" + entry.workCommentsNum
                         + "</td><td>" + entry.workTotalRecoms + "</td><td>"
                         + lastUpdateTime + "</td></tr>";

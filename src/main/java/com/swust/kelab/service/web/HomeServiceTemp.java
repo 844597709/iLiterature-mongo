@@ -9,7 +9,7 @@ public class HomeServiceTemp {
 	@Resource
 	private WorksDao worksDao;
 	@Resource
-	private WorksCommentDao worksCommentDao;
+	private WorksCommentDaoTemp worksCommentDao;
 
 	public Map<String, Long> countInfo() throws Exception {
 		Map<String, Long> map = new HashMap<String, Long>();

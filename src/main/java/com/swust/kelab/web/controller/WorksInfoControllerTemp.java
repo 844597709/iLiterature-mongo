@@ -3,6 +3,7 @@ package com.swust.kelab.web.controller;
 import com.swust.kelab.domain.Comment;
 import com.swust.kelab.domain.WorkDescription;
 import com.swust.kelab.mongo.domain.TempWorks;
+import com.swust.kelab.mongo.domain.TempWorksUpdate;
 import com.swust.kelab.mongo.domain.model.Area;
 import com.swust.kelab.mongo.domain.vo.TempWorksVo;
 import com.swust.kelab.mongo.service.WorksInfoServiceTemp;
@@ -25,7 +26,7 @@ public class WorksInfoControllerTemp {
     private static final Integer TOPNUM = 10; // top值
     private static final String STARTTIME = "2016-12-10"; // 暂时写死
     private static final Integer DAYNUM = 10; // 展示近期天数
-//    private static final Integer PAGESIZE = 1000;
+    private static final Integer WEEKNUM = 7; // 往回退的天数
 
     @Resource
     private WorksInfoServiceTemp worksInfoService;
@@ -89,6 +90,7 @@ public class WorksInfoControllerTemp {
     }
 
     //作品简介词云
+    // TODO 首次太慢 15s，第二次就很快
     @RequestMapping(value = "selectWorksByAuthId", method = RequestMethod.POST)
     public JsonAndView selectWorksByAuthId(Integer authorId) {
         JsonAndView jv = new JsonAndView();
@@ -134,8 +136,8 @@ public class WorksInfoControllerTemp {
         return jv;
     }
 
-    @RequestMapping(value = "commentsByWork", method = RequestMethod.POST)
-    public JsonAndView commentsByWork(Integer workId) {
+    @RequestMapping(value = "selectCommentsByWorkId", method = RequestMethod.POST)
+    public JsonAndView selectCommentsByWorkId(Integer workId) {
         JsonAndView jv = new JsonAndView();
         // 查询条件格式验证
         if (workId <= 0) {
@@ -144,8 +146,26 @@ public class WorksInfoControllerTemp {
             jv.setErrmsg("数据格式错误");
             return jv;
         }
-        List<Comment> result = worksInfoService.selectWorkCommentById(workId);
+        List<Comment> result = worksInfoService.selectCommentsByWorkId(workId);
         jv.addData("data", result);
+        return jv;
+    }
+
+    /**
+     * 今日往前推一周作品的点击量，评论量，推荐量
+     */
+    @RequestMapping(value = "selectWeekOfWorkInfo", method = RequestMethod.POST)
+    public JsonAndView selectWeekOfWorkInfo(Integer workId, String endTime){
+        JsonAndView jv = new JsonAndView();
+        // 查询条件格式验证
+        if (workId <= 0) {
+            jv.setRet(false);
+            jv.setErrcode(601);
+            jv.setErrmsg("数据格式错误");
+            return jv;
+        }
+        List<TempWorksUpdate> worksUpdateList = worksInfoService.selectWeekOfWorkInfo(workId, endTime, WEEKNUM);
+        jv.addData("data", worksUpdateList);
         return jv;
     }
 }

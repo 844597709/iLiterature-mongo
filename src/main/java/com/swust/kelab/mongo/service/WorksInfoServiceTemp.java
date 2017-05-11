@@ -2,25 +2,23 @@ package com.swust.kelab.mongo.service;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import com.swust.kelab.domain.Comment;
 import com.swust.kelab.domain.CommentFreqs;
 import com.swust.kelab.domain.DescriptionFreqs;
 import com.swust.kelab.domain.WorkDescription;
 import com.swust.kelab.mongo.dao.AuthorUpdateDaoTemp;
-import com.swust.kelab.mongo.dao.WorksCommentDao;
+import com.swust.kelab.mongo.dao.WorksCommentDaoTemp;
 import com.swust.kelab.mongo.dao.WorksInfoDaoTemp;
 import com.swust.kelab.mongo.dao.WorksUpdateDaoTemp;
 import com.swust.kelab.mongo.domain.TempWorks;
 import com.swust.kelab.mongo.domain.TempWorksComment;
+import com.swust.kelab.mongo.domain.TempWorksUpdate;
 import com.swust.kelab.mongo.domain.model.Area;
 import com.swust.kelab.mongo.domain.vo.TempWorksVo;
 import com.swust.kelab.mongo.utils.CollectionUtil;
 import com.swust.kelab.web.model.AuthorWorkUpdate;
 import com.swust.kelab.web.model.EPOQuery;
 import com.swust.kelab.web.model.QueryData;
-import org.ansj.splitWord.analysis.ToAnalysis;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +29,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service(value = "worksInfoService")
@@ -42,7 +41,7 @@ public class WorksInfoServiceTemp {
     @Resource
     private AuthorUpdateDaoTemp authorUpdateDao;
     @Resource
-    private WorksCommentDao worksCommentDao;
+    private WorksCommentDaoTemp worksCommentDaoTemp;
 
     public List<Area> selectWorkType(Integer siteId, Integer topNum) {
         Integer allValidWorkCount = worksInfoDao.selectValidWorkCount(siteId);
@@ -134,7 +133,6 @@ public class WorksInfoServiceTemp {
             workDesc.setDescription(work.getWorkDesc());
             workDescList.add(workDesc);
         });
-
         String[] allCommentWords = null;
         for (int i = 0; i < workDescList.size(); i++) {
             allCommentWords = (String[]) ArrayUtils.addAll(allCommentWords, workDescList.get(i).Words);
@@ -147,8 +145,8 @@ public class WorksInfoServiceTemp {
     /**
      * 评论词云
      */
-    public List<Comment> selectWorkCommentById(int workId) {
-        List<TempWorksComment> workCommentList = worksCommentDao.selectWorkCommentById(workId);
+    public List<Comment> selectCommentsByWorkId(Integer workId) {
+        List<TempWorksComment> workCommentList = worksCommentDaoTemp.selectCommentsByWorkId(workId);
         List<Comment> commentList = Lists.newArrayList();
         workCommentList.forEach(workComment->{
             Comment workDesc = new Comment();
@@ -164,6 +162,40 @@ public class WorksInfoServiceTemp {
         CommentFreqs freqs = new CommentFreqs();
         List<Comment> wordcloud = freqs.getHighFreqWords(allCommentWords);
         return wordcloud;
+    }
+
+    /**
+     * 根据作品id查询endTime往前一周更新情况
+     */
+    public List<TempWorksUpdate> selectWeekOfWorkInfo(Integer workId, String endTime, Integer dayNum){
+        List<TempWorksUpdate> weekWorkUpdateList = Lists.newArrayList();
+        try {
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            calendar.setTime(sdf.parse(endTime));
+            calendar.add(Calendar.DATE, -dayNum);
+            String startTime = sdf.format(calendar.getTime());
+            List<TempWorksUpdate> worksUpdateList = worksUpdateDao.selectWeekOfWorkInfo(workId, startTime, endTime, dayNum);
+            Map<String, TempWorksUpdate> timeWithWorkUpdateMap = worksUpdateList.stream().collect(Collectors.toMap(TempWorksUpdate::getWoupRoughTime, Function.identity()));
+
+            for(int i=0; i<dayNum; i++){
+                calendar.add(Calendar.DATE, 1);
+                String dayTime = sdf.format(calendar.getTime());
+                if(timeWithWorkUpdateMap.containsKey(dayTime)){
+                    weekWorkUpdateList.add(timeWithWorkUpdateMap.get(dayTime));
+                }else{
+                    TempWorksUpdate worksUpdate = new TempWorksUpdate();
+                    worksUpdate.setWoupRoughTime(dayTime);
+                    worksUpdate.setWoupTotalHits(-1);
+                    worksUpdate.setWoupCommentsNum(-1);
+                    worksUpdate.setWoupTotalRecoms(-1);
+                    weekWorkUpdateList.add(worksUpdate);
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return weekWorkUpdateList;
     }
 
     @Deprecated

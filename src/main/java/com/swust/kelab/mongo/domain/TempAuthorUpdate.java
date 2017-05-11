@@ -13,6 +13,8 @@ public class TempAuthorUpdate extends BaseModel {
     private String auupAttr4;
     private String auupAttr5;
 
+    private String auupRoughTime;
+
     public Integer getAuupId() {
         return auupId;
     }
@@ -83,5 +85,13 @@ public class TempAuthorUpdate extends BaseModel {
 
     public void setAuupAttr5(String auupAttr5) {
         this.auupAttr5 = auupAttr5;
+    }
+
+    public String getAuupRoughTime() {
+        return auupRoughTime;
+    }
+
+    public void setAuupRoughTime(String auupRoughTime) {
+        this.auupRoughTime = auupRoughTime;
     }
 }

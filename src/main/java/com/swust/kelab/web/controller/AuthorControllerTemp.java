@@ -106,33 +106,11 @@ public class AuthorControllerTemp {
 			jv.setErrmsg("数据格式错误");
 			return jv;
 		}
-		List<TempAuthorUpdate> result = authorService.selectAuthorUpdateByAuthId(auupAuthId);
+//		List<TempAuthorUpdate> result = authorService.selectAuthorUpdateByAuthId(auupAuthId);
+		TempAuthorUpdate result = authorService.selectAuthorUpdateByAuthId(auupAuthId);
 		jv.addData("result", result);
 		return jv;
 	}
-
-	/*@RequestMapping(value = "/viewAuthor", method = RequestMethod.POST)
-	public JsonAndView viewAuthor(Integer authorId) throws Exception {
-		JsonAndView jv = new JsonAndView();
-		// 查询条件格式验证
-		if (authorId <= 0) {
-			jv.setRet(false);
-			jv.setErrcode(601);
-			jv.setErrmsg("数据格式错误");
-			return jv;
-		}
-		Author result = authorService.viewAuthor(authorId);
-		jv.addData("result", result);
-		return jv;
-	}
-
-	@RequestMapping(value = "/countInfo", method = RequestMethod.POST)
-	public JsonAndView countAuthor() throws Exception {
-		JsonAndView jv = new JsonAndView();
-		Map<String, Long> result = authorService.countInfo();
-		jv.addData("result", result);
-		return jv;
-	}*/
 
     // liujie siteId=0 查找全部
     @RequestMapping(value = "/countInfoGender", method = RequestMethod.POST)
@@ -163,34 +141,4 @@ public class AuthorControllerTemp {
         jv.addData("result", sortedByAreaCountList);
         return jv;
     }
-    // liujie siteId=0 查找全部
-	/*@RequestMapping(value = "/countInfoArea", method = RequestMethod.POST)
-	public JsonAndView countAuthorArea(Integer siteId) throws Exception {
-		JsonAndView jv = new JsonAndView();
-		List<Area> list=	authorService.countAreaInfo( siteId);
-		Area area=authorService.countAreaMaxPeople(siteId);
-		int allAuthorNum=authorService.countAreaSumPeople( siteId);
-		jv.addData("allAuthorNum",allAuthorNum);
-		jv.addData("maxProvinceName", area.getName());
-		jv.addData("maxProvinceNum", area.getValue());
-		jv.addData("result", list);
-		return jv;
-	}*/
-
-    //一次全部查出作者统计：range1~4：1作品数、2点击量、3评论数、4推荐数
-    @RequestMapping(value = "/countInfoNumAll", method = RequestMethod.POST)
-    public JsonAndView countAuthorNumAll(Integer websiteId, String worksR, String hitsR, String commentsR, String recomsR)
-            throws Exception {
-        JsonAndView jv = new JsonAndView();
-        Map<String, Object> map = authorService.countAuthorInfo(websiteId, worksR, hitsR, commentsR, recomsR);
-        if (map == null || map.size() == 0) {
-            jv.setRet(false);
-            jv.setErrcode(601);// 随便写的哈
-            jv.setErrmsg("没有符合条件的作者");
-            return jv;
-        }
-        jv.addData("result", map);
-        return jv;
-    }
-
 }

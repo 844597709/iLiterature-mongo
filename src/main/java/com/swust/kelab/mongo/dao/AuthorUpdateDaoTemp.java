@@ -117,6 +117,22 @@ public class AuthorUpdateDaoTemp extends BaseDao<TempAuthorUpdate> {
         /**
          db.authorupdate.find().sort({"auupTime":-1}).limit(1);   //insert的时候排重了的
          */
+        /**
+         * 这个语句，太慢了
+         db.author.explain().aggregate([
+         {"$match":{"authWebsiteId":1}},
+         {"$project":{authId:1}},
+         {"$lookup":{
+             from: "authorupdate",
+             localField: "authId",
+             foreignField: "auupAuthId",
+             as: "authorupdateList"
+         }},
+         {"$sort":{"authorupdateList.auupTime":-1}},
+         {"$project":{"authorupdateList.auupTime":1}},
+         {"$limit":1}
+         ]);
+         */
         DBObject site = new BasicDBObject("authWebsiteId", siteId);
         DBObject authorField = new BasicDBObject("authId", 1);
         DBCursor idCursor = authorDao.getDBCollection().find(site, authorField);
@@ -128,7 +144,7 @@ public class AuthorUpdateDaoTemp extends BaseDao<TempAuthorUpdate> {
         db.authorupdate.find({"auupAuthorId":{"$in":{97056,97057,97061,97067,97072,97074,97079,97081,97084,97089,97092,97098,97103,97105,97108}}},
         {auupTime:1}).sort({auupTime:-1}).limit(1);
         */
-        DBObject query = new BasicDBObject("auupAuthorId", new BasicDBObject("$in", authorIdList));
+        DBObject query = new BasicDBObject("auupAuthId", new BasicDBObject("$in", authorIdList));
         DBObject authorupdateField = new BasicDBObject("auupTime", 1);
         DBObject sort = new BasicDBObject("auupTime", -1);
         DBCursor cursor = super.getDBCollection().find(query, authorupdateField).sort(sort).limit(1);
@@ -142,17 +158,17 @@ public class AuthorUpdateDaoTemp extends BaseDao<TempAuthorUpdate> {
     }
 
     /**
-     * 根据作者id查询作者更新状况
+     * 根据作者id查询作者最近一次更新状况
      */
-    public List<TempAuthorUpdate> selectAuthorUpdateByAuthId(Integer authId){
+    public TempAuthorUpdate selectAuthorUpdateByAuthId(Integer authId){
         DBObject query = new BasicDBObject("auupAuthId", authId);
-        DBCursor cursor = super.getDBCollection().find(query);
-        List<TempAuthorUpdate> authorUpdateList = Lists.newArrayList();
+        DBObject sort = new BasicDBObject("auupTime", -1);
+        DBCursor cursor = super.getDBCollection().find(query).sort(sort).limit(1);
+        TempAuthorUpdate authorUpdate = null;
         while(cursor.hasNext()){
-            TempAuthorUpdate authorUpdate = decode(cursor.next(), TempAuthorUpdate.class);
-            authorUpdateList.add(authorUpdate);
+            authorUpdate = decode(cursor.next(), TempAuthorUpdate.class);
         }
-        return authorUpdateList;
+        return authorUpdate;
     }
 
     @Override

@@ -3,7 +3,7 @@ package com.swust.kelab.mongo.service;
 import com.google.common.collect.Maps;
 import com.swust.kelab.mongo.dao.AuthorDaoTemp;
 import com.swust.kelab.mongo.dao.SiteDaoTemp;
-import com.swust.kelab.mongo.dao.WorksCommentDao;
+import com.swust.kelab.mongo.dao.WorksCommentDaoTemp;
 import com.swust.kelab.mongo.dao.WorksInfoDaoTemp;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,7 @@ public class BaseServiceTemp {
     @Resource
     private WorksInfoDaoTemp worksInfoDao;
     @Resource
-    private WorksCommentDao worksCommentDao;
+    private WorksCommentDaoTemp worksCommentDaoTemp;
     @Resource
     private SiteDaoTemp siteDaoTemp;
 
@@ -29,7 +29,7 @@ public class BaseServiceTemp {
         long author = authorDao.getCount();
         long site = siteDaoTemp.getCount();
         long works = worksInfoDao.getCount();
-        long worksComments = worksCommentDao.getCount();
+        long worksComments = worksCommentDaoTemp.getCount();
         map.put("author", author);
         map.put("site", site);
         map.put("works", works);

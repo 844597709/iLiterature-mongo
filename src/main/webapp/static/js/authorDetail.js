@@ -162,7 +162,7 @@ $(function() {
 									+ "</a></div><div id='detail"
 									+ item.workId
 									+ "' class='accordion-body collapse in'>"
-									+ "<div class='accordion-inner'><ul><li><a href='workDetail.html?firstColuId=3&siteId="+authorInfo.siteId+"&workId="+
+									+ "<div class='accordion-inner'><ul><li><a href='workDetailTemp.html?firstColuId=3&siteId="+authorInfo.siteId+"&workId="+
 									item.workId
 									+ "' target='_blank'> 作品："
 									+ item.workTitle
@@ -231,7 +231,7 @@ $(function() {
 					if(data.ret){
 						var myData=data.data.result;
 						var iHtml = "<i class='icon-align-right'></i>作者属性<br/>" ;
-						if(myData.length>0){
+						/*if(myData.length>0){
 							if(myData[0].auupAttr1==null  ||  myData[0].auupAttr1==undefined){
 								myData[0].auupAttr1="";
 							}else{
@@ -261,7 +261,38 @@ $(function() {
 								 iHtml +="<br/>他的等级："+myData[0].auupGrade+"<br/>";
 							}
 							$('#author').empty().append(iHtml);
-						}
+						}*/
+                        if(myData){
+                            if(myData.auupAttr1==null  ||  myData.auupAttr1==undefined){
+                                myData.auupAttr1="";
+                            }else{
+                                iHtml+=myData.auupAttr1;
+                            }
+                            if(myData.auupAttr2==null  ||  myData.auupAttr2==undefined){
+                                myData.auupAttr2="";
+                            }else{
+                                iHtml+="<br/>"+myData.auupAttr2;
+                            }
+                            if(myData.auupAttr3==null  ||  myData.auupAttr3==undefined){
+                                myData.auupAttr3="";
+                            }else{
+                                iHtml+="<br/>"+myData.auupAttr3;
+                            }
+                            if(myData.auupAttr4==null  ||  myData.auupAttr4==undefined){
+                                myData.auupAttr4="";
+                            }else{
+                                iHtml+="<br/>"+myData.auupAttr4;
+                            }
+                            if(myData.auupAttr5==null  ||  myData.auupAttr5==undefined){
+                                myData.auupAttr5="";
+                            }else{
+                                iHtml+="<br/>"+myData.auupAttr5;
+                            }
+                            if(myData.auupGrade!=-1){
+                                iHtml +="<br/>他的等级："+myData.auupGrade+"<br/>";
+                            }
+                            $('#author').empty().append(iHtml);
+                        }
 					}
 				});
 			},

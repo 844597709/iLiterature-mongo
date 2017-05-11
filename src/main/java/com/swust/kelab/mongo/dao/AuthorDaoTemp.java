@@ -88,15 +88,8 @@ public class AuthorDaoTemp extends BaseDao<TempAuthor> {
                 queryFields.put("authName", new BasicDBObject("$regex", searchWord));
             }
             if (searchArea != null) {
-//                queryFields.put("authArea", Pattern.compile("^.*"+searchArea+".*$"));
                 queryFields.put("authArea", new BasicDBObject("$regex", searchArea));
             }
-            /*DBCursor cursor = super.getDBCollection().find(queryFields).sort(sort).skip(i * perPageCount).limit(perPageCount);
-            List<TempAuthor> authorList = Lists.newArrayList();
-            while (cursor.hasNext()) {
-                authorList.add(decode(cursor.next(), TempAuthor.class));
-            }*/
-
             /*db.works.aggregate([
             {"$match":{"workWebsiteId": 1}},
             {"$sort":{"workTotalHits":-1}},
@@ -175,11 +168,6 @@ public class AuthorDaoTemp extends BaseDao<TempAuthor> {
 
     public Area selectRangeWithAuthorCount(Integer siteId, Integer sortField, Integer min, Integer max) {
         /*db.author.find({{"authWebsiteId":siteId},{"authWorksHitsNum":{"$gte":5000,"$lte":10000}}});*/
-        /*DBObject site = new BasicDBObject();
-        if (siteId != 0) {
-            site.put("authWebsiteId", siteId);
-        }
-        DBObject field = new BasicDBObject();*/
         String fieldStr = "";
         if (sortField == 1) {
             fieldStr = "authWorksHitsNum";
@@ -190,7 +178,6 @@ public class AuthorDaoTemp extends BaseDao<TempAuthor> {
         } else if (sortField == 4) {
             fieldStr = "authWorksNum";
         }
-//        field.put(fieldStr, new BasicDBObject().append("$gte", min).append("$lt", max));
         DBObject query = new BasicDBObject();
         if (siteId != 0) {
             query.put("authWebsiteId", siteId);
@@ -262,16 +249,6 @@ public class AuthorDaoTemp extends BaseDao<TempAuthor> {
         }
         list.add(group);
         List<Area> genderList = commonDao.queryByCondition(super.getDBCollection(), list);
-        /*AggregationOutput output = super.getDBCollection().aggregate(list);
-        Iterator<DBObject> iter = output.results().iterator();
-        List<Area> genderList = Lists.newArrayList();
-        while (iter.hasNext()) {
-            DBObject obj = iter.next();
-            String json = JSON.toJSONString(obj);
-            Area area = JSON.parseObject(json, Area.class);
-            area.setName(area.get_id()); // 获取性别
-            genderList.add(area);
-        }*/
         return genderList;
     }
 
@@ -290,19 +267,10 @@ public class AuthorDaoTemp extends BaseDao<TempAuthor> {
         }
         list.add(group);
         List<Area> areaList = commonDao.queryByCondition(super.getDBCollection(), list);
-        /*AggregationOutput output = super.getDBCollection().aggregate(list);
-        Iterator<DBObject> iter = output.results().iterator();
-        List<Area> areaList = Lists.newArrayList();
-        while (iter.hasNext()) {
-            DBObject obj = iter.next();
-            String json = JSON.toJSONString(obj);
-            Area area = JSON.parseObject(json, Area.class);
-            area.setName(area.get_id());
-            areaList.add(area);
-        }*/
         return areaList;
     }
 
+    @Deprecated
     public Integer getNum(Integer websiteId, String field, Integer start, Integer end) {
         DBObject obj = new BasicDBObject();
         obj.put("$gt", start);

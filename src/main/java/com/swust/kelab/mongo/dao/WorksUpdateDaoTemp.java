@@ -34,7 +34,6 @@ public class WorksUpdateDaoTemp extends BaseDao<TempWorksUpdate> {
 
     @Override
     public void init() {
-//        super.collection = "test";
         super.collection = "worksupdate";
     }
 
@@ -125,7 +124,6 @@ public class WorksUpdateDaoTemp extends BaseDao<TempWorksUpdate> {
         {"$match":{"woupRoughTime":{"$gte":startTime, "lt":endTime}}},
         {"$group":{"_id":"$woupRoughTime", "value":{$sum:1}}},
         {"$sort":{"woupRoughTime":-1}},  {"$limit":10} ]);*/
-        Long timea = System.currentTimeMillis();
         if (StringUtils.isEmpty(startTime)) {
             return CollectionUtil.emptyList();
         }
@@ -134,8 +132,6 @@ public class WorksUpdateDaoTemp extends BaseDao<TempWorksUpdate> {
         calendar.setTime(sdf.parse(startTime));
         calendar.add(Calendar.DATE, dayNum);
         String endTime = sdf.format(calendar.getTime());
-//            System.out.println("calendar-after-time:" + afterTime);
-
         DBObject matchField = new BasicDBObject("woupRoughTime", new BasicDBObject().append("$gte", startTime).append("$lt", endTime));
         DBObject match = new BasicDBObject("$match", matchField);
         DBObject groupFields = new BasicDBObject().append("_id", "$woupRoughTime").append("value", new BasicDBObject("$sum", 1));
@@ -148,8 +144,6 @@ public class WorksUpdateDaoTemp extends BaseDao<TempWorksUpdate> {
         queryList.add(sort);
         queryList.add(limit);
         List<Area> results = commonDao.queryByCondition(super.getDBCollection(), queryList);
-        Long timeaa = System.currentTimeMillis();
-        System.out.println("work-updatetime:" + (timeaa - timea));
         return results;
     }
 
@@ -179,6 +173,22 @@ public class WorksUpdateDaoTemp extends BaseDao<TempWorksUpdate> {
         }
         lastTimeWithCount.setValue(workIdList.size());
         return lastTimeWithCount;
+    }
+
+    /**
+     * 根据作品id查询endTime往前一周更新情况
+     */
+    public List<TempWorksUpdate> selectWeekOfWorkInfo(Integer workId, String startTime, String endTime, Integer dayNum) {
+        DBObject queryFields = new BasicDBObject("woupWorkId", workId);
+        queryFields.put("woupRoughTime", new BasicDBObject("$gt", startTime).append("$lte", endTime));
+        DBObject sort = new BasicDBObject("woupRoughTime", 1);
+        DBCursor cursor = super.getDBCollection().find(queryFields).sort(sort);
+        List<TempWorksUpdate> worksUpdateList = Lists.newArrayList();
+        while(cursor.hasNext()){
+            TempWorksUpdate worksUpdate = decode(cursor.next(), TempWorksUpdate.class);
+            worksUpdateList.add(worksUpdate);
+        }
+        return worksUpdateList;
     }
 
     @Override

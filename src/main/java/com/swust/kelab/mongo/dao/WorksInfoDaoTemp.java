@@ -54,17 +54,15 @@ public class WorksInfoDaoTemp extends BaseDao<TempWorks> {
     public List<Area> selectWorkType(Integer siteId, Integer topNum) {
         /*db.works.aggregate([
         {$match:{$and: [{"workType":{$ne:""}}, {"workWebsiteId":1}]}},
-        // {$match:{"workWebsiteId":1}},
         {$group:{"_id":"$workType", "value":{$sum:1}}},
         {$sort:{value:-1}},
         {$limit:9}
         ])*/
         List<DBObject> queryList = new ArrayList<DBObject>();
-        DBObject filterType = new BasicDBObject("$match", new BasicDBObject("workType", new BasicDBObject("$ne", "")));
-        queryList.add(filterType);
+        DBObject queryFields = new BasicDBObject("workType", new BasicDBObject("$ne", ""));
+        DBObject match = new BasicDBObject("$match", queryFields);
         if (siteId != 0) {
-            DBObject site = new BasicDBObject("$match", new BasicDBObject("workWebsiteId", siteId));
-            queryList.add(site);
+            queryFields.put("workWebsiteId", siteId);
         }
         DBObject groupFields = new BasicDBObject();
         groupFields.put("_id", "$workType");
@@ -72,19 +70,11 @@ public class WorksInfoDaoTemp extends BaseDao<TempWorks> {
         DBObject group = new BasicDBObject("$group", groupFields);
         DBObject sort = new BasicDBObject("$sort", new BasicDBObject("value", -1));
         DBObject limit = new BasicDBObject("$limit", topNum);
+        queryList.add(match);
         queryList.add(group);
         queryList.add(sort);
         queryList.add(limit);
         List<Area> list = commonDao.queryByCondition(super.getDBCollection(), queryList);
-        /*Iterable<DBObject> results = super.getDBCollection().aggregate(queryList).results();
-        Iterator<DBObject> iterator = results.iterator();
-        List<Area> list = Lists.newArrayList();
-        while (iterator.hasNext()) {
-            String json = JSON.toJSONString(iterator.next());
-            Area typeWithCount = JSON.parseObject(json, Area.class);
-            typeWithCount.setName(typeWithCount.get_id());
-            list.add(typeWithCount);
-        }*/
         return list;
     }
 
@@ -98,35 +88,13 @@ public class WorksInfoDaoTemp extends BaseDao<TempWorks> {
         if (siteId != 0) {
             site.put("workWebsiteId", siteId);
         }
-        /*DBCursor cursor = super.getDBCollection().find(site).sort(sort).limit(topNum);
-        List<TempWorks> workList = Lists.newArrayList();
-        while (cursor.hasNext()) {
-            TempWorks work = decode(cursor.next(), TempWorks.class);
-            workList.add(work);
-        }*/
-
-        /*db.works.aggregate([
-        {"$match":{"workWebsiteId":1}},
-        {"$sort":{"workTotalHits":-1}},
-        {"$limit":20},
-        {"$lookup":{
-            from: "worksupdate",
-            localField: "workId",
-            foreignField: "woupWorkId",
-            as: "worksUpdateList"
-        }}
-        ]);*/
         DBObject match = new BasicDBObject("$match", site);
         DBObject sortFields = new BasicDBObject("$sort", sort);
         DBObject limit = new BasicDBObject("$limit", topNum);
-        /*DBObject lookupFields = new BasicDBObject("from", "worksupdate").append("localField", "workId")
-                .append("foreignField", "woupWorkId").append("as", "worksUpdateList");
-        DBObject lookup = new BasicDBObject("$lookup", lookupFields);*/
         List<DBObject> queryList = Lists.newArrayList();
         queryList.add(match);
         queryList.add(sortFields);
         queryList.add(limit);
-//        queryList.add(lookup);
         List<TempWorksVo> workList = this.getTempWorksVos(queryList);
         return workList;
     }
@@ -191,7 +159,7 @@ public class WorksInfoDaoTemp extends BaseDao<TempWorks> {
             }}]);*/
             DBObject match = new BasicDBObject("$match", queryFields);
             DBObject sortFields = new BasicDBObject("$sort", sort);
-            DBObject skip = new BasicDBObject("$skip", i*perPageCount);
+            DBObject skip = new BasicDBObject("$skip", i * perPageCount);
             DBObject limit = new BasicDBObject("$limit", perPageCount);
             DBObject lookupFields = new BasicDBObject("from", "crawlwebsite").append("localField", "workWebsiteId")
                     .append("foreignField", "crwsId").append("as", "crawlWebsiteList");
@@ -210,25 +178,26 @@ public class WorksInfoDaoTemp extends BaseDao<TempWorks> {
         return queryData;
     }
 
-    public TempWorksVo selectWorkById(Integer workId){
+    public TempWorksVo selectWorkById(Integer workId) {
         DBObject query = new BasicDBObject("workId", workId);
-        DBObject match = new BasicDBObject("$match", query);
-        DBObject lookupFields = new BasicDBObject("from", "crawlwebsite").append("localField", "authWebsiteId")
-                .append("foreignField", "crwsId").append("as", "crawlWebsiteList");
-        DBObject lookup = new BasicDBObject("$lookup", lookupFields);
-        List<DBObject> queryList = Lists.newArrayList();
-        queryList.add(match);
-        queryList.add(lookup);
-        Iterator<DBObject> iterator = super.getDBCollection().aggregate(queryList).results().iterator();
-        TempWorksVo worksVo = JSON.parseObject(JSON.toJSONString(iterator.next()), TempWorksVo.class);
+        DBCursor cursor = super.getDBCollection().find(query);
+        TempWorksVo worksVo = JSON.parseObject(JSON.toJSONString(cursor.next()), TempWorksVo.class);
+        DBObject queryField = new BasicDBObject("woupWorkId", workId);
+        DBObject fields = new BasicDBObject("woupTime", 1);
+        DBObject sortTime = new BasicDBObject("woupTime", -1);
+        DBCursor workUpdateCursor = worksUpdateDao.getDBCollection().find(queryField, fields).sort(sortTime).limit(1);
+        while (workUpdateCursor.hasNext()) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            worksVo.setWorkLastUpdateTime(sdf.format(workUpdateCursor.next().get("woupTime")));
+        }
         return worksVo;
     }
 
-    public List<TempWorks> selectWorksByAuthId(Integer authId){
+    public List<TempWorks> selectWorksByAuthId(Integer authId) {
         DBObject query = new BasicDBObject("workAuthId", authId);
         DBCursor cursor = super.getDBCollection().find(query);
         List<TempWorks> workList = Lists.newArrayList();
-        while(cursor.hasNext()){
+        while (cursor.hasNext()) {
             TempWorks work = decode(cursor.next(), TempWorks.class);
             workList.add(work);
         }
@@ -238,14 +207,14 @@ public class WorksInfoDaoTemp extends BaseDao<TempWorks> {
     private List<TempWorksVo> getTempWorksVos(List<DBObject> queryList) {
         Iterator<DBObject> iterator = super.getDBCollection().aggregate(queryList).results().iterator();
         List<TempWorksVo> workList = Lists.newArrayList();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             String json = JSON.toJSONString(iterator.next());
             TempWorksVo worksVo = JSON.parseObject(json, TempWorksVo.class);
             DBObject queryField = new BasicDBObject("woupWorkId", worksVo.getWorkId());
             DBObject fields = new BasicDBObject("woupTime", 1);
             DBObject sortTime = new BasicDBObject("woupTime", -1);
             DBCursor cursor = worksUpdateDao.getDBCollection().find(queryField, fields).sort(sortTime).limit(1);
-            while(cursor.hasNext()){
+            while (cursor.hasNext()) {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                 worksVo.setWorkLastUpdateTime(sdf.format(cursor.next().get("woupTime")));
             }
@@ -296,11 +265,6 @@ public class WorksInfoDaoTemp extends BaseDao<TempWorks> {
      */
     public Area selectRangeWithWorkCount(Integer siteId, Integer sortField, Integer min, Integer max) {
         /*db.works.find({"workWebsiteId":siteId,"workTotalHits":{"$gte":5000,"$lte":10000}});*/
-        /*DBObject site = new BasicDBObject();
-        if (siteId != 0) {
-            site.put("workWebsiteId", siteId);
-        }
-        DBObject field = new BasicDBObject();*/
         String fieldStr = "";
         if (sortField == 1) {
             fieldStr = "workTotalHits";
@@ -309,7 +273,6 @@ public class WorksInfoDaoTemp extends BaseDao<TempWorks> {
         } else if (sortField == 3) {
             fieldStr = "workTotalRecoms";
         }
-//        field.put(fieldStr, new BasicDBObject().append("$gte", min).append("$lt", max));
         DBObject query = new BasicDBObject();
         if (siteId != 0) {
             query.put("workWebsiteId", siteId);
