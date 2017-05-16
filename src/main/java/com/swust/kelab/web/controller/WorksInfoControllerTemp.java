@@ -75,7 +75,6 @@ public class WorksInfoControllerTemp {
     // 一次全部查出作者统计：range1~4：1点击量、2评论数、3推荐数、4作品数
     @RequestMapping(value = "/countWorkInfoNumAll", method = RequestMethod.POST)
     public JsonAndView countWorkNumAll(String hitsRange, String commentsRange, String recomsRange, Integer siteId) {
-        System.out.println(hitsRange+" "+commentsRange+" "+recomsRange+" "+siteId);
         JsonAndView jv = new JsonAndView();
 //        Map<String, Object> map = worksInfoService.countInfoNumAll(hitsRange, commentsRange, recomsRange, siteId, DESCORASC, PAGESIZE);
         Map<String, List<Area>> map = worksInfoService.countWorkInfoNum(hitsRange, commentsRange, recomsRange, siteId);

@@ -83,7 +83,6 @@ public class AuthorUpdateDaoTemp extends BaseDao<TempAuthorUpdate> {
         /*db.authorupdate.aggregate([
         {$group:{"_id":"$auupRoughTime", "value":{$sum:1}}},
         {"$sort":{"auupRoughTime":-1}},  {"$limit":10} ]);*/
-        Long timea = System.currentTimeMillis();
         if (StringUtils.isEmpty(startTime)) {
             return CollectionUtil.emptyList();
         }
@@ -105,8 +104,6 @@ public class AuthorUpdateDaoTemp extends BaseDao<TempAuthorUpdate> {
         queryList.add(sort);
         queryList.add(limit);
         List<Area> results = commonDao.queryByCondition(super.getDBCollection(), queryList);
-        Long timeaa = System.currentTimeMillis();
-        System.out.println("author-updatetime:"+(timeaa-timea));
         return results;
     }
 

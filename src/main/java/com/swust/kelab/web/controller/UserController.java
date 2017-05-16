@@ -162,9 +162,7 @@ public class UserController {
             jv.setErrmsg("数据格式错误");
             return jv;
         }
-        //System.out.println("editUser user.getTime()--"+user.getTime());
-        user.setDeadTime(user.getTime());
-        //System.out.println("editUser user.getDeadTime()--"+user.getDeadTime());
+        user.setDeadTimeByAddTime(user.getTime());
         Map<String, Object> map = Maps.newHashMap();
         map = userService.editUser(user);
         jv.addData("data", map);

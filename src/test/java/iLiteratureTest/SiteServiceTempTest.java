@@ -60,6 +60,7 @@ public class SiteServiceTempTest {
                 // 更新时间
                 String lastTime = site.getAuthorUpdate();
                 DBObject update = new BasicDBObject("$set", new BasicDBObject("crwsAuthorOrWorkUpdateTime", lastTime));
+
                 // 更新作者作品数量
                 /*DBObject authQuery = new BasicDBObject("authWebsiteId", site.getSiteId());
                 int authorCount = authorDao.getDBCollection().find(authQuery).count();

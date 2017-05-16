@@ -82,7 +82,6 @@ public class AuthorControllerTemp {
     // 一次全部查出作者统计：range1~4：1点击量、2评论数、3推荐数、4作品数
     @RequestMapping(value = "/countAuthorInfoNumAll", method = RequestMethod.POST)
     public JsonAndView countAuthorNumAll(String hitsRange, String commentsRange, String recomsRange, String worksRange, Integer siteId) {
-        System.out.println(hitsRange+" "+commentsRange+" "+recomsRange+" "+worksRange+" "+siteId);
         JsonAndView jv = new JsonAndView();
 //        Map<String, Object> map = authorService.countInfoNumAll(hitsRange, commentsRange, recomsRange, worksRange, siteId, DESCORASC);
         Map<String, List<Area>> map = authorService.countAuthorInfoNum(hitsRange, commentsRange, recomsRange, worksRange, siteId);

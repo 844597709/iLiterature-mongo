@@ -1,8 +1,7 @@
 package com.swust.kelab.domain;
 
-import com.mysql.jdbc.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -41,7 +40,7 @@ public class User {
 
     public Date getUpDeadTime() {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-        if (!StringUtils.isNullOrEmpty(deadTime)) {
+        if (!StringUtils.isEmpty(deadTime)) {
             try {
                 this.upDeadTime = df.parse(deadTime);
             } catch (Exception e) {
@@ -51,29 +50,18 @@ public class User {
         return this.upDeadTime;
     }
 
-    public void setDeadTime(int time) {
-        //System.out.println("time--"+time);
-        Date date = new Date(System.currentTimeMillis());
-        //System.out.println("date--"+date);
+    public void setDeadTimeByAddTime(int time) {
         Calendar calendar = Calendar.getInstance();
-        //System.out.println("Calendar.DATE--"+Calendar.DATE);
         calendar.add(Calendar.DATE, time);
-        date = calendar.getTime();
-        //System.out.println("calendar.getTime()--"+date);
+        Date date = calendar.getTime();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
         String deadTime = df.format(date);
-        System.out.println("deadTime--" + deadTime);
         this.deadTime = deadTime;
-        System.out.println("this.deadTime--" + this.deadTime);
     }
 
     public void setDeadTime(String deadTime) {
-        /*System.out.println("deadTime1--"+deadTime);
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-    	String deadTime = df.format(time);
-    	System.out.println("deadTime2--"+deadTime);*/
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        if (!StringUtils.isNullOrEmpty(deadTime)) {
+        if (!StringUtils.isEmpty(deadTime)) {
             try {
                 Date date = sdf.parse(deadTime);
                 String time = sdf.format(date);

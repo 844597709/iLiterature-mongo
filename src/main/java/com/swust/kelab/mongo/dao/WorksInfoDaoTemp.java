@@ -53,7 +53,7 @@ public class WorksInfoDaoTemp extends BaseDao<TempWorks> {
      */
     public List<Area> selectWorkType(Integer siteId, Integer topNum) {
         /*db.works.aggregate([
-        {$match:{$and: [{"workType":{$ne:""}}, {"workWebsiteId":1}]}},
+        {$match:{"workType":{$ne:""}}},
         {$group:{"_id":"$workType", "value":{$sum:1}}},
         {$sort:{value:-1}},
         {$limit:9}

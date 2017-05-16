@@ -273,7 +273,6 @@ public class WorksInfoServiceTemp {
             return CollectionUtil.emptyMap();
         }
 
-        Long timea = System.currentTimeMillis();
         List<Area> rangeWithHitsCount = Lists.newArrayList();
         for (int i = 1; i < hitsList.size(); i++) {
             Area hits = worksInfoDao.selectRangeWithWorkCount(siteId, 1, hitsList.get(i - 1), hitsList.get(i));
@@ -289,8 +288,6 @@ public class WorksInfoServiceTemp {
             Area recoms = worksInfoDao.selectRangeWithWorkCount(siteId, 3, recomsList.get(i - 1), recomsList.get(i));
             rangeWithRecomsCount.add(recoms);
         }
-        Long timeaa = System.currentTimeMillis();
-        System.out.println("work-消耗时间：" + (timeaa - timea));
 
         Map<String, List<Area>> map = Maps.newHashMap();
         map.put("totalHits", rangeWithHitsCount);

@@ -180,7 +180,7 @@ public class UserService {
         if (!users.isEmpty()) {
             result = "isExist";
         } else {
-        	user.setDeadTime(user.getTime());
+        	user.setDeadTimeByAddTime(user.getTime());
         	System.out.println("user.getTime()--"+user.getTime());
             userDao.insert(user);
             result = "success";

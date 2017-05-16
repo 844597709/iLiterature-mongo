@@ -192,21 +192,6 @@
 			<version>2.8.0</version>
 		</dependency>
 		<!--jackson工具包-->
-		<!--<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>1.9.13</version>
-		</dependency>-->
-        <!--<dependency>
-            <groupId>com.fasterxml.jackson</groupId>
-            <artifactId>jackson-parent</artifactId>
-            <version>2.9</version>
-        </dependency>-->
-        <!--<dependency>
-            <groupId>com.fasterxml.jackson</groupId>
-            <artifactId>jackson-bom</artifactId>
-            <version>2.8.8</version>
-        </dependency>-->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
@@ -230,37 +215,6 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.22</version>
 		</dependency>
-		<!--<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-			<version>1.1.8</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>1.1.8</version>
-		</dependency>-->
-
-		<!--Java Commons Logging redirect to slf4j -->
-		<!--<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<version>1.7.22</version>
-		</dependency>-->
-
-		<!--Apache log4j redirect to slf4j -->
-		<!--<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>log4j-over-slf4j</artifactId>
-			<version>1.7.22</version>
-		</dependency>-->
-
-		<!--Java Util Logging redirect to slf4j -->
-		<!--<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jul-to-slf4j</artifactId>
-			<version>1.7.22</version>
-		</dependency>-->
 	</dependencies>
 
 	<profiles>
@@ -325,24 +279,6 @@
 					</webResources>
 				</configuration>
 			</plugin>
-			<!--<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>properties-maven-plugin</artifactId>
-				<version>1.0-alpha-2</version>
-				<executions>
-					<execution>
-						<phase>initialize</phase>
-						<goals>
-							<goal>read-project-properties</goal>
-						</goals>
-						<configuration>
-							<files>
-								<file>settings/${profile.name}.properties</file>
-							</files>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>-->
 
 			<!-- 配置mvn site输出内容 -->
 			<!-- Default Site Pages -->
@@ -351,13 +287,6 @@
 				<artifactId>maven-project-info-reports-plugin</artifactId>
 				<version>2.9</version>
 			</plugin>
-
-			<!-- Java Documentation -->
-			<!--<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.10.4</version>
-			</plugin>-->
 
 			<!-- Source Code Cross-Reference -->
 			<plugin>

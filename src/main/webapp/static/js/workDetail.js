@@ -99,44 +99,19 @@ $(function() {
 					$('#iData').empty().append("没有相关数据");
 					return;
 				}
-				// TODO 是否能变成selectWorkById
-				/*var url = '../../handler/worksInfo/selectByWork';
-				var timeArr = [];
-				var nameArr = [];
-				var dataArr = [];
-				$.post(url, {
-					"workId" : this.workId
-				}, function(data) {
-					var iHtml = "";
-					if (data.ret) {
-						var myData = data.data.data ;
-						for (var key in myData) { 
-							  if(key=="time"){
-								  timeArr=myData[key];
-							  }
-							  if(key=="info"){
-								  var i=0;
-								  $.each(myData[key],function(itemIndex, item) {
-									  nameArr[i]=item.attrName;
-									  dataArr[i++]=item.attrValue;
-								  });
-							  }
-				          }
-					}
-					$('#detail').empty().append(iHtml);
-				});*/
                 var url = '../../handler/worksInfo/selectWeekOfWorkInfo';
                 var timeArr = [];
                 var hitsArr = [];
                 var commentArr = [];
                 var recomsArr = [];
+				var myData = '';
                 $.post(url, {
                     "workId" : this.workId,
 					"endTime" : $('#workLastUpdateTime').text()
                 }, function(data) {
                     var iHtml = "";
                     if (data.ret) {
-                        var myData = data.data.data ;
+                        myData = data.data.data ;
                         $.each(myData, function (entryIndex, entry) {
                             timeArr[entryIndex] = entry.woupRoughTime;
 							if(entry.woupTotalHits==-1)entry.woupTotalHits=0;
@@ -149,10 +124,12 @@ $(function() {
                     }
                     $('#detail').empty().append(iHtml);
                 });
-				this.showLine(timeArr, hitsArr, commentArr, recomsArr, "iCharts");
+				if(myData!=""){
+					$('#chartDiv').show();
+					this.showLine(timeArr, hitsArr, commentArr, recomsArr, "iCharts");
+				}
 				return;
 			},
-			// showLine : function(timeArr, hitsArr, commentArr, recomsArr, htmlId, text) {
 			showLine : function(timeArr, hitsArr, commentArr, recomsArr, htmlId) {
 				var myChart = echarts.init(document.getElementById(htmlId));
 				option = {

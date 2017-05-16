@@ -144,7 +144,6 @@ public class AuthorServiceTemp {
 			return CollectionUtil.emptyMap();
 		}
 
-		Long timea = System.currentTimeMillis();
 		List<Area> rangeWithHitsCount = Lists.newArrayList();
 		for(int i=1; i<hitsList.size(); i++){
 			Area hits = authorDao.selectRangeWithAuthorCount(siteId, 1, hitsList.get(i-1), hitsList.get(i));
@@ -165,8 +164,6 @@ public class AuthorServiceTemp {
 			Area works = authorDao.selectRangeWithAuthorCount(siteId, 4, worksList.get(i-1), worksList.get(i));
 			rangeWithWorksCount.add(works);
 		}
-		Long timeaa = System.currentTimeMillis();
-		System.out.println("work-消耗时间："+(timeaa-timea));
 
 		Map<String, List<Area>> map = Maps.newHashMap();
 		map.put("totalHits", rangeWithHitsCount);

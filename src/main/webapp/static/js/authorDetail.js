@@ -135,11 +135,12 @@ $(function() {
 					return;
 				}
 				var url = '../../handler/worksInfo/selectByAuthor';
+				var myData = '';
 				$.post(url,{"authorId" : this.authorId},function(data) {
 					var iHtml = "";
 					var hideHtml="";
 					if (data.ret) {
-						var myData = data.data.data;
+						myData = data.data.data;
 						if(myData!=''){
 							$.each(myData,function(itemIndex, item) {
 								workId[itemIndex]=item.workId;
@@ -183,10 +184,38 @@ $(function() {
 					}
 					$('#detail').empty().append(iHtml);
 				});
-				this.showWorkDetail(workId);
+				if(myData!=''){
+					this.showWorkDetail(myData);
+				}
 			},
-
-			showWorkDetail:function(workId){
+			showWorkDetail:function(works){
+				if(showflag){
+					$("#iAttrs").show();
+					$("#iAttrs1").show();
+					var totalHits=[];
+					var title=[];
+					var comms=[];
+					var recom=[];
+					$.each(works,function(itemIndex, item){
+						if(item.workTotalHits<0){
+							item.workTotalHits=0;
+						}
+						if(item.workCommentsNum<0){
+							item.workCommentsNum=0;
+						}
+						if(item.workTotalRecoms<0){
+							item.workTotalRecoms=0;
+						}
+						totalHits[itemIndex]=item.workTotalHits;
+						title[itemIndex]=item.workTitle;
+						comms[itemIndex]=item.workCommentsNum;
+						recom[itemIndex]=item.workTotalRecoms;
+					});
+					this.showLine(title, totalHits, "iAttrs", "作者作品");
+					this.showLine1(title, totalHits, comms, recom, 'iAttrs1', "作者作品");
+				}
+			},
+			/*showWorkDetail:function(workId){
 				if(showflag){
 					$("#iAttrs").show();
 					$("#iAttrs1").show();
@@ -222,7 +251,7 @@ $(function() {
 					this.showLine(title, totalHits, "iAttrs", "作者作品");
 					this.showLine1(title, totalHits, comms, recom, 'iAttrs1', "作者作品");
 				}
-			},
+			},*/
 			showAuthorAttrs:function(){
 				var url="../../handler/author/viewAuthorUpdate";
 				$.post(url,{
