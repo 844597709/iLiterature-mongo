@@ -23,10 +23,10 @@ var userInfo = {
 };
 //全局权限判断
 $(document).ajaxComplete(function(event, XMLHttpRequest, settings) {
-	/*if (XMLHttpRequest.status == "602" || XMLHttpRequest.status == "404") {
+	if (XMLHttpRequest.status == "602" || XMLHttpRequest.status == "404") {
 		window.location = "login.html";
 		return false;
-	}*/
+	}
 });
 $(document).ready(function() {
 	// cookie 获取指定名称的cookie的值
