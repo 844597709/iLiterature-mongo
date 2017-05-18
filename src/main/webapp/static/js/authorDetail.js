@@ -154,6 +154,21 @@ $(function() {
 								}else{
 									hideHtml="<li>简介："+item.workDesc+"</li>";
 								}
+								if(!item.workType){
+									item.workType = "无";
+								}
+								if(!item.workMark){
+									item.workMark = "无";
+								}
+								if(!item.workNature){
+									item.workNature = "无";
+								}
+								if(!item.workAuthorization){
+									item.workAuthorization = "无";
+								}
+								if(!item.workOtherInfo){
+									item.workOtherInfo = "无";
+								}
 								iHtml += "<div class='accordion-group'>"
 									+ "<div class='accordion-heading'>"
 									+ "<a class='accordion-toggle' data-toggle='collapse' data-parent='#detail' href='#detail"
@@ -167,7 +182,7 @@ $(function() {
 									item.workId
 									+ "' target='_blank'> 作品："
 									+ item.workTitle
-									+ "</a></li><li> 类型："
+									+ "</a></li><li> 类型：";
 									+ item.workType
 									+ "</li><li>内容标签 :"
 									+ item.workMark
