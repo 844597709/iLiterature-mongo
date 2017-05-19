@@ -144,6 +144,9 @@ $(function() {
 						if(myData!=''){
 							$.each(myData,function(itemIndex, item) {
 								workId[itemIndex]=item.workId;
+                                if(!item.workDesc){
+                                    item.workDesc = "无";
+                                }
 								if(item.workDesc.length>200){
 									hideHtml="<li> 简介：<div id='short"+itemIndex+"'><span>"
 									+ item.workDesc.substring(0,200)
@@ -160,6 +163,9 @@ $(function() {
 								if(!item.workMark){
 									item.workMark = "无";
 								}
+								if(!item.workNum){
+                                    item.workNum = "无";
+                                }
 								if(!item.workNature){
 									item.workNature = "无";
 								}
@@ -182,7 +188,7 @@ $(function() {
 									item.workId
 									+ "' target='_blank'> 作品："
 									+ item.workTitle
-									+ "</a></li><li> 类型：";
+									+ "</a></li><li> 类型："
 									+ item.workType
 									+ "</li><li>内容标签 :"
 									+ item.workMark

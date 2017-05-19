@@ -151,7 +151,7 @@ function refreshContent(pageRecords) {
 			if(item.workTotalRecoms<=0)item.workTotalRecoms="无";
 			info = item.workTitle + "$" + url + "$" + item.workDesc + "$" + sTime;
 			iHtml += "<tr><td class='tdcenter'>" + startIndex + "</td>" + "<td class='tdcenter'><a id='" + item.workId
-					+ "' name='" + info + "'  href='workDetail.html?firstColuId=3&workId=" + item.workId + "'>"
+					+ "' name='" + info + "'  href='workDetailTemp.html?firstColuId=3&workId=" + item.workId + "'>"
 					+ item.workTitle + "</a>" + "</td><td class='tdcenter'>" + item.workAuthor + "</td><td class='tdcenter'>"
 					+ item.workType + "</td><td class='tdcenter' title='" + item.crwsSiteName + "'>"
 					+ item.crawlWebsiteList[0].crwsSiteName+  "</td><td class='tdcenter'>" + transforms(item.workTotalHits)
